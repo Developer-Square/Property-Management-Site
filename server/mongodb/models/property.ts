@@ -12,4 +12,4 @@ const propertySchema = new mongoose.Schema({
 
 const propertyModel = mongoose.model('Property', propertySchema);
 
-export default propertyModel;
+module.exports = propertyModel;

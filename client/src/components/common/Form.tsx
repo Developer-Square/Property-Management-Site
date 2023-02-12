@@ -86,7 +86,7 @@ const Form = ({
                 padding: 10,
                 color: '#919191',
               }}
-              {...register('title', { required: true })}
+              {...register('description', { required: true })}
             />
           </FormControl>
 
