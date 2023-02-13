@@ -2,6 +2,7 @@ import Profile from './common/Profile';
 import PropertyCard from './common/PropertyCard';
 import CustomButton from './common/CustomButton';
 import Form from './common/Form';
+import Pagination from './common/Pagination';
 
 // charts
 import PieChart from './charts/PieChart';
@@ -24,4 +25,5 @@ export {
   AgentCard,
   TopAgent,
   Form,
+  Pagination,
 };
