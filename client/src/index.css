@@ -21,6 +21,13 @@ a {
   width: 100%;
 }
 
+@media only screen and (max-width: 576px) {
+  #property-card {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
 @media screen and (max-width: 900px) {
   .my_profile-bg {
       width: 100%;
