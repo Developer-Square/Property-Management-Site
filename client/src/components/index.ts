@@ -3,6 +3,7 @@ import PropertyCard from './common/PropertyCard';
 import CustomButton from './common/CustomButton';
 import Form from './common/Form';
 import Pagination from './common/Pagination';
+import Filters from './common/Filters';
 
 // charts
 import PieChart from './charts/PieChart';
@@ -26,4 +27,5 @@ export {
   TopAgent,
   Form,
   Pagination,
+  Filters,
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Add, Search } from '@mui/icons-material';
 import { useTable } from '@pankod/refine-core';
 import {
@@ -11,7 +11,7 @@ import {
 } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 
-import { PropertyCard, CustomButton, Pagination } from 'components';
+import { PropertyCard, CustomButton, Pagination, Filters } from 'components';
 
 const AllProperties = () => {
   const navigate = useNavigate();
@@ -26,7 +26,28 @@ const AllProperties = () => {
     setFilters,
   } = useTable();
 
-  const allProperties = data?.data ?? [];
+  const allProperties: any[] = data?.data ?? [];
+
+  const currentPriceOrder = sorter?.find(
+    (item) => item.field === 'price'
+  )?.order;
+
+  const toggleSort = (field: string) => {
+    setSorter([{ field, order: currentPriceOrder === 'asc' ? 'desc' : 'asc' }]);
+  };
+
+  const currentFilterValues = useMemo(() => {
+    const logicalFilters = filters.flatMap((item) =>
+      'field' in item ? item : []
+    );
+
+    return {
+      title: logicalFilters.find((item) => item.field === 'title')?.value || '',
+      propertyType:
+        logicalFilters.find((item) => item.field === 'propertyType')?.value ||
+        '',
+    };
+  }, [filters]);
 
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error!</Typography>;
@@ -55,45 +76,88 @@ const AllProperties = () => {
           height: 'fit-content',
         }}
       >
-        <Stack direction='row' alignItems='center'>
-          <Search sx={{ marginRight: '5px' }} />
-          <TextField
-            fullWidth
-            id='outlined-basic'
-            color='info'
-            variant='outlined'
-            className='search-input'
-            placeholder='Enter an address or city...'
-            sx={{ marginRight: '30px' }}
-          />
-          <Select
-            fullWidth
-            variant='outlined'
-            color='info'
-            sx={{ height: '43px' }}
-            inputProps={{ 'aria-label': 'Without label' }}
+        <Stack
+          sx={{
+            flexDirection: {
+              xs: 'column',
+              sm: 'row',
+            },
+          }}
+          alignItems='center'
+        >
+          <Stack
+            direction='row'
+            alignItems='center'
+            sx={{
+              marginBottom: {
+                xs: '15px',
+                sm: '0px',
+              },
+              width: '100% !important',
+            }}
+          >
+            <Search sx={{ marginRight: '5px' }} />
+            <TextField
+              fullWidth
+              id='outlined-basic'
+              color='info'
+              variant='outlined'
+              value={currentFilterValues.title}
+              onChange={(e) => {
+                setFilters([
+                  {
+                    field: 'title',
+                    operator: 'contains',
+                    value: e.target.value ? e.target.value : undefined,
+                  },
+                ]);
+              }}
+              className='search-input'
+              placeholder='Enter an address or city...'
+              sx={{ marginRight: '30px' }}
+            />
+          </Stack>
+          <Filters
             defaultValue='for-sale'
-          >
-            <MenuItem value='for-sale'>For Sale</MenuItem>
-            <MenuItem value='for-rent'>For Rent</MenuItem>
-          </Select>
-          <Select
-            fullWidth
-            variant='outlined'
-            color='info'
-            sx={{ height: '43px', marginLeft: '30px' }}
-            inputProps={{ 'aria-label': 'Without label' }}
+            style={{
+              height: '43px',
+              marginBottom: {
+                xs: '15px',
+                sm: '0px',
+              },
+            }}
+            type='propertyStatus'
+            onChange={setFilters}
+            menuItems={['For Sale', 'For Rent']}
+          />
+          <Filters
             defaultValue='apartment'
-          >
-            <MenuItem value='apartment'>Apartments</MenuItem>
-            <MenuItem value='villa'>Villa</MenuItem>
-            <MenuItem value='farmhouse'>FarmHouse</MenuItem>
-            <MenuItem value='condos'>Condos</MenuItem>
-            <MenuItem value='townhouse'>Townhouse</MenuItem>
-            <MenuItem value='duplex'>Duplex</MenuItem>
-            <MenuItem value='studio'>Studio</MenuItem>
-            <MenuItem value='chalet'>Chalet</MenuItem>
-          </Select>
+            style={{
+              height: '43px',
+            }}
+            type='propertyType'
+            onChange={setFilters}
+            menuItems={[
+              'Apartment',
+              'Villa',
+              'FarmHouse',
+              'Condos',
+              'Townhouse',
+              'Duplex',
+              'Studio',
+              'Chalet',
+            ]}
+          />
+          <Filters
+            defaultValue='high-to-low'
+            style={{
+              height: '43px',
+            }}
+            type='Price'
+            label='Sort By Price'
+            onChange={toggleSort}
+            menuItems={['High to Low', 'Low to High']}
+          />
         </Stack>
       </Box>
 
@@ -106,16 +170,20 @@ const AllProperties = () => {
           gap: 3,
         }}
       >
-        {allProperties.map((property) => (
-          <PropertyCard
-            key={property._id}
-            id={property._id}
-            title={property.title}
-            price={property.price}
-            location={property.location}
-            photo={property.photo}
-          />
-        ))}
+        {allProperties.length ? (
+          allProperties.map((property) => (
+            <PropertyCard
+              key={property._id}
+              id={property._id}
+              title={property.title}
+              price={property.price}
+              location={property.location}
+              photo={property.photo}
+            />
+          ))
+        ) : (
+          <Box>No Results Found</Box>
+        )}
       </Box>
       {allProperties.length !== 0 ? <Pagination /> : <></>}
     </Box>
