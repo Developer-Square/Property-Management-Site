@@ -16,12 +16,16 @@ import AgentCard from './agent/AgentCard';
 // home
 import TopAgent from './home/TopAgent';
 
+// properties
+import PropertyDetailsAgent from './properties/PropertyDetailsAgent';
+
 export {
   Profile,
   PropertyCard,
   CustomButton,
   PieChart,
   PropertyReferrals,
+  PropertyDetailsAgent,
   TotalRevenue,
   AgentCard,
   TopAgent,
