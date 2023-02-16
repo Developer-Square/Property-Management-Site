@@ -121,6 +121,30 @@ const Form = ({
                 <MenuItem value='chalet'>Chalet</MenuItem>
               </Select>
             </FormControl>
+            <FormControl sx={{ flex: 1 }}>
+              <FormHelperText
+                sx={{
+                  fontWeight: 500,
+                  margin: '10px 0',
+                  fontSize: 16,
+                  color: '#11142d',
+                }}
+              >
+                Select Property Status
+              </FormHelperText>
+              <Select
+                variant='outlined'
+                color='info'
+                displayEmpty
+                required
+                inputProps={{ 'aria-label': 'Without label' }}
+                defaultValue='for-sale'
+                {...register('propertyStatus', { required: true })}
+              >
+                <MenuItem value='for-sale'>For Sale</MenuItem>
+                <MenuItem value='for-rent'>For Rent</MenuItem>
+              </Select>
+            </FormControl>
             <FormControl>
               <FormHelperText
                 sx={{

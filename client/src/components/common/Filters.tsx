@@ -35,13 +35,13 @@ const Filters = ({
         sx={style}
         defaultValue={defaultValue}
         onChange={
-          type === 'propertyType'
+          type === 'propertyType' || type === 'propertyStatus'
             ? (e) =>
                 onChange([
                   {
-                    field: 'propertyType',
+                    field: type,
                     operator: 'eq',
-                    value: e.target.value ? e.target.value : 'apartment',
+                    value: e.target.value,
                   },
                 ])
             : () => onChange('price')

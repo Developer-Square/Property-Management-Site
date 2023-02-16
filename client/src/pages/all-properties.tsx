@@ -29,6 +29,7 @@ const AllProperties = () => {
   const allProperties: any[] = data?.data ?? [];
 
   const currentPriceOrder = sorter?.find(
+    // @ts-ignore
     (item) => item.field === 'price'
   )?.order;
 
@@ -153,8 +154,8 @@ const AllProperties = () => {
             style={{
               height: '43px',
             }}
-            type='Price'
-            label='Sort By Price'
+            type='price'
+            label='Price'
             onChange={toggleSort}
             menuItems={['High to Low', 'Low to High']}
           />

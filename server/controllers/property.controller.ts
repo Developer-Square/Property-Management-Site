@@ -18,6 +18,7 @@ const getAllProperties = async (req, res) => {
     _sort,
     title_like = '',
     propertyType = '',
+    propertyStatus = '',
   } = req.query;
 
   const query = {};
@@ -25,6 +26,11 @@ const getAllProperties = async (req, res) => {
   if (propertyType !== '') {
     // @ts-ignore
     query.propertyType = propertyType;
+  }
+
+  if (propertyStatus !== '') {
+    // @ts-ignore
+    query.propertyStatus = propertyStatus;
   }
 
   if (title_like !== '') {
@@ -51,8 +57,16 @@ const getAllProperties = async (req, res) => {
 const getPropertyDetail = async (req, res) => {};
 const createProperty = async (req, res) => {
   try {
-    const { title, description, propertyType, price, location, photo, email } =
-      req.body;
+    const {
+      title,
+      description,
+      propertyType,
+      propertyStatus,
+      price,
+      location,
+      photo,
+      email,
+    } = req.body;
 
     // Start a new Mongodb session
     const session = await mongoose.startSession();
@@ -71,6 +85,7 @@ const createProperty = async (req, res) => {
       title,
       description,
       propertyType,
+      propertyStatus,
       price,
       location,
       photo: photoUrl.url,
