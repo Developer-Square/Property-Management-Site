@@ -1,14 +1,7 @@
 import React, { useMemo } from 'react';
 import { Add, Search } from '@mui/icons-material';
 import { useTable } from '@pankod/refine-core';
-import {
-  Box,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@pankod/refine-mui';
+import { Box, Stack, TextField, Typography } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 
 import { PropertyCard, CustomButton, Pagination, Filters } from 'components';
@@ -20,6 +13,8 @@ const AllProperties = () => {
     current,
     setCurrent,
     pageCount,
+    pageSize,
+    setPageSize,
     sorter,
     setSorter,
     filters,
@@ -186,7 +181,17 @@ const AllProperties = () => {
           <Box>No Results Found</Box>
         )}
       </Box>
-      {allProperties.length !== 0 ? <Pagination /> : <></>}
+      {allProperties.length !== 0 ? (
+        <Pagination
+          pageSize={pageSize}
+          pageCount={pageCount}
+          setPageSize={setPageSize}
+          current={current}
+          setCurrent={setCurrent}
+        />
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };

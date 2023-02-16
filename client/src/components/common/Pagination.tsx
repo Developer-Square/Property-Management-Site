@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from 'react';
+import React, { SetStateAction } from 'react';
 import { Box } from '@mui/system';
 import {
   ArrowBackIosNewOutlined,
@@ -32,8 +32,21 @@ const PageNumber = ({
   </Box>
 );
 
-const Pagination = () => {
-  const [pageNumber, setPageNumber] = useState(1);
+interface IPaginationProps {
+  current: number;
+  setCurrent: React.Dispatch<SetStateAction<number>>;
+  pageSize: number;
+  setPageSize: React.Dispatch<SetStateAction<number>>;
+  pageCount: number;
+}
+
+const Pagination = ({
+  pageSize,
+  current,
+  setCurrent,
+  setPageSize,
+  pageCount,
+}: IPaginationProps) => {
   return (
     <Box
       id='pagination'
@@ -51,24 +64,24 @@ const Pagination = () => {
       <ArrowBackIosNewOutlined
         sx={{ fontSize: '16px', marginRight: '15px', cursor: 'pointer' }}
         onClick={
-          pageNumber > 1
-            ? () => setPageNumber((prevPageNumber) => prevPageNumber - 1)
+          current > 1
+            ? () => setCurrent((prevPageNumber) => prevPageNumber - 1)
             : () => {}
         }
       />
-      {[...Array(5)].map((_, i) => (
+      {[...Array(pageCount)].map((_, i) => (
         <PageNumber
           key={i}
-          selected={pageNumber === i + 1}
-          setPageNumber={setPageNumber}
+          selected={current === i + 1}
+          setPageNumber={setCurrent}
           number={i + 1}
         />
       ))}
       <ArrowForwardIosOutlined
         sx={{ fontSize: '16px', marginLeft: '5px', cursor: 'pointer' }}
         onClick={
-          pageNumber < 5
-            ? () => setPageNumber((prevPageNumber) => prevPageNumber + 1)
+          current < pageCount
+            ? () => setCurrent((prevPageNumber) => prevPageNumber + 1)
             : () => {}
         }
       />
@@ -78,7 +91,10 @@ const Pagination = () => {
           color='info'
           inputProps={{ 'aria-label': 'Without label' }}
           defaultValue={10}
-          onChange={() => {}}
+          value={pageSize}
+          onChange={(e) =>
+            setPageSize(e.target.value ? Number(e.target.value) : 10)
+          }
           sx={{
             marginLeft: '10px',
           }}
