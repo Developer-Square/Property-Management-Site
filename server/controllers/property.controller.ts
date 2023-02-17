@@ -75,9 +75,10 @@ const createProperty = async (req, res) => {
       propertyStatus,
       price,
       location,
-      photo,
+      photos,
       email,
     } = req.body;
+    const cloudinaryLinks = [];
 
     // Start a new Mongodb session
     const session = await mongoose.startSession();
@@ -90,7 +91,10 @@ const createProperty = async (req, res) => {
       return;
     }
 
-    const photoUrl = await cloudinary.uploader.upload(photo);
+    photos.map(async (item) => {
+      const photoUrl = await cloudinary.uploader.upload(item.url);
+      cloudinaryLinks.push(photoUrl.url);
+    });
 
     const newProperty = await Property.create({
       title,
@@ -99,7 +103,7 @@ const createProperty = async (req, res) => {
       propertyStatus,
       price,
       location,
-      photo: photoUrl.url,
+      photos: cloudinaryLinks,
       creator: user._id,
     });
 

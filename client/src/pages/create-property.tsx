@@ -8,7 +8,9 @@ import { Form } from 'components';
 const CreateProperty = () => {
   const navigate = useNavigate();
   const { data: user } = useGetIdentity();
-  const [propertyImage, setPropertyImage] = useState({ name: '', url: '' });
+  const [propertyImage, setPropertyImage] = useState<
+    { name: string; url: string }[]
+  >([]);
   const {
     refineCore: { onFinish, formLoading },
     register,
@@ -23,15 +25,15 @@ const CreateProperty = () => {
         fileReader.readAsDataURL(readFile);
       });
 
-    reader(file).then((result: string) =>
-      setPropertyImage({ name: file?.name, url: result })
-    );
+    reader(file).then((result: string) => {
+      setPropertyImage([...propertyImage, { name: file?.name, url: result }]);
+    });
   };
 
   const onFinishHandler = async (data: FieldValues) => {
-    if (!propertyImage.name) return alert('Please upload a property image');
+    if (!propertyImage.length) return alert('Please upload a property image');
 
-    await onFinish({ ...data, photo: propertyImage.url, email: user.email });
+    await onFinish({ ...data, photos: propertyImage, email: user.email });
   };
 
   return (

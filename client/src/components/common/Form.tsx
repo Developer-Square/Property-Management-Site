@@ -225,7 +225,7 @@ const Form = ({
               color='#808191'
               sx={{ wordBreak: 'break-all' }}
             >
-              {propertyImage?.name}
+              {propertyImage.map((image) => image.name).join(', ')}
             </Typography>
           </Stack>
 

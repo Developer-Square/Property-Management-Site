@@ -67,6 +67,7 @@ const ModalContainer = ({
 
 const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
   const [open, setModal] = useState(false);
+  console.log(propertyDetails);
   return (
     <>
       <ModalContainer
@@ -81,50 +82,55 @@ const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
           style={{
             objectFit: 'cover',
             borderRadius: '10px',
-            width: '80%',
+            width: propertyDetails.photos >= 3 ? '80%' : '100%',
             height: 'auto',
             maxHeight: '346px',
           }}
           className='property_details-img'
         />
-        <Stack
-          direction='column'
-          gap={isMobile ? 1 : 2.5}
-          sx={{ widht: '20%', height: 'auto' }}
-        >
-          <Image propertyDetails={propertyDetails} />
-          <Box
-            sx={{ position: 'relative', height: '100%', cursor: 'pointer' }}
-            onClick={() => setModal(true)}
+        {/* Todo: check back when it's an array */}
+        {propertyDetails.photo.length >= 3 ? (
+          <Stack
+            direction='column'
+            gap={isMobile ? 1 : 2.5}
+            sx={{ widht: '20%', height: 'auto' }}
           >
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                background: 'rgba(0, 0, 0, 0.6)',
-                maxHeight: '160px',
-                height: '100%',
-                width: '100%',
-                borderRadius: '10px',
-              }}
-            ></Box>
-            <Typography
-              sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                color: '#fcfcfc',
-                fontWeight: 600,
-                fontSize: 18,
-              }}
-            >
-              +10
-            </Typography>
             <Image propertyDetails={propertyDetails} />
-          </Box>
-        </Stack>
+            <Box
+              sx={{ position: 'relative', height: '100%', cursor: 'pointer' }}
+              onClick={() => setModal(true)}
+            >
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '0',
+                  left: '0',
+                  background: 'rgba(0, 0, 0, 0.6)',
+                  maxHeight: '160px',
+                  height: '100%',
+                  width: '100%',
+                  borderRadius: '10px',
+                }}
+              ></Box>
+              <Typography
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  color: '#fcfcfc',
+                  fontWeight: 600,
+                  fontSize: 18,
+                }}
+              >
+                +10
+              </Typography>
+              <Image propertyDetails={propertyDetails} />
+            </Box>
+          </Stack>
+        ) : (
+          <></>
+        )}
       </Stack>
     </>
   );
