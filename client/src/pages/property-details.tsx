@@ -1,17 +1,10 @@
 /* eslint-disable no-restricted-globals */
 import React, { useMemo } from 'react';
-import { Typography, Box, Stack } from '@pankod/refine-mui';
+import { Typography, Box, Stack, Rating } from '@pankod/refine-mui';
 import { useDelete, useGetIdentity, useShow } from '@pankod/refine-core';
 import { useParams, useNavigate } from '@pankod/refine-react-router-v6';
-import {
-  ChatBubble,
-  Delete,
-  Edit,
-  Phone,
-  Place,
-  Star,
-} from '@mui/icons-material';
-import { CustomButton, PropertyDetailsAgent } from 'components';
+import { Place } from '@mui/icons-material';
+import { ImageViewer, PropertyDetailsAgent } from 'components';
 
 const checkImage = (url: any) => {
   const img = new Image();
@@ -26,6 +19,7 @@ const PropertyDetails = () => {
   const { id } = useParams();
   const { mutate } = useDelete();
   const { queryResult } = useShow();
+  const [value, setValue] = React.useState(4);
 
   const { data, isError, isLoading: isPropertyLoading } = queryResult;
 
@@ -80,17 +74,7 @@ const PropertyDetails = () => {
         gap={4}
       >
         <Box flex={1} maxWidth={764}>
-          <img
-            src={propertyDetails.photo}
-            alt={propertyDetails.title}
-            height={546}
-            style={{
-              objectFit: 'cover',
-              borderRadius: '10px',
-            }}
-            className='property_details-img'
-          />
-
+          <ImageViewer propertyDetails={propertyDetails} />
           <Box mt='15px'>
             <Stack
               direction='row'
@@ -107,14 +91,13 @@ const PropertyDetails = () => {
                 {propertyDetails.propertyType}
               </Typography>
               <Box>
-                {[1, 2, 3, 4, 5].map((item) => (
-                  <Star
-                    key={`star-${item}`}
-                    sx={{
-                      color: '#f2c94c',
-                    }}
-                  />
-                ))}
+                <Rating
+                  name='simple-controlled'
+                  value={value}
+                  onChange={(event, newValue: any) => {
+                    setValue(newValue);
+                  }}
+                />
               </Box>
             </Stack>
 
@@ -154,9 +137,9 @@ const PropertyDetails = () => {
                   <Typography fontSize={25} fontWeight={700} color='#475BE8'>
                     ${propertyDetails.price}
                   </Typography>
-                  {propertyDetails.propertyStatus === 'rent' ? (
+                  {propertyDetails.propertyStatus === 'for-rent' ? (
                     <Typography fontSize={14} color='#808191' mb={0.5}>
-                      /month
+                      / month
                     </Typography>
                   ) : (
                     <></>

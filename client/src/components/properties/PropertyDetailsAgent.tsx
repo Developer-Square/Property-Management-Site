@@ -23,10 +23,12 @@ const PropertyDetailsAgent = ({
     <Box
       width='100%'
       flex={1}
-      maxWidth={326}
       display='flex'
       flexDirection='column'
       gap='20px'
+      sx={{
+        maxWidth: { md: '100%', lg: '326px' },
+      }}
     >
       <Stack
         width='100%'
@@ -70,7 +72,7 @@ const PropertyDetailsAgent = ({
           <Stack mt='15px' direction='row' alignItems='center' gap={1}>
             <Place sx={{ color: '#808191' }} />
             <Typography fontSize={14} fontWeight={400} color='#808191'>
-              North Carolina, USA
+              Nairobi, Kenya
             </Typography>
           </Stack>
 
@@ -117,7 +119,11 @@ const PropertyDetailsAgent = ({
 
       <Box>
         <CustomButton
-          title='Book Now'
+          title={
+            propertyDetails.propertyStatus === 'for-rent'
+              ? 'Book Now'
+              : 'Buy Now'
+          }
           backgroundColor='#475BE8'
           color='#FCFCFC'
           fullWidth

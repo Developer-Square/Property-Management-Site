@@ -38,6 +38,7 @@ import {
 } from 'pages';
 
 import 'index.css';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {

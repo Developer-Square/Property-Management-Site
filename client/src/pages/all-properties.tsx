@@ -99,7 +99,7 @@ const AllProperties = () => {
               color='info'
               variant='outlined'
               value={currentFilterValues.title}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setFilters([
                   {
                     field: 'title',

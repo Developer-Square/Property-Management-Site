@@ -18,6 +18,7 @@ import TopAgent from './home/TopAgent';
 
 // properties
 import PropertyDetailsAgent from './properties/PropertyDetailsAgent';
+import ImageViewer from './properties/ImageViewer';
 
 export {
   Profile,
@@ -32,4 +33,5 @@ export {
   Form,
   Pagination,
   Filters,
+  ImageViewer,
 };
