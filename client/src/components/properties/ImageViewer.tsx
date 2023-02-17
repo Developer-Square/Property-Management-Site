@@ -5,10 +5,10 @@ import { Close } from '@mui/icons-material';
 
 import ImageCarousel from './ImageCarousel';
 
-const Image = ({ propertyDetails }: { propertyDetails: any }) => (
+const Image = ({ image, title }: { image: string; title: string }) => (
   <img
-    src={propertyDetails.photo}
-    alt={propertyDetails.title}
+    src={image}
+    alt={title}
     style={{
       objectFit: 'cover',
       borderRadius: '10px',
@@ -67,7 +67,6 @@ const ModalContainer = ({
 
 const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
   const [open, setModal] = useState(false);
-  console.log(propertyDetails);
   return (
     <>
       <ModalContainer
@@ -77,7 +76,7 @@ const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
       />
       <Stack direction='row' gap={isMobile ? 1 : 2.5}>
         <img
-          src={propertyDetails.photo}
+          src={propertyDetails.photos[0]}
           alt={propertyDetails.title}
           style={{
             objectFit: 'cover',
@@ -89,13 +88,16 @@ const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
           className='property_details-img'
         />
         {/* Todo: check back when it's an array */}
-        {propertyDetails.photo.length >= 3 ? (
+        {propertyDetails.photos.length >= 3 ? (
           <Stack
             direction='column'
             gap={isMobile ? 1 : 2.5}
             sx={{ widht: '20%', height: 'auto' }}
           >
-            <Image propertyDetails={propertyDetails} />
+            <Image
+              image={propertyDetails.photos[1]}
+              title={propertyDetails.title}
+            />
             <Box
               sx={{ position: 'relative', height: '100%', cursor: 'pointer' }}
               onClick={() => setModal(true)}
@@ -120,12 +122,15 @@ const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
                   transform: 'translate(-50%, -50%)',
                   color: '#fcfcfc',
                   fontWeight: 600,
-                  fontSize: 18,
+                  fontSize: 16,
                 }}
               >
-                +10
+                {propertyDetails.photos.length}+ Photos
               </Typography>
-              <Image propertyDetails={propertyDetails} />
+              <Image
+                image={propertyDetails.photos[0]}
+                title={propertyDetails.title}
+              />
             </Box>
           </Stack>
         ) : (

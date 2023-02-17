@@ -94,25 +94,27 @@ const createProperty = async (req, res) => {
     photos.map(async (item) => {
       const photoUrl = await cloudinary.uploader.upload(item.url);
       cloudinaryLinks.push(photoUrl.url);
+
+      if (cloudinaryLinks.length === photos.length) {
+        const newProperty = await Property.create({
+          title,
+          description,
+          propertyType,
+          propertyStatus,
+          price,
+          location,
+          photos: cloudinaryLinks,
+          creator: user._id,
+        });
+
+        user.allProperties.push(newProperty._id);
+        await user.save({ session });
+
+        await session.commitTransaction();
+
+        res.status(201).json({ message: 'Property created successfully' });
+      }
     });
-
-    const newProperty = await Property.create({
-      title,
-      description,
-      propertyType,
-      propertyStatus,
-      price,
-      location,
-      photos: cloudinaryLinks,
-      creator: user._id,
-    });
-
-    user.allProperties.push(newProperty._id);
-    await user.save({ session });
-
-    await session.commitTransaction();
-
-    res.status(201).json({ message: 'Property created successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

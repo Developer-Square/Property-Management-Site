@@ -22,7 +22,7 @@ const PropertyCard = ({
   title,
   location,
   price,
-  photo,
+  photos,
 }: PropertyCardProps) => {
   return (
     <Card
@@ -44,7 +44,7 @@ const PropertyCard = ({
         component='img'
         width='100%'
         height={150}
-        image={photo}
+        image={photos[0]}
         alt='card image'
         sx={{ borderRadius: '10px', marginRight: '10px' }}
       />

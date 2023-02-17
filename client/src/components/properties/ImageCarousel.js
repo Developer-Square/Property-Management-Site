@@ -3,14 +3,10 @@ import { Carousel } from 'react-responsive-carousel';
 
 const ImageCarousel = ({ propertyDetails }) => (
   <Carousel showIndicators={false}>
-    {[
-      'http://res.cloudinary.com/ryansimageupload/image/upload/v1676526858/erfyvku4vgmpmkzaghij.webp',
-      'http://res.cloudinary.com/ryansimageupload/image/upload/v1676526858/erfyvku4vgmpmkzaghij.webp',
-      'http://res.cloudinary.com/ryansimageupload/image/upload/v1676526858/erfyvku4vgmpmkzaghij.webp',
-    ].map((photo, index) => (
+    {propertyDetails.photos.map((image) => (
       <div>
         <img
-          src={propertyDetails.photo}
+          src={image}
           alt={propertyDetails.title}
           style={{ borderRadius: '10px' }}
         />

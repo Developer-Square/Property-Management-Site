@@ -174,7 +174,7 @@ const AllProperties = () => {
               title={property.title}
               price={property.price}
               location={property.location}
-              photo={property.photo}
+              photos={property.photos}
             />
           ))
         ) : (
