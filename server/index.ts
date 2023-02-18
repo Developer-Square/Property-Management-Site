@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const connectToDatabase = require('./mongoDB/connect');
+const connectToDatabase = require('./mongodb/connect');
 const userRouter = require('./routes/user.routes');
 const propertyRouter = require('./routes/property.routes');
 

@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { Typography, Box, Stack, Rating } from '@pankod/refine-mui';
 import { useDelete, useGetIdentity, useShow } from '@pankod/refine-core';
 import { useParams, useNavigate } from '@pankod/refine-react-router-v6';
-import { Place } from '@mui/icons-material';
+import { ArrowBackIosOutlined, Place } from '@mui/icons-material';
 import { ImageViewer, PropertyDetailsAgent } from 'components';
 
 const checkImage = (url: any) => {
@@ -36,17 +36,11 @@ const PropertyDetails = () => {
     const response = confirm('Are you sure you want to delete this property?');
 
     if (response) {
-      mutate(
-        {
-          resource: 'properties',
-          id: id as string,
-        },
-        {
-          onSuccess: () => {
-            navigate('/properties');
-          },
-        }
-      );
+      mutate({
+        resource: 'properties',
+        id: id as string,
+      });
+      navigate('/properties');
     }
   };
 
@@ -60,20 +54,30 @@ const PropertyDetails = () => {
         borderRadius: '15px',
         padding: '20px',
         backgroundColor: '#fcfcfc',
-        width: 'fit-content',
+        width: '100%',
       }}
     >
-      <Typography fontSize={25} fontWeight={700} color='#11142d'>
-        Details
-      </Typography>
-
+      <Stack direction='row' alignItems='center'>
+        <ArrowBackIosOutlined
+          sx={{
+            color: '#11142d',
+            marginRight: '15px',
+            fontSize: '19px',
+            cursor: 'pointer',
+          }}
+          onClick={() => navigate(-1)}
+        />
+        <Typography fontSize={25} fontWeight={700} color='#11142d'>
+          Details
+        </Typography>
+      </Stack>
       <Box
         mt='20px'
         display='flex'
         flexDirection={{ xs: 'column', lg: 'row' }}
         gap={4}
       >
-        <Box flex={1} maxWidth={764}>
+        <Box flex={1}>
           <ImageViewer propertyDetails={propertyDetails} />
           <Box mt='15px'>
             <Stack
