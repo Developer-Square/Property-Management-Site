@@ -4,6 +4,7 @@ import CustomButton from './common/CustomButton';
 import Form from './common/Form';
 import Pagination from './common/Pagination';
 import Filters from './common/Filters';
+import PropertyList from './common/PropertyList';
 
 // charts
 import PieChart from './charts/PieChart';
@@ -34,4 +35,5 @@ export {
   Pagination,
   Filters,
   ImageViewer,
+  PropertyList,
 };

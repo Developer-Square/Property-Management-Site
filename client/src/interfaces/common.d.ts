@@ -1,4 +1,5 @@
 export interface CustomButtonProps {
+  active?: boolean;
   type?: string;
   title: string;
   backgroundColor: string;
@@ -23,7 +24,7 @@ export interface PropertyProps {
   description: string;
   location: string;
   price: string;
-  photo: string;
+  photos: string[];
   creator: string;
 }
 

@@ -35,6 +35,7 @@ import {
   CreateProperty,
   AgentProfile,
   EditProperty,
+  CreateAgent,
 } from 'pages';
 
 import 'index.css';
@@ -153,6 +154,7 @@ function App() {
               name: 'agents',
               list: Agents,
               show: AgentProfile,
+              create: CreateAgent,
               icon: <PeopleAltOutlined />,
             },
             {
