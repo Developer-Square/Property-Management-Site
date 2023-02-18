@@ -7,6 +7,7 @@ import CustomButton from './CustomButton';
 import { PropertyProps } from 'interfaces/common';
 import PropertyCard from './PropertyCard';
 import { shuffle } from 'utils/shuffle';
+import { isMobile } from 'react-device-detect';
 
 const PropertyList = ({
   type,
@@ -26,9 +27,13 @@ const PropertyList = ({
 
   return (
     <Box mt={2.5} borderRadius='15px' padding='20px' bgcolor='#FCFCFC'>
-      <Stack direction='row' justifyContent='space-between'>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        justifyContent='space-between'
+        gap={{ xs: 2, sm: 0 }}
+      >
         <Typography fontSize={18} fontWeight={600} color='#11142D'>
-          {type} Properties
+          {type === 'home' ? 'Property List' : `${type} Properties`}
         </Typography>
         <Stack gap={1} direction='row'>
           <CustomButton
@@ -62,7 +67,11 @@ const PropertyList = ({
           id='property-cards'
           sx={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: {
+              xs: 'repeat(1fr)',
+              sm: 'repeat(2, 1fr)',
+              lg: 'repeat(3, 1fr)',
+            },
             gap: 3,
             position: 'relative',
           }}
@@ -77,23 +86,25 @@ const PropertyList = ({
               photos={property.photos}
             />
           ))}
-          <Box
-            sx={{
-              position: 'absolute',
-              right: '0',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              zIndex: 10,
-              cursor: 'pointer',
-            }}
-            onClick={() => navigate('/properties')}
-          >
-            <ArrowForwardIosOutlined
+          {!isMobile && (
+            <Box
               sx={{
-                fontSize: '18px',
+                position: 'absolute',
+                right: '0',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 10,
+                cursor: 'pointer',
               }}
-            />
-          </Box>
+              onClick={() => navigate('/properties')}
+            >
+              <ArrowForwardIosOutlined
+                sx={{
+                  fontSize: '18px',
+                }}
+              />
+            </Box>
+          )}
         </Box>
       ) : (
         <Box>

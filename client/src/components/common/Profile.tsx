@@ -1,17 +1,7 @@
-import { useState } from 'react';
-import {
-  ArrowForwardIosOutlined,
-  Email,
-  Phone,
-  Place,
-} from '@mui/icons-material';
+import { Email, Phone, Place } from '@mui/icons-material';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 
-import { ProfileProps, PropertyProps } from 'interfaces/common';
-import CustomButton from './CustomButton';
-import PropertyCard from './PropertyCard';
-import { shuffle } from 'utils/shuffle';
-import { useNavigate } from '@pankod/refine-react-router-v6';
+import { ProfileProps } from 'interfaces/common';
 import PropertyList from './PropertyList';
 
 function checkImage(url: any) {

@@ -1,10 +1,21 @@
 import React from 'react';
-// import { useList } from '@pankod/refine-core';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
+import { useList } from '@pankod/refine-core';
 
-import { PieChart, TotalRevenue, PropertyReferrals } from 'components';
+import {
+  PieChart,
+  TotalRevenue,
+  PropertyReferrals,
+  PropertyList,
+} from 'components';
 
 const Home = () => {
+  const { data, isLoading, isError } = useList({
+    resource: 'properties',
+  });
+
+  const allProperties = data?.data ?? [];
+
   return (
     <Box>
       <Typography fontSize={25} fontWeight={700} color='#11142d'>
@@ -47,6 +58,12 @@ const Home = () => {
         <TotalRevenue />
         <PropertyReferrals />
       </Stack>
+      {!isLoading ? (
+        <PropertyList type='home' properties={allProperties} />
+      ) : (
+        <Typography>Loading...</Typography>
+      )}
+      {isError && <Typography>Error fecthing properties</Typography>}
     </Box>
   );
 };
