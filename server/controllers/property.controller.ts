@@ -119,7 +119,50 @@ const createProperty = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-const updateProperty = async (req, res) => {};
+const updateProperty = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      title,
+      description,
+      propertyType,
+      propertyStatus,
+      location,
+      price,
+      photos,
+    } = req.body;
+    const cloudinaryLinks = [];
+
+    photos.map(async (item) => {
+      if (item.includes('https://res.cloudinary.com')) {
+        cloudinaryLinks.push(item);
+      } else {
+        const photoUrl = await cloudinary.uploader.upload(item);
+        cloudinaryLinks.push(photoUrl.url);
+      }
+
+      if (cloudinaryLinks.length === photos.length) {
+        await Property.findByIdAndUpdate(
+          { _id: id },
+          {
+            title,
+            description,
+            propertyType,
+            propertyStatus,
+            price,
+            location,
+            photos: cloudinaryLinks,
+          }
+        );
+
+        res.status(200).json({ message: 'Property updated successfully' });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
 const deleteProperty = async (req, res) => {
   try {
     const { id } = req.params;

@@ -14,6 +14,7 @@ import {
 
 import { FormProps } from 'interfaces/common';
 import CustomButton from './CustomButton';
+import { Close } from '@mui/icons-material';
 
 const Form = ({
   type,
@@ -23,7 +24,14 @@ const Form = ({
   formLoading,
   onFinishHandler,
   propertyImage,
+  backendImages,
+  setBackendImages,
 }: FormProps) => {
+  const handleRemoveImage = (img: string) => {
+    // filter out the image from the images array then set the state
+    const filteredImages = backendImages?.filter((image) => image !== img);
+    setBackendImages(filteredImages);
+  };
   return (
     <Box>
       <Typography fontSize={25} fontWeight={700} color='#11142d'>
@@ -90,7 +98,14 @@ const Form = ({
             />
           </FormControl>
 
-          <Stack direction='row' gap={4}>
+          <Stack
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              flexDirection: { xs: 'column', sm: 'row' },
+            }}
+            gap={4}
+          >
             <FormControl sx={{ flex: 1 }}>
               <FormHelperText
                 sx={{
@@ -225,8 +240,44 @@ const Form = ({
               color='#808191'
               sx={{ wordBreak: 'break-all' }}
             >
-              {propertyImage.map((image) => image.name).join(', ')}
+              {propertyImage
+                ? propertyImage.map((image) => image.name).join(', ')
+                : ''}
             </Typography>
+            <Stack
+              gap={{ xs: 1, sm: 2 }}
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                flexDirection: { xs: 'column', sm: 'row' },
+              }}
+            >
+              {backendImages?.length ? (
+                backendImages.map((image, index) => (
+                  <Stack direction='column' key={index}>
+                    <Close
+                      onClick={() => handleRemoveImage(image)}
+                      sx={{ color: '#11142d', cursor: 'pointer' }}
+                    />
+                    <img
+                      src={image}
+                      alt='Property'
+                      style={{
+                        borderRadius: '10px',
+                        maxHeight: '125px',
+                        maxWidth: '201px',
+                        width: '100%',
+                        height: '100%',
+                        marginTop: '5px',
+                        marginRight: '10px',
+                      }}
+                    />
+                  </Stack>
+                ))
+              ) : (
+                <></>
+              )}
+            </Stack>
           </Stack>
 
           <CustomButton
