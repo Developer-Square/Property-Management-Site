@@ -16,7 +16,7 @@ const CustomButton = ({
   return (
     <Button
       type={type === 'submit' ? 'submit' : 'button'}
-      disabled={!active}
+      disabled={active}
       sx={{
         flex: fullWidth ? 1 : 'unset',
         padding: '10px 15px',

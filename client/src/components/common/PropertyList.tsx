@@ -40,7 +40,7 @@ const PropertyList = ({
             title='Popular'
             backgroundColor={activeButton === 'Popular' ? '#475BE8' : '#F7F7F7'}
             color={activeButton === 'Popular' ? '#fcfcfc' : '#808191'}
-            active={properties.length > 0}
+            active={properties.length < 0}
             handleClick={() => handleSort('Popular')}
           />
           <CustomButton
@@ -49,14 +49,14 @@ const PropertyList = ({
               activeButton === 'Recommended' ? '#475BE8' : '#F7F7F7'
             }
             color={activeButton === 'Recommended' ? '#fcfcfc' : '#808191'}
-            active={properties.length > 0}
+            active={properties.length < 0}
             handleClick={() => handleSort('Recommended')}
           />
           <CustomButton
             title='Newest'
             backgroundColor={activeButton === 'Newest' ? '#475BE8' : '#F7F7F7'}
             color={activeButton === 'Newest' ? '#fcfcfc' : '#808191'}
-            active={properties.length > 0}
+            active={properties.length < 0}
             handleClick={() => handleSort('Newest')}
           />
         </Stack>

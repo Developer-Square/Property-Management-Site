@@ -4,24 +4,33 @@ import ReactApexChart from 'react-apexcharts';
 
 import { PieChartProps } from 'interfaces/home';
 
-const PieChart = ({ title, value, series, colors }: PieChartProps) => {
+const PieChart = ({
+  title,
+  value,
+  series,
+  colors,
+  location,
+}: PieChartProps) => {
   return (
     <Box
       id='pie-chart'
       flex={1}
       display='flex'
       bgcolor='#fcfcfc'
-      flexDirection='row'
+      flexDirection={location === 'agents' ? 'column' : 'row'}
       justifyContent='space-between'
       alignItems='center'
-      pl={3.5}
+      pl={location === 'agents' ? 0 : 3.5}
       py={2}
       gap={2}
       borderRadius='15px'
       minHeight='110px'
       width='fit-content'
     >
-      <Stack direction='column'>
+      <Stack
+        direction='column'
+        textAlign={location === 'agents' ? 'center' : 'initial'}
+      >
         <Typography fontSize={14} color='#808191'>
           {title}
         </Typography>
