@@ -13,6 +13,7 @@ import TotalRevenue from './charts/TotalRevenue';
 
 // agent
 import AgentCard from './agent/AgentCard';
+import { ProfileCard, DetailsCard } from './agent/AgentDetailsCards';
 
 // home
 import TopAgent from './home/TopAgent';
@@ -36,4 +37,6 @@ export {
   Filters,
   ImageViewer,
   PropertyList,
+  ProfileCard,
+  DetailsCard,
 };
