@@ -2,6 +2,10 @@
   font-family: 'Manrope', sans-serif !important;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 a {
   text-decoration: none !important;
 }

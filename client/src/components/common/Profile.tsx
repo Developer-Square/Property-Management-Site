@@ -25,13 +25,19 @@ const Profile = ({ type, name, avatar, email, properties }: ProfileProps) => {
             gap: 2.5,
           }}
         >
-          <img
-            src='https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80'
-            width={340}
-            height={320}
-            alt='abstract'
-            className='my_profile-bg'
-          />
+          <Box
+            sx={{
+              height: { xs: '162px', sm: '320px' },
+            }}
+          >
+            <img
+              src='https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80'
+              width={340}
+              height='100%'
+              alt='abstract'
+              className='my_profile-bg'
+            />
+          </Box>
           <Box
             flex={1}
             sx={{

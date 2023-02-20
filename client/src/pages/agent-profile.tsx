@@ -31,6 +31,8 @@ const AgentProfile = () => {
           flexDirection: { xs: 'column', sm: 'row' },
           gap: '20px',
           borderRadius: '15px',
+          width: '100%',
+          margin: '0 auto',
         }}
       >
         <ProfileCard

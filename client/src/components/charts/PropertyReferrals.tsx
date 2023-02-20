@@ -45,7 +45,7 @@ const PropertyReferrals = () => {
       p={4}
       bgcolor='#fcfcfc'
       id='chart'
-      minWidth={490}
+      minWidth={340}
       display='flex'
       flexDirection='column'
       borderRadius='15px'

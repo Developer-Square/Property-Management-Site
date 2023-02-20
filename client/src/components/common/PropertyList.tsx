@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
-import { ArrowForwardIosOutlined } from '@mui/icons-material';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 
 import CustomButton from './CustomButton';
 import { PropertyProps } from 'interfaces/common';
 import PropertyCard from './PropertyCard';
 import { shuffle } from 'utils/shuffle';
-import { isMobile } from 'react-device-detect';
 
 const PropertyList = ({
   type,
@@ -35,7 +33,7 @@ const PropertyList = ({
         <Typography fontSize={18} fontWeight={600} color='#11142D'>
           {type === 'home' ? 'Property List' : `${type} Properties`}
         </Typography>
-        <Stack gap={1} direction='row'>
+        <Stack gap={1} direction='row' flexWrap='wrap'>
           <CustomButton
             title='Popular'
             backgroundColor={activeButton === 'Popular' ? '#475BE8' : '#F7F7F7'}
@@ -53,11 +51,10 @@ const PropertyList = ({
             handleClick={() => handleSort('Recommended')}
           />
           <CustomButton
-            title='Newest'
-            backgroundColor={activeButton === 'Newest' ? '#475BE8' : '#F7F7F7'}
-            color={activeButton === 'Newest' ? '#fcfcfc' : '#808191'}
-            active={properties.length < 0}
-            handleClick={() => handleSort('Newest')}
+            title='View All'
+            backgroundColor='#475BE8'
+            color='#fcfcfc'
+            handleClick={() => navigate('/properties')}
           />
         </Stack>
       </Stack>
@@ -86,25 +83,6 @@ const PropertyList = ({
               photos={property.photos}
             />
           ))}
-          {!isMobile && (
-            <Box
-              sx={{
-                position: 'absolute',
-                right: '0',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                zIndex: 10,
-                cursor: 'pointer',
-              }}
-              onClick={() => navigate('/properties')}
-            >
-              <ArrowForwardIosOutlined
-                sx={{
-                  fontSize: '18px',
-                }}
-              />
-            </Box>
-          )}
         </Box>
       ) : (
         <Box>

@@ -13,7 +13,7 @@ function checkImage(url: any) {
 const InfoBar = ({ title, value }: { title: string; value: string }) => (
   <Stack
     sx={{
-      marginTop: '30px',
+      marginTop: { xs: '20px', sm: '30px' },
       display: 'flex',
       flexDirection: 'row',
       textAlign: 'left',
@@ -42,6 +42,7 @@ const SocialMediaInfo = ({
     justifyContent='space-between'
     marginTop='15px'
     textAlign='left'
+    alignItems='center'
   >
     <Box sx={{ display: 'flex', alignItems: 'center', width: '40%' }}>
       <Icon
@@ -80,8 +81,7 @@ const ProfileCard = ({
     }}
   >
     <img src={AgentProfileImg} alt='Agent Profile' />
-    <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
-      <div></div>
+    <Box sx={{ display: 'flex' }} gap='35px'>
       <img
         src={
           checkImage(avatar)
@@ -89,8 +89,8 @@ const ProfileCard = ({
             : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'
         }
         style={{
-          position: 'absolute',
-          top: '17%',
+          position: 'relative',
+          marginTop: '-20px',
           left: '7%',
           borderRadius: '50%',
         }}
@@ -98,7 +98,7 @@ const ProfileCard = ({
         height={100}
         alt='user_profile'
       />
-      <Stack direction='column' sx={{ marginTop: '10px', marginLeft: '70px' }}>
+      <Stack direction='column' sx={{ marginTop: '10px', marginLeft: '0px' }}>
         <Typography fontSize={16} fontWeight={600} color='#11142D'>
           {name}
         </Typography>
@@ -110,7 +110,7 @@ const ProfileCard = ({
     <Box
       sx={{
         position: 'relative',
-        marginTop: '25px',
+        marginTop: { xs: '15px', sm: '25px' },
         marginBottom: '34px',
         left: '7%',
       }}

@@ -13,6 +13,7 @@ const InfoBar = ({ icon, name }: InfoBarProps) => (
     gap={{ xs: 0.5, sm: 1 }}
     direction='row'
     alignItems='center'
+    flexWrap='wrap'
   >
     {icon}
     <Typography fontSize={{ xs: 12, sm: 14 }} color='#808191'>
@@ -53,7 +54,7 @@ const AgentCard = ({
     >
       <Box
         sx={{
-          height: { xs: '180px', sm: '230px' },
+          height: { xs: '155px', sm: '230px' },
         }}
       >
         <img
@@ -71,7 +72,7 @@ const AgentCard = ({
         direction='column'
         justifyContent='space-around'
         flex={1}
-        gap={{ xs: 4, sm: 2 }}
+        gap={{ xs: '10px', sm: 2 }}
       >
         <Stack direction='column' flexWrap='wrap'>
           <Typography
