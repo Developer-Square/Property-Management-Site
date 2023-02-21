@@ -6,6 +6,7 @@ import AgentProfileImg from './agent-profile.png';
 import Facebook from './Facebook.png';
 import Twitter from './Twitter.png';
 import Instagram from './Instagram.png';
+import CreateAgentImg from './create-agent.png';
 
 export {
   logo,
@@ -16,4 +17,5 @@ export {
   Facebook,
   Twitter,
   Instagram,
+  CreateAgentImg,
 };

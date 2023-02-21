@@ -14,6 +14,7 @@ import TotalRevenue from './charts/TotalRevenue';
 // agent
 import AgentCard from './agent/AgentCard';
 import { ProfileCard, DetailsCard } from './agent/AgentDetailsCards';
+import CreateAgentForm from './agent/CreateAgentForm';
 
 // home
 import TopAgent from './home/TopAgent';
@@ -39,4 +40,5 @@ export {
   PropertyList,
   ProfileCard,
   DetailsCard,
+  CreateAgentForm,
 };
