@@ -55,7 +55,7 @@ const TextInput = ({
 interface ICreateAgentForm {
   register: any;
   handleImageChange: (file: File) => void;
-  propertyImage?: { name: string; url: string }[];
+  propertyImage?: { name: string; url: string };
 }
 
 const CreateAgentForm = ({
@@ -153,9 +153,7 @@ const CreateAgentForm = ({
             color='#808191'
             sx={{ wordBreak: 'break-all' }}
           >
-            {propertyImage
-              ? propertyImage.map((image: any) => image.name).join(', ')
-              : ''}
+            {propertyImage?.name}
           </Typography>
 
           <Button

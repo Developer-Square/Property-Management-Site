@@ -1,4 +1,5 @@
 const User = require('../mongodb/models/user');
+const cloudinary = require('cloudinary').v2;
 
 const getAllUsers = async (req, res) => {
   try {
@@ -13,12 +14,38 @@ const getAllUsers = async (req, res) => {
 };
 const createUser = async (req, res) => {
   try {
-    const { email, name, avatar } = req.body;
+    const {
+      email,
+      name,
+      firstName,
+      lastName,
+      properties,
+      gender,
+      phoneNumber,
+      country,
+      avatar,
+      type,
+    } = req.body;
 
     const userExists = await User.findOne({ email });
 
     if (userExists) {
       return res.status(200).json(userExists);
+    }
+
+    if (type === 'agent') {
+      const photoUrl = await cloudinary.uploader.upload(avatar);
+      const newUser = await User.create({
+        email,
+        name: `${firstName} ${lastName}`,
+        properties,
+        phoneNumber,
+        gender,
+        country,
+        avatar: photoUrl.url,
+      });
+
+      return res.status(201).json(newUser);
     }
 
     const newUser = await User.create({

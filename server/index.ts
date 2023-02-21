@@ -15,6 +15,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/agents', userRouter);
 app.use('/api/v1/properties', propertyRouter);
 
 const port = process.env.PORT || 5000;

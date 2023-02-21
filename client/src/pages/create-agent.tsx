@@ -9,9 +9,10 @@ import { CreateAgentForm, CustomButton } from 'components';
 // Todo: Only admins can create agents
 // Hide create agent button from agents page
 const CreateAgent = () => {
-  const [propertyImage, setPropertyImage] = useState<
-    { name: string; url: string }[]
-  >([]);
+  const [propertyImage, setPropertyImage] = useState<{
+    name: string;
+    url: string;
+  }>({ name: '', url: '' });
   const {
     refineCore: { onFinish, formLoading },
     register,
@@ -28,14 +29,15 @@ const CreateAgent = () => {
       });
 
     reader(file).then((result: string) => {
-      setPropertyImage([...propertyImage, { name: file?.name, url: result }]);
+      setPropertyImage({ name: file?.name, url: result });
     });
   };
 
   const onFinishHandler = async (data: FieldValues) => {
-    if (!propertyImage.length) return alert('Please upload a property image');
+    if (propertyImage.name === '')
+      return alert('Please upload a property image');
 
-    await onFinish({ ...data, photos: propertyImage });
+    await onFinish({ ...data, avatar: propertyImage.url, type: 'agent' });
   };
   return (
     <Box>
