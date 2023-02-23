@@ -40,6 +40,7 @@ import {
 
 import 'index.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import EditAgent from 'pages/edit-agent';
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
@@ -155,6 +156,7 @@ function App() {
               list: Agents,
               show: AgentProfile,
               create: CreateAgent,
+              edit: EditAgent,
               icon: <PeopleAltOutlined />,
             },
             {

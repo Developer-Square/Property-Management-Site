@@ -1,4 +1,6 @@
 const User = require('../mongodb/models/user');
+const Property = require('../mongodb/models/property');
+const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 
 const getAllUsers = async (req, res) => {
@@ -12,6 +14,7 @@ const getAllUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 const createUser = async (req, res) => {
   try {
     const {
@@ -59,6 +62,7 @@ const createUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 const getUserInfoByID = async (req, res) => {
   try {
     const { id } = req.params;
@@ -75,5 +79,43 @@ const getUserInfoByID = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, createUser, getUserInfoByID };
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const userToDelete = await User.findOne({ _id: id }).populate(
+      'allProperties'
+    );
+
+    if (!userToDelete) throw new Error('Property not found!');
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    const properties = userToDelete.allProperties;
+
+    if (properties.length) {
+      properties.map(async (id) => {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        const propertyToDelete = await Property.findOne({ _id: id });
+
+        if (!propertyToDelete) throw new Error('Property not found!');
+
+        propertyToDelete.remove({ session });
+        await session.commitTransaction();
+      });
+    }
+
+    userToDelete.remove({ session });
+
+    await session.commitTransaction();
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getAllUsers, createUser, getUserInfoByID, deleteUser };
 export {};
