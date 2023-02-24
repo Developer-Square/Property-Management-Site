@@ -41,6 +41,7 @@ import {
 import 'index.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import EditAgent from 'pages/edit-agent';
+import Reviews from 'pages/reviews';
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
@@ -161,7 +162,7 @@ function App() {
             },
             {
               name: 'reviews',
-              list: Home,
+              list: Reviews,
               icon: <StarOutlineRounded />,
             },
             {

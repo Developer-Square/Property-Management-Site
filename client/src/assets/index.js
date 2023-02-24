@@ -7,6 +7,9 @@ import Facebook from './Facebook.png';
 import Twitter from './Twitter.png';
 import Instagram from './Instagram.png';
 import CreateAgentImg from './create-agent.png';
+import RyanProfile from './Ryan.jpeg';
+import LinusProfile from './Linus.jpg';
+import SophieProfile from './Sophie.jpeg';
 
 export {
   logo,
@@ -18,4 +21,7 @@ export {
   Twitter,
   Instagram,
   CreateAgentImg,
+  RyanProfile,
+  LinusProfile,
+  SophieProfile,
 };

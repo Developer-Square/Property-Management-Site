@@ -24,6 +24,9 @@ import TopAgent from './home/TopAgent';
 import PropertyDetailsAgent from './properties/PropertyDetailsAgent';
 import ImageViewer from './properties/ImageViewer';
 
+// review
+import ReviewCard from './reviews/ReviewCard';
+
 export {
   Profile,
   PropertyCard,
@@ -43,4 +46,5 @@ export {
   DetailsCard,
   CreateAgentForm,
   ImageView,
+  ReviewCard,
 };
