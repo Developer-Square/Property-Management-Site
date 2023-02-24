@@ -90,7 +90,7 @@ const CreateAgent = () => {
           }}
         >
           <Typography fontSize={18} fontWeight={600} color='#11142D'>
-            My Details
+            Agent Details
           </Typography>
           <CreateAgentForm
             register={register}

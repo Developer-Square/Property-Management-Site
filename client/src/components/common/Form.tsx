@@ -14,7 +14,7 @@ import {
 
 import { FormProps } from 'interfaces/common';
 import CustomButton from './CustomButton';
-import { Close } from '@mui/icons-material';
+import ImageView from './ImageView';
 
 const Form = ({
   type,
@@ -253,27 +253,10 @@ const Form = ({
               }}
             >
               {backendImages?.length ? (
-                backendImages.map((image, index) => (
-                  <Stack direction='column' key={index}>
-                    <Close
-                      onClick={() => handleRemoveImage(image)}
-                      sx={{ color: '#11142d', cursor: 'pointer' }}
-                    />
-                    <img
-                      src={image}
-                      alt='Property'
-                      style={{
-                        borderRadius: '10px',
-                        maxHeight: '125px',
-                        maxWidth: '201px',
-                        width: '100%',
-                        height: '100%',
-                        marginTop: '5px',
-                        marginRight: '10px',
-                      }}
-                    />
-                  </Stack>
-                ))
+                <ImageView
+                  backendImages={backendImages}
+                  handleRemoveImage={handleRemoveImage}
+                />
               ) : (
                 <></>
               )}

@@ -5,6 +5,7 @@ import Form from './common/Form';
 import Pagination from './common/Pagination';
 import Filters from './common/Filters';
 import PropertyList from './common/PropertyList';
+import ImageView from './common/ImageView';
 
 // charts
 import PieChart from './charts/PieChart';
@@ -41,4 +42,5 @@ export {
   ProfileCard,
   DetailsCard,
   CreateAgentForm,
+  ImageView,
 };

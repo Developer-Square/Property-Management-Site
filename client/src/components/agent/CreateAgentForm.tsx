@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SetStateAction } from 'react';
 
 import {
   FormControl,
@@ -11,6 +11,7 @@ import {
   Box,
   Typography,
 } from '@pankod/refine-mui';
+import ImageView from 'components/common/ImageView';
 
 const TextInput = ({
   title,
@@ -56,12 +57,16 @@ interface ICreateAgentForm {
   register: any;
   handleImageChange: (file: File) => void;
   propertyImage?: { name: string; url: string };
+  profileUrl?: string;
+  setProfileUrl?: React.Dispatch<SetStateAction<string>>;
 }
 
 const CreateAgentForm = ({
   register,
   propertyImage,
   handleImageChange,
+  profileUrl,
+  setProfileUrl,
 }: ICreateAgentForm) => {
   return (
     <form
@@ -73,16 +78,10 @@ const CreateAgentForm = ({
         gap: '20px',
       }}
     >
-      <Stack direction={{ xs: 'column', sm: 'row' }} gap='20px'>
+      <Stack width='100%'>
         <TextInput
-          title={'First Name'}
-          fieldValue={'firstName'}
-          register={register}
-          type='text'
-        />
-        <TextInput
-          title={'Last Name'}
-          fieldValue={'lastName'}
+          title={'Username'}
+          fieldValue={'name'}
           register={register}
           type='text'
         />
@@ -155,6 +154,15 @@ const CreateAgentForm = ({
           >
             {propertyImage?.name}
           </Typography>
+          {profileUrl?.length ? (
+            <ImageView
+              backendImages={[profileUrl]}
+              // @ts-ignore
+              handleRemoveImage={() => setProfileUrl('')}
+            />
+          ) : (
+            <></>
+          )}
 
           <Button
             component='label'
