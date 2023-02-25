@@ -3,6 +3,7 @@ const cors = require('cors');
 const connectToDatabase = require('./mongodb/connect');
 const userRouter = require('./routes/user.routes');
 const propertyRouter = require('./routes/property.routes');
+const reviewRouter = require('./routes/review.routes');
 
 require('dotenv').config();
 
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/agents', userRouter);
 app.use('/api/v1/properties', propertyRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 const port = process.env.PORT || 5000;
 
