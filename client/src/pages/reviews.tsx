@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@pankod/refine-mui';
 import { Pagination, ReviewCard } from 'components';
 import { useTable } from '@pankod/refine-core';
@@ -10,7 +10,7 @@ const NavItem = ({
 }: {
   title: string;
   active: string;
-  setNavItem: Dispatch<SetStateAction<string>>;
+  setNavItem: (status: string) => void;
 }) => (
   <Box
     sx={{
@@ -34,6 +34,7 @@ const NavItem = ({
 
 const Reviews = () => {
   const [navItem, setNavItem] = useState('all reviews');
+  const [filteredItems, setFilteredItems] = useState<any[]>([]);
 
   const {
     tableQueryResult: { data, isLoading, isError },
@@ -44,7 +45,23 @@ const Reviews = () => {
     setPageSize,
   } = useTable();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const allReviews: any[] = data?.data ?? [];
+
+  useEffect(() => {
+    if (allReviews.length) {
+      if (navItem === 'all reviews') {
+        setFilteredItems(allReviews);
+      } else {
+        const result = allReviews.filter((review) => review.status === navItem);
+        setFilteredItems(result);
+      }
+    }
+  }, [navItem, allReviews]);
+
+  const handleFilterReviews = (status: string) => {
+    setNavItem(status);
+  };
 
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error!</Typography>;
@@ -68,12 +85,24 @@ const Reviews = () => {
           },
         }}
       >
-        <NavItem title='All Reviews' active={navItem} setNavItem={setNavItem} />
-        <NavItem title='Published' active={navItem} setNavItem={setNavItem} />
-        <NavItem title='Deleted' active={navItem} setNavItem={setNavItem} />
+        <NavItem
+          title='All Reviews'
+          active={navItem}
+          setNavItem={handleFilterReviews}
+        />
+        <NavItem
+          title='Published'
+          active={navItem}
+          setNavItem={handleFilterReviews}
+        />
+        <NavItem
+          title='Deleted'
+          active={navItem}
+          setNavItem={handleFilterReviews}
+        />
       </Box>
       <Box sx={{ marginTop: '30px' }}>
-        {allReviews.map((review) => (
+        {filteredItems.map((review) => (
           <ReviewCard
             key={review._id}
             id={review._id}
@@ -81,6 +110,7 @@ const Reviews = () => {
             ratingValue={review.rating}
             name={review.name}
             comment={review.comment}
+            navItem={navItem}
           />
         ))}
       </Box>

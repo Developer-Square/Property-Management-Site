@@ -7,6 +7,7 @@ interface IReviewCardProps {
   ratingValue: number;
   name: string;
   comment: string;
+  navItem: string;
 }
 
 const ReviewCard = ({
@@ -15,6 +16,7 @@ const ReviewCard = ({
   ratingValue,
   name,
   comment,
+  navItem,
 }: IReviewCardProps) => {
   const [value, setValue] = useState(ratingValue);
 
@@ -109,36 +111,36 @@ const ReviewCard = ({
                 padding: '6px 10px',
                 textTransform: 'uppercase',
                 borderRadius: '15px',
-                border: '1px solid #475BE8',
+                border: `1px solid ${ratingValue >= 3 ? '#475BE8' : '#EB5757'}`,
                 fontSize: '12px',
-                color: '#475BE8',
+                color: `${ratingValue >= 3 ? '#475BE8' : '#EB5757'}`,
               }}
             >
-              Excellent
+              {ratingValue >= 3 ? 'Excellent' : 'Bad Service'}
             </Box>
             <Box
               sx={{
                 padding: '6px 10px',
                 textTransform: 'uppercase',
                 borderRadius: '15px',
-                border: '1px solid #475BE8',
+                border: `1px solid ${ratingValue >= 3 ? '#475BE8' : '#EB5757'}`,
                 fontSize: '12px',
-                color: '#475BE8',
+                color: `${ratingValue >= 3 ? '#475BE8' : '#EB5757'}`,
               }}
             >
-              Great
+              {ratingValue >= 3 ? 'Great' : 'Con-man'}
             </Box>
             <Box
               sx={{
                 padding: '6px 10px',
                 textTransform: 'uppercase',
                 borderRadius: '15px',
-                border: '1px solid #475BE8',
+                border: `1px solid ${ratingValue >= 3 ? '#475BE8' : '#EB5757'}`,
                 fontSize: '12px',
-                color: '#475BE8',
+                color: `${ratingValue >= 3 ? '#475BE8' : '#EB5757'}`,
               }}
             >
-              Best Service
+              {ratingValue >= 3 ? 'Best Service' : 'Too Expensive'}
             </Box>
           </Stack>
         </Box>
@@ -165,32 +167,36 @@ const ReviewCard = ({
               }}
             />
           </Stack>
-          <Stack direction='row' gap='10px' marginTop='15px'>
-            <Box
-              sx={{
-                padding: '10px 16px',
-                border: '1px solid #EB5757',
-                borderRadius: '18px',
-                color: '#EB5757',
-                fontSize: '12px',
-                cursor: 'pointer',
-              }}
-            >
-              Reject
-            </Box>
-            <Box
-              sx={{
-                padding: '10px 16px',
-                backgroundColor: '#2ED480',
-                borderRadius: '18px',
-                color: '#fcfcfc',
-                fontSize: '12px',
-                cursor: 'pointer',
-              }}
-            >
-              Approve
-            </Box>
-          </Stack>
+          {navItem !== 'deleted' && (
+            <Stack direction='row' gap='10px' marginTop='15px'>
+              <Box
+                sx={{
+                  padding: '10px 16px',
+                  border: '1px solid #EB5757',
+                  borderRadius: '18px',
+                  color: '#EB5757',
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                }}
+              >
+                {navItem === 'published' ? 'Unpublish' : 'Reject'}
+              </Box>
+              {navItem !== 'published' && (
+                <Box
+                  sx={{
+                    padding: '10px 16px',
+                    backgroundColor: '#2ED480',
+                    borderRadius: '18px',
+                    color: '#fcfcfc',
+                    fontSize: '12px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Approve
+                </Box>
+              )}
+            </Stack>
+          )}
         </Stack>
       </Stack>
     </Box>
