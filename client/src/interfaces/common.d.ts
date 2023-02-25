@@ -16,6 +16,8 @@ export interface ProfileProps {
   avatar: string;
   email: string;
   properties: Array | undefined;
+  country?: string;
+  phone?: string;
 }
 
 export interface PropertyProps {

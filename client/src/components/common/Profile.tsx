@@ -1,7 +1,12 @@
+/* eslint-disable no-restricted-globals */
 import { Email, Phone, Place } from '@mui/icons-material';
+import { useDelete, useLogout } from '@pankod/refine-core';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
+import { useNavigate } from '@pankod/refine-react-router-v6';
 
 import { ProfileProps } from 'interfaces/common';
+import { useState } from 'react';
+import EditPopover from './EditPopover';
 import PropertyList from './PropertyList';
 
 function checkImage(url: any) {
@@ -10,7 +15,41 @@ function checkImage(url: any) {
   return img.width !== 0 && img.height !== 0;
 }
 
-const Profile = ({ type, name, avatar, email, properties }: ProfileProps) => {
+const Profile = ({
+  type,
+  name,
+  avatar,
+  country,
+  email,
+  phone,
+  properties,
+}: ProfileProps) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const navigate = useNavigate();
+  const { mutate } = useDelete();
+  const { mutate: mutateLogout } = useLogout();
+
+  const user = localStorage.getItem('user') || '';
+  const userObj = JSON.parse(user);
+  const id = userObj.userid;
+
+  const open = Boolean(anchorEl);
+  const popoverId = open ? 'simple-popover' : undefined;
+
+  const handleUpdate = () => {
+    navigate(`/agents/edit/${id}`);
+  };
+  const handleDelete = () => {
+    const response = confirm('Are you sure you want to delete this agent?');
+
+    if (response) {
+      mutate({
+        resource: 'users',
+        id: id as string,
+      });
+      mutateLogout();
+    }
+  };
   return (
     <Box>
       <Typography fontSize={25} fontWeight={700} color='#11142D'>
@@ -62,7 +101,6 @@ const Profile = ({ type, name, avatar, email, properties }: ProfileProps) => {
                 alt='user_profile'
                 className='my_profile_user-img'
               />
-
               <Box
                 flex={1}
                 display='flex'
@@ -92,7 +130,7 @@ const Profile = ({ type, name, avatar, email, properties }: ProfileProps) => {
                     >
                       <Place sx={{ color: '#11142D' }} />
                       <Typography fontSize={14} color='#11142D'>
-                        Nairobi, Kenya
+                        {country}
                       </Typography>
                     </Box>
                   </Stack>
@@ -114,7 +152,7 @@ const Profile = ({ type, name, avatar, email, properties }: ProfileProps) => {
                       >
                         <Phone sx={{ color: '#11142D' }} />
                         <Typography fontSize={14} color='#11142D' noWrap>
-                          +254 712 345 678
+                          {phone}
                         </Typography>
                       </Box>
                     </Stack>
@@ -144,6 +182,14 @@ const Profile = ({ type, name, avatar, email, properties }: ProfileProps) => {
               </Box>
             </Box>
           </Box>
+          <EditPopover
+            popoverId={popoverId}
+            anchorEl={anchorEl}
+            setAnchorEl={setAnchorEl}
+            open={open}
+            handleUpdate={handleUpdate}
+            handleDelete={handleDelete}
+          />
         </Box>
       </Box>
       <PropertyList type={type} properties={properties} />

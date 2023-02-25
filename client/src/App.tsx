@@ -174,6 +174,7 @@ function App() {
               name: 'my-profile',
               options: { label: 'My Profile' },
               list: MyProfile,
+              edit: EditAgent,
               icon: <AccountCircleOutlined />,
             },
           ]}

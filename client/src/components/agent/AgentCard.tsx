@@ -1,18 +1,12 @@
 /* eslint-disable no-restricted-globals */
 import React from 'react';
-import {
-  Delete,
-  Edit,
-  EmailOutlined,
-  LocationCity,
-  Phone,
-  Place,
-} from '@mui/icons-material';
+import { EmailOutlined, LocationCity, Phone, Place } from '@mui/icons-material';
 import { useDelete, useGetIdentity } from '@pankod/refine-core';
-import { Box, Typography, Stack, Popover } from '@pankod/refine-mui';
+import { Box, Typography, Stack } from '@pankod/refine-mui';
 import { Link, useNavigate } from '@pankod/refine-react-router-v6';
 
 import { AgentCardProp, InfoBarProps } from 'interfaces/agent';
+import EditPopover from 'components/common/EditPopover';
 
 const InfoBar = ({ icon, name }: InfoBarProps) => (
   <Stack
@@ -121,67 +115,14 @@ const AgentCard = ({
             </Typography>
           </Stack>
           {currentUser.email !== email && (
-            <>
-              <span
-                id={popoverId}
-                style={{
-                  fontSize: '25px',
-                  cursor: 'pointer',
-                  padding: '0 5px 5px 5px',
-                }}
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-                  setAnchorEl(e.currentTarget)
-                }
-              >
-                ...
-              </span>
-
-              <Popover
-                id={popoverId}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-              >
-                <Stack
-                  direction='row'
-                  gap='8px'
-                  sx={{ padding: '10px', cursor: 'pointer' }}
-                  onClick={handleUpdate}
-                >
-                  <Edit
-                    sx={{
-                      fontSize: '20px',
-                      color: '#475BE8',
-                      fontWeight: 'bold',
-                    }}
-                  />
-                  <Typography fontSize={14} fontWeight={600} color='#475BE8'>
-                    Edit Profile
-                  </Typography>
-                </Stack>
-                <Stack
-                  direction='row'
-                  gap='8px'
-                  sx={{ padding: '10px', cursor: 'pointer' }}
-                  onClick={handleDelete}
-                >
-                  <Delete
-                    sx={{ fontSize: '20px', color: '#c00', fontWeight: 'bold' }}
-                  />
-                  <Typography fontSize={14} fontWeight={600} color='#c00'>
-                    Delete Profile
-                  </Typography>
-                </Stack>
-              </Popover>
-            </>
+            <EditPopover
+              popoverId={popoverId}
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
+              open={open}
+              handleUpdate={handleUpdate}
+              handleDelete={handleDelete}
+            />
           )}
         </Stack>
 

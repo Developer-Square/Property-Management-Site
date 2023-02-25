@@ -6,6 +6,7 @@ import Pagination from './common/Pagination';
 import Filters from './common/Filters';
 import PropertyList from './common/PropertyList';
 import ImageView from './common/ImageView';
+import EditPopover from './common/EditPopover';
 
 // charts
 import PieChart from './charts/PieChart';
@@ -47,4 +48,5 @@ export {
   CreateAgentForm,
   ImageView,
   ReviewCard,
+  EditPopover,
 };
