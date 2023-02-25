@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Box, Typography } from '@pankod/refine-mui';
-import { ReviewCard } from 'components';
+import { Pagination, ReviewCard } from 'components';
+import { useTable } from '@pankod/refine-core';
 
 const NavItem = ({
   title,
@@ -33,6 +34,20 @@ const NavItem = ({
 
 const Reviews = () => {
   const [navItem, setNavItem] = useState('all reviews');
+
+  const {
+    tableQueryResult: { data, isLoading, isError },
+    current,
+    setCurrent,
+    pageCount,
+    pageSize,
+    setPageSize,
+  } = useTable();
+
+  const allReviews: any[] = data?.data ?? [];
+
+  if (isLoading) return <Typography>Loading...</Typography>;
+  if (isError) return <Typography>Error!</Typography>;
   return (
     <Box>
       <Typography fontSize={25} fontWeight={700} color='#11142d'>
@@ -58,8 +73,28 @@ const Reviews = () => {
         <NavItem title='Deleted' active={navItem} setNavItem={setNavItem} />
       </Box>
       <Box sx={{ marginTop: '30px' }}>
-        <ReviewCard />
+        {allReviews.map((review) => (
+          <ReviewCard
+            key={review._id}
+            id={review._id}
+            profileUrl={review.avatar}
+            ratingValue={review.rating}
+            name={review.name}
+            comment={review.comment}
+          />
+        ))}
       </Box>
+      {allReviews.length !== 0 ? (
+        <Pagination
+          pageSize={pageSize}
+          pageCount={pageCount}
+          setPageSize={setPageSize}
+          current={current}
+          setCurrent={setCurrent}
+        />
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };

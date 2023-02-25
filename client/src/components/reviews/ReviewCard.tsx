@@ -1,10 +1,47 @@
+/* eslint-disable @typescript-eslint/no-redeclare */
 import { Box, Rating, Stack, Typography } from '@pankod/refine-mui';
 import React, { useState } from 'react';
+interface IReviewCardProps {
+  id: string;
+  profileUrl: string;
+  ratingValue: number;
+  name: string;
+  comment: string;
+}
 
-import { RyanProfile } from '../../assets';
+const ReviewCard = ({
+  profileUrl,
+  id,
+  ratingValue,
+  name,
+  comment,
+}: IReviewCardProps) => {
+  const [value, setValue] = useState(ratingValue);
 
-const ReviewCard = () => {
-  const [value, setValue] = useState(4);
+  // A function that returns a random date between two set dates
+  function randomDate(
+    start: Date,
+    end: Date,
+    startHour: number,
+    endHour: number
+  ) {
+    // @ts-ignore
+    var date = new Date(+start + Math.random() * (end - start));
+    var hour = (startHour + Math.random() * (endHour - startHour)) | 0;
+    date.setHours(hour);
+    return date.toString();
+  }
+
+  const timeString12hr = new Date(
+    '1970-01-01T' +
+      randomDate(new Date(2020, 0, 1), new Date(), 0, 24).slice(16, 24) +
+      'Z'
+  ).toLocaleTimeString('en-US', {
+    timeZone: 'UTC',
+    hour12: true,
+    hour: 'numeric',
+    minute: 'numeric',
+  });
   return (
     <Box
       sx={{
@@ -25,7 +62,7 @@ const ReviewCard = () => {
         sx={{ width: { xs: '100%', sm: '35%', xl: '25%' } }}
       >
         <img
-          src={RyanProfile}
+          src={profileUrl}
           alt='Profile'
           style={{
             width: '70px',
@@ -35,16 +72,17 @@ const ReviewCard = () => {
         />
         <Stack gap={0.5}>
           <Typography fontSize={14} color='#475BE8'>
-            #C01234
+            #{id.slice(0, 5).toUpperCase()}
           </Typography>
           <Typography fontSize={16} color='#11142d'>
-            Ryan Njoroge
+            {name}
           </Typography>
           <Typography fontSize={14} color='#808191'>
-            Join On 25-04-2022
+            Join On{' '}
+            {randomDate(new Date(2020, 0, 1), new Date(), 0, 24).slice(0, 15)}
           </Typography>
           <Typography fontSize={14} color='#808191'>
-            12:42 PM
+            {timeString12hr}
           </Typography>
         </Stack>
       </Stack>
@@ -63,9 +101,7 @@ const ReviewCard = () => {
           }}
         >
           <Typography fontSize={13} color='#808191'>
-            Friendly service Josh, Lunar and everyone at Just Property in
-            Hastings deserved a big Thank You from us for moving us from Jakarta
-            to Medan during the lockdown.
+            {comment}
           </Typography>
           <Stack direction='row' gap='10px' marginTop='15px'>
             <Box
@@ -116,7 +152,7 @@ const ReviewCard = () => {
         >
           <Stack direction='row'>
             <Typography fontSize={22} marginRight='10px' color='#11142d'>
-              5.0
+              {ratingValue.toFixed(1)}
             </Typography>
             <Rating
               name='simple-controlled'
