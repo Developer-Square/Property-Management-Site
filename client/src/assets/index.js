@@ -10,6 +10,9 @@ import CreateAgentImg from './create-agent.png';
 import RyanProfile from './Ryan.jpeg';
 import LinusProfile from './Linus.jpg';
 import SophieProfile from './Sophie.jpeg';
+import Property1 from './Property-1.webp';
+import Property2 from './Property-2.webp';
+import Property3 from './Property-3.webp';
 
 export {
   logo,
@@ -24,4 +27,7 @@ export {
   RyanProfile,
   LinusProfile,
   SophieProfile,
+  Property1,
+  Property2,
+  Property3,
 };

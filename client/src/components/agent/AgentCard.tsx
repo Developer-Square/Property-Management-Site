@@ -77,13 +77,14 @@ const AgentCard = ({
     >
       <Box
         sx={{
-          height: { xs: '155px', sm: '230px' },
+          height: { xs: '150px', sm: '193px' },
+          width: { xs: '170px', sm: '250px' },
         }}
       >
         <img
           src={avatar}
           alt='user'
-          width='auto'
+          width='100%'
           style={{
             borderRadius: 8,
             objectFit: 'cover',

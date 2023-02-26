@@ -42,6 +42,7 @@ import 'index.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import EditAgent from 'pages/edit-agent';
 import Reviews from 'pages/reviews';
+import Messages from 'pages/messages';
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
@@ -167,7 +168,7 @@ function App() {
             },
             {
               name: 'messages',
-              list: Home,
+              list: Messages,
               icon: <ChatBubbleOutline />,
             },
             {

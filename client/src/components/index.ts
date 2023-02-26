@@ -28,6 +28,11 @@ import ImageViewer from './properties/ImageViewer';
 // review
 import ReviewCard from './reviews/ReviewCard';
 
+// messages
+import MessagesList from './messages/MessagesList';
+import Text from './messages/Text';
+import MessageContent from './messages/MessageContent';
+
 export {
   Profile,
   PropertyCard,
@@ -49,4 +54,7 @@ export {
   ImageView,
   ReviewCard,
   EditPopover,
+  MessagesList,
+  Text,
+  MessageContent,
 };
