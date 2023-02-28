@@ -33,7 +33,7 @@ const Text = ({
   return (
     <Stack
       sx={{
-        padding: '20px 0px 20px 20px',
+        padding: { xs: '20px 20px 20px 0px', sm: '20px' },
         justifyContent: position === 'left' ? 'flex-start' : 'flex-end',
       }}
       direction='row'

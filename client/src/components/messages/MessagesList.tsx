@@ -27,14 +27,15 @@ const MessageProfile = ({
   <Box
     sx={{
       borderRadius: '6px',
-      padding: '15px',
+      padding: { xs: '18px', sm: '10px', lg: '15px' },
+      marginBottom: { xs: '10px', lg: 'initial' },
       display: 'flex',
       flexDirection: 'row',
       color: active ? '#fcfcfc' : '#808191',
       background: active ? '#475BE8' : '#fcfcfc',
     }}
   >
-    <Stack width='18%' direction='row'>
+    <Stack width={{ xs: '21%', sm: '32%', lg: '18%' }} direction='row'>
       <img
         src={avatar}
         alt='profile'
@@ -56,31 +57,46 @@ const MessageProfile = ({
         }}
       ></Box>
     </Stack>
-    <Stack width='62%' direction='column' gap='5px'>
-      <Typography fontSize={16} fontWeight={600}>
+    <Stack
+      width={{ xs: '61%', sm: '48%', lg: '62%' }}
+      direction='column'
+      gap='5px'
+    >
+      <Typography
+        fontSize={{ sm: 14, lg: 16 }}
+        fontWeight={600}
+        color={active ? '#fcfcfc' : '#11142d'}
+      >
         {name}
       </Typography>
-      <Typography fontSize={14}>{message.slice(0, 24) + '...'}</Typography>
+      <Typography fontSize={14}>{message.slice(0, 18) + '...'}</Typography>
     </Stack>
-    <Typography width='20%' textAlign='right' fontSize={16} fontWeight={600}>
+    <Typography
+      width={{ xs: '30%', sm: '20%', lg: '20%' }}
+      textAlign='right'
+      fontSize={{ sm: 13, lg: 16 }}
+      fontWeight={600}
+    >
       {time}
     </Typography>
   </Box>
 );
 
-const MessagesList = ({ users }: { users: any }) => {
+const MessagesList = ({
+  users,
+  handleScreenSwitch,
+}: {
+  users: any;
+  handleScreenSwitch: () => void;
+}) => {
   const [searchText, setSearchText] = useState('');
-
   return (
     <>
       <Stack
         direction='row'
         alignItems='center'
         sx={{
-          marginBottom: {
-            xs: '15px',
-            sm: '20px',
-          },
+          marginBottom: '20px',
           width: '100% !important',
           height: '56px',
         }}
@@ -100,20 +116,29 @@ const MessagesList = ({ users }: { users: any }) => {
           }}
         />
       </Stack>
-      {users?.length ? (
-        users.map((user: any, index: number) => (
-          <MessageProfile
-            key={user._id}
-            active={index === 0}
-            avatar={user.avatar}
-            name={user.name}
-            message={messages[index]}
-            time={timeString12hr()}
-          />
-        ))
-      ) : (
-        <></>
-      )}
+      <Box
+        sx={{
+          maxHeight: '620px',
+          height: '100%',
+          overflow: 'scroll',
+        }}
+        onClick={() => handleScreenSwitch()}
+      >
+        {users?.length ? (
+          users.map((user: any, index: number) => (
+            <MessageProfile
+              key={user._id}
+              active={index === 0}
+              avatar={user.avatar}
+              name={user.name}
+              message={messages[index]}
+              time={timeString12hr()}
+            />
+          ))
+        ) : (
+          <></>
+        )}
+      </Box>
     </>
   );
 };

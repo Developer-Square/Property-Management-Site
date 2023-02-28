@@ -54,7 +54,7 @@ const MessageContent = ({ users }: { users: any }) => {
       <Box
         sx={{
           borderRadius: '6px',
-          padding: '20px',
+          padding: { xs: '20px 20px 20px 0px', sm: '20px' },
           display: 'flex',
           flexDirection: 'row',
           color: '#808191',
@@ -62,7 +62,7 @@ const MessageContent = ({ users }: { users: any }) => {
           borderBottom: '1px solid #E4E4E4',
         }}
       >
-        <Stack width='8%' direction='row'>
+        <Stack width={{ xs: '20%', lg: '8%' }} direction='row'>
           <img
             src={users[0].avatar}
             alt='profile'
@@ -84,7 +84,7 @@ const MessageContent = ({ users }: { users: any }) => {
             }}
           ></Box>
         </Stack>
-        <Stack width='72%' direction='column' gap='5px'>
+        <Stack width={{ xs: '60%', lg: '72%' }} direction='column' gap='5px'>
           <Typography fontSize={16} fontWeight={600} color='#11142d'>
             {users[0].name}
           </Typography>
@@ -136,7 +136,7 @@ const MessageContent = ({ users }: { users: any }) => {
           Today
         </Typography>
       </Box>
-      <Box>
+      <Box sx={{ maxHeight: '600px', height: '100%', overflow: 'auto' }}>
         <Text position='left' users={users} message={messages[0]} />
         <Text position='right' users={users} message={messages[1]} />
         <Text position='left' users={users} message={messages[2]} />
@@ -146,7 +146,7 @@ const MessageContent = ({ users }: { users: any }) => {
       </Box>
       <Box
         sx={{
-          padding: '20px 0px 20px 20px',
+          padding: { xs: '20px 0px', sm: '20px' },
           marginTop: '30px',
           display: 'flex',
           flexDirection: 'row',

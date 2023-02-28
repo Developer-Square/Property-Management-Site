@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@pankod/refine-mui';
 import { useList } from '@pankod/refine-core';
 import { MessageContent, MessagesList } from 'components';
@@ -7,6 +7,22 @@ const Messages = () => {
   const { data, isLoading, isError } = useList({
     resource: 'users',
   });
+  const [showMessageContent, setShowMessageContent] = useState(true);
+  const [showMessageList, setShowMessageList] = useState(true);
+  const screenSize: number = window.innerWidth;
+
+  useEffect(() => {
+    if (screenSize <= 576) {
+      setShowMessageContent(false);
+    } else {
+      setShowMessageContent(true);
+    }
+  }, [screenSize]);
+
+  const handleScreenSwitch = () => {
+    setShowMessageContent((prevState) => !prevState);
+    setShowMessageList((prevState) => !prevState);
+  };
 
   const users = data?.data || [];
 
@@ -28,12 +44,28 @@ const Messages = () => {
           gap: '40px',
         }}
       >
-        <Box sx={{ width: '30%' }}>
-          <MessagesList users={users} />
-        </Box>
-        <Box sx={{ width: '70%', borderLeft: '1px solid #E4E4E4' }}>
-          <MessageContent users={users} />
-        </Box>
+        {showMessageList ? (
+          <Box sx={{ width: { xs: '100%', sm: '30%' } }}>
+            <MessagesList
+              users={users}
+              handleScreenSwitch={handleScreenSwitch}
+            />
+          </Box>
+        ) : (
+          <></>
+        )}
+        {showMessageContent ? (
+          <Box
+            sx={{
+              width: { xs: '100%', sm: '70%' },
+              borderLeft: { xs: 'none', sm: '1px solid #E4E4E4' },
+            }}
+          >
+            <MessageContent users={users} />
+          </Box>
+        ) : (
+          <></>
+        )}
       </Box>
     </Box>
   );
