@@ -4,6 +4,7 @@ import { AttachFile, EmojiEmotions, Send, Videocam } from '@mui/icons-material';
 
 import { Text } from 'components';
 import { Property1, Property2 } from 'assets';
+import { useNavigate } from '@pankod/refine-react-router-v6';
 
 const messages: string[] = [
   'Hola, soy Ryan. Mucho gusto',
@@ -48,7 +49,14 @@ const TextImage = ({
   );
 };
 
-const MessageContent = ({ users }: { users: any }) => {
+const MessageContent = ({
+  users,
+  location,
+}: {
+  users: any;
+  location?: string;
+}) => {
+  const navigate = useNavigate();
   return (
     <>
       <Box
@@ -62,7 +70,10 @@ const MessageContent = ({ users }: { users: any }) => {
           borderBottom: '1px solid #E4E4E4',
         }}
       >
-        <Stack width={{ xs: '20%', lg: '8%' }} direction='row'>
+        <Stack
+          width={{ xs: '20%', lg: location === 'video-call' ? '20%' : '8%' }}
+          direction='row'
+        >
           <img
             src={users[0].avatar}
             alt='profile'
@@ -84,7 +95,11 @@ const MessageContent = ({ users }: { users: any }) => {
             }}
           ></Box>
         </Stack>
-        <Stack width={{ xs: '60%', lg: '72%' }} direction='column' gap='5px'>
+        <Stack
+          width={{ xs: '60%', lg: location === 'video-call' ? '60%' : '72%' }}
+          direction='column'
+          gap='5px'
+        >
           <Typography fontSize={16} fontWeight={600} color='#11142d'>
             {users[0].name}
           </Typography>
@@ -100,7 +115,10 @@ const MessageContent = ({ users }: { users: any }) => {
             gap: '45px',
           }}
         >
-          <Videocam sx={{ cursor: 'pointer' }} />
+          <Videocam
+            sx={{ cursor: 'pointer' }}
+            onClick={() => navigate('/messages/show')}
+          />
           <Box
             sx={{
               display: 'flex',

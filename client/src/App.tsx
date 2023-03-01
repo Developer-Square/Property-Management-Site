@@ -43,6 +43,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import EditAgent from 'pages/edit-agent';
 import Reviews from 'pages/reviews';
 import Messages from 'pages/messages';
+import VideoCall from 'pages/video-call';
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
@@ -169,6 +170,7 @@ function App() {
             {
               name: 'messages',
               list: Messages,
+              show: VideoCall,
               icon: <ChatBubbleOutline />,
             },
             {

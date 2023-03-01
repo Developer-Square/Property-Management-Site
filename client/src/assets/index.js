@@ -13,6 +13,15 @@ import SophieProfile from './Sophie.jpeg';
 import Property1 from './Property-1.webp';
 import Property2 from './Property-2.webp';
 import Property3 from './Property-3.webp';
+import VideoCallImg from './video-call.png';
+import EndCall from './Endcall.png';
+import FullScreen from './Fullscreen.png';
+import Mute from './Mute.png';
+import Settings from './Settings.png';
+import Time from './Time.png';
+import Video from './Video.png';
+import Volume from './Volume.png';
+import OtherPerson from './OtherPerson.png';
 
 export {
   logo,
@@ -30,4 +39,13 @@ export {
   Property1,
   Property2,
   Property3,
+  VideoCallImg,
+  EndCall,
+  FullScreen,
+  Mute,
+  Settings,
+  Time,
+  Video,
+  Volume,
+  OtherPerson,
 };
