@@ -1,15 +1,31 @@
 import React from 'react';
 import { useGetIdentity } from '@pankod/refine-core';
-import { AppBar, Stack, Toolbar, Typography, Avatar } from '@pankod/refine-mui';
+import { AppBar, Stack, Toolbar, Avatar, Typography } from '@pankod/refine-mui';
+
+import ProfilePopover from './ProfilePopover';
+import { NotificationsOutlined } from '@mui/icons-material';
+import NotificationPopover from './NotificationPopover';
 // import { DarkModeOutlined, LightModeOutlined } from '@mui/icons-material';
 
 // import { ColorModeContext } from 'contexts';
 
 export const Header: React.FC = () => {
   // const { mode, setMode } = useContext(ColorModeContext);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
+  const [notificationAnchor, setNotificationAnchor] =
+    React.useState<HTMLButtonElement | null>(null);
 
   const { data: user } = useGetIdentity();
   const shouldRenderHeader = true; // since we are using the dark/light toggle; we don't need to check if user is logged in or not.
+
+  const open = Boolean(anchorEl);
+  const openNotifications = Boolean(notificationAnchor);
+  const popoverId = open ? 'simple-popover' : undefined;
+  const notificationsPopoverId = openNotifications
+    ? 'simple-popover'
+    : undefined;
 
   return shouldRenderHeader ? (
     <AppBar
@@ -27,26 +43,49 @@ export const Header: React.FC = () => {
           justifyContent='flex-end'
           alignItems='center'
         >
-          {/* <IconButton
-            onClick={() => {
-              setMode();
-            }}
-          >
-            {mode === "dark" ? <LightModeOutlined /> : <DarkModeOutlined />}
-          </IconButton> */}
           <Stack
             direction='row'
             gap='16px'
             alignItems='center'
             justifyContent='center'
+            marginRight={{ sm: '20px' }}
           >
-            {user?.name ? (
-              <Typography variant='subtitle2'>{user?.name}</Typography>
-            ) : null}
+            <NotificationsOutlined
+              id={notificationsPopoverId}
+              onClick={(e: any) => setNotificationAnchor(e.currentTarget)}
+              sx={{ cursor: 'pointer' }}
+            />
+            <NotificationPopover
+              popoverId={notificationsPopoverId}
+              open={openNotifications}
+              anchorEl={notificationAnchor}
+              setAnchorEl={setNotificationAnchor}
+            />
             {user?.avatar ? (
-              <Avatar src={user?.avatar} alt={user?.name} />
+              <Stack direction='row' sx={{ cursor: 'pointer' }} gap='10px'>
+                <Avatar
+                  id={popoverId}
+                  onClick={(e: any) => setAnchorEl(e.currentTarget)}
+                  src={user?.avatar}
+                  alt={user?.name}
+                />
+                <Stack direction='column'>
+                  <Typography fontSize={14} fontWeight={600}>
+                    {user?.name}
+                  </Typography>
+                  <Typography fontSize={14} color='#808191'>
+                    Admin
+                  </Typography>
+                </Stack>
+              </Stack>
             ) : null}
           </Stack>
+          <ProfilePopover
+            popoverId={popoverId}
+            open={open}
+            anchorEl={anchorEl}
+            setAnchorEl={setAnchorEl}
+          />
         </Stack>
       </Toolbar>
     </AppBar>

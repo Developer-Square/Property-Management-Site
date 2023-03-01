@@ -22,6 +22,9 @@ import Time from './Time.png';
 import Video from './Video.png';
 import Volume from './Volume.png';
 import OtherPerson from './OtherPerson.png';
+import Calendar from './calendar.png';
+import NotificationSettings from './notification-settings.png';
+import Payment from './payment.png';
 
 export {
   logo,
@@ -48,4 +51,7 @@ export {
   Video,
   Volume,
   OtherPerson,
+  Calendar,
+  NotificationSettings,
+  Payment,
 };
