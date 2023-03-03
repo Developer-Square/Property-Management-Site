@@ -1,12 +1,68 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLogin } from '@pankod/refine-core';
-import { Container, Box } from '@pankod/refine-mui';
+import {
+  Container,
+  Box,
+  TextField,
+  FormHelperText,
+  FormControl,
+} from '@pankod/refine-mui';
 
 import { CredentialResponse } from '../interfaces/google';
-import { DarkLogo } from 'assets';
+import { useForm } from '@pankod/refine-react-hook-form';
+import { LoginComponent } from 'components';
+import SignupComponent from 'components/login-and-signup/SignupComponent';
+
+export const TextInput = ({
+  title,
+  type,
+  fieldValue,
+  register,
+  placeholder,
+}: {
+  title: string;
+  type: string;
+  fieldValue: string;
+  register: any;
+  placeholder?: string;
+}) => (
+  <FormControl
+    sx={{
+      flex: 1,
+      width: '100%',
+    }}
+  >
+    <FormHelperText
+      sx={{
+        fontWeight: 500,
+        margin: '10px 0',
+        fontSize: 16,
+        color: '#11142d',
+      }}
+    >
+      {title}
+    </FormHelperText>
+    <TextField
+      type={type}
+      required
+      id='outlined-basic'
+      color='info'
+      variant='outlined'
+      placeholder={placeholder}
+      {...register(fieldValue, { required: true })}
+    />
+  </FormControl>
+);
 
 export const Login: React.FC = () => {
   const { mutate: login } = useLogin<CredentialResponse>();
+  const [form, setForm] = useState('login');
+
+  const {
+    refineCore: { formLoading },
+    register,
+    handleSubmit,
+  } = useForm();
 
   const GoogleButton = (): JSX.Element => {
     const divRef = useRef<HTMLDivElement>(null);
@@ -39,6 +95,8 @@ export const Login: React.FC = () => {
     return <div ref={divRef} />;
   };
 
+  useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), []);
+
   return (
     <Box
       component='div'
@@ -49,33 +107,39 @@ export const Login: React.FC = () => {
     >
       <Container
         component='main'
-        maxWidth='xs'
         sx={{
           display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          height: '100vh',
+          flexDirection: { xs: 'column', sm: 'row' },
+          height: '100%',
         }}
       >
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'center',
             flexDirection: 'column',
             alignItems: 'center',
+            marginTop: '85px',
           }}
         >
-          <div>
-            <img
-              src={DarkLogo}
-              style={{ height: '70px', width: '70px', borderRadius: '50%' }}
-              alt='Techive Logo'
+          {form === 'signin' ? (
+            <LoginComponent
+              GoogleButton={GoogleButton}
+              register={register}
+              handleSubmit={handleSubmit}
+              formLoading={formLoading}
+              setForm={setForm}
             />
-          </div>
-          <Box mt={4}>
-            <GoogleButton />
-          </Box>
+          ) : (
+            <SignupComponent
+              GoogleButton={GoogleButton}
+              register={register}
+              handleSubmit={handleSubmit}
+              formLoading={formLoading}
+              setForm={setForm}
+            />
+          )}
         </Box>
+        <Box></Box>
       </Container>
     </Box>
   );

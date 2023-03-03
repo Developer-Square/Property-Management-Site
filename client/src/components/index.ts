@@ -33,6 +33,9 @@ import MessagesList from './messages/MessagesList';
 import Text from './messages/Text';
 import MessageContent from './messages/MessageContent';
 
+// login and signup
+import LoginComponent from './login-and-signup/LoginComponent';
+
 export {
   Profile,
   PropertyCard,
@@ -57,4 +60,5 @@ export {
   MessagesList,
   Text,
   MessageContent,
+  LoginComponent,
 };
