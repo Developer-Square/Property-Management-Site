@@ -7,6 +7,9 @@ import {
   TotalRevenue,
   PropertyReferrals,
   PropertyList,
+  TopAgent,
+  LatestSales,
+  Customer,
 } from 'components';
 
 const Home = () => {
@@ -57,6 +60,16 @@ const Home = () => {
       >
         <TotalRevenue />
         <PropertyReferrals />
+      </Stack>
+      <Stack
+        mt='25px'
+        gap={4}
+        flexWrap='wrap'
+        direction={{ xs: 'column', sm: 'row' }}
+      >
+        <TopAgent />
+        <Customer />
+        <LatestSales />
       </Stack>
       {!isLoading ? (
         <PropertyList type='home' properties={allProperties} />

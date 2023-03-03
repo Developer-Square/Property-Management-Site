@@ -11,6 +11,7 @@ const CustomButton = ({
   fullWidth,
   active,
   icon,
+  border,
   handleClick,
 }: CustomButtonProps) => {
   return (
@@ -26,6 +27,7 @@ const CustomButton = ({
         fontSize: 16,
         fontWeight: 600,
         gap: '10px',
+        border,
         textTransform: 'capitalize',
         '&:hover': {
           opacity: 0.9,

@@ -5,6 +5,7 @@ export interface CustomButtonProps {
   backgroundColor: string;
   color: string;
   fullWidth?: boolean;
+  border?: string;
   icon?: ReactNode;
   disabled?: boolean;
   handleClick?: () => void;

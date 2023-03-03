@@ -1,40 +1,57 @@
 import React from 'react';
 import { Box, Typography, Stack } from '@pankod/refine-mui';
-import { useNavigate } from '@pankod/refine-react-router-v6';
 import { useList } from '@pankod/refine-core';
 
-import CustomButton from 'components/common/CustomButton';
-
-const TopAgentItem = ({ name, avatar }: { name: string; avatar: string }) => (
+const LatestSale = ({
+  name,
+  avatar,
+  price,
+  location,
+}: {
+  name: string;
+  avatar: string;
+  location: string;
+  price: string;
+}) => (
   <Stack direction='row' marginBottom='15px'>
     <img
       src={avatar}
       alt='Profile'
       style={{
-        borderRadius: '15px',
+        borderRadius: '6px',
         marginRight: '12px',
-        width: '40px',
-        height: '40px',
+        width: '49px',
+        height: '49px',
       }}
     />
-    <Stack direction='column'>
-      <Typography fontSize={14} fontWeight={500} color='#11142d'>
-        {name}
-      </Typography>
-      <Typography fontSize={12} fontWeight={400} color='#808191'>
-        Real Estate Agent
+    <Stack
+      direction='row'
+      sx={{
+        width: '100%',
+      }}
+      justifyContent='space-between'
+    >
+      <Stack direction='column'>
+        <Typography fontSize={14} fontWeight={500} color='#11142d'>
+          {name}
+        </Typography>
+        <Typography fontSize={12} fontWeight={400} color='#808191'>
+          {location}
+        </Typography>
+      </Stack>
+      <Typography fontSize={16} fontWeight={600} color='#2F80ED'>
+        Ksh {price}
       </Typography>
     </Stack>
   </Stack>
 );
 
-const TopAgent = () => {
-  const navigate = useNavigate();
+const LatestSales = () => {
   const { data, isLoading, isError } = useList({
-    resource: 'users',
+    resource: 'properties',
   });
 
-  const allAgents: any[] = data?.data ?? [];
+  const allProperties: any[] = data?.data ?? [];
 
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error!</Typography>;
@@ -56,15 +73,8 @@ const TopAgent = () => {
           marginBottom='20px'
         >
           <Typography fontSize={18} fontWeight={600} color='#11142d'>
-            Top Agent
+            Latest Sales
           </Typography>
-          <CustomButton
-            title='View all'
-            color='#808191'
-            backgroundColor='transparent'
-            border='1px solid #E4E4E4'
-            handleClick={() => navigate('/agents')}
-          />
         </Stack>
         <Box
           sx={{
@@ -73,12 +83,14 @@ const TopAgent = () => {
             overflow: 'scroll',
           }}
         >
-          {allAgents.length ? (
-            allAgents.map((agent) => (
-              <TopAgentItem
-                key={agent._id}
-                name={agent.name}
-                avatar={agent.avatar}
+          {allProperties.length ? (
+            allProperties.map((property) => (
+              <LatestSale
+                key={property._id}
+                name={property.title}
+                avatar={property.photos[0]}
+                price={property.price}
+                location={property.location}
               />
             ))
           ) : (
@@ -90,4 +102,4 @@ const TopAgent = () => {
   );
 };
 
-export default TopAgent;
+export default LatestSales;

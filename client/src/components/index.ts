@@ -20,6 +20,8 @@ import CreateAgentForm from './agent/CreateAgentForm';
 
 // home
 import TopAgent from './home/TopAgent';
+import LatestSales from './home/LatestSales';
+import Customer from './home/Customer';
 
 // properties
 import PropertyDetailsAgent from './properties/PropertyDetailsAgent';
@@ -61,4 +63,6 @@ export {
   Text,
   MessageContent,
   LoginComponent,
+  LatestSales,
+  Customer,
 };

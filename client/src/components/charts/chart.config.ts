@@ -11,6 +11,83 @@ export const TotalRevenueSeries = [
   },
 ];
 
+export const TotalCutomersSeries = [
+  {
+    name: 'First Quater',
+    data: [93, 15, 57, 85],
+  },
+  {
+    name: 'Second Quater',
+    data: [12, 50, 72, 94],
+  },
+];
+
+export const NewCustomersSeries = [
+  {
+    name: 'First Quater',
+    data: [33, 55, 87, 95],
+  },
+  {
+    name: 'Second Quater',
+    data: [12, 40, 22, 54],
+  },
+];
+
+export const TotalCustomersOptions: ApexOptions = {
+  chart: {
+    type: 'line',
+    toolbar: {
+      show: false,
+    },
+  },
+  colors: ['#475BE8', '#2ED480'],
+  dataLabels: {
+    enabled: false,
+  },
+  grid: {
+    show: false,
+  },
+  stroke: {
+    curve: 'straight',
+  },
+  xaxis: {
+    labels: {
+      show: false,
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+  },
+  yaxis: {
+    show: false,
+    labels: {
+      show: false,
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+    crosshairs: {
+      show: false,
+    },
+    tooltip: {
+      enabled: false,
+    },
+  },
+  fill: {
+    opacity: 1,
+  },
+  legend: {
+    position: 'top',
+    horizontalAlign: 'right',
+  },
+};
+
 export const TotalRevenueOptions: ApexOptions = {
   chart: {
     type: 'bar',
