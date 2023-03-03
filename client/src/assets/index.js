@@ -25,6 +25,7 @@ import OtherPerson from './OtherPerson.png';
 import Calendar from './calendar.png';
 import NotificationSettings from './notification-settings.png';
 import Payment from './payment.png';
+import LoginSignup from './login-signup.png';
 
 export {
   logo,
@@ -54,4 +55,5 @@ export {
   Calendar,
   NotificationSettings,
   Payment,
+  LoginSignup,
 };

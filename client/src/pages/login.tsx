@@ -12,6 +12,7 @@ import { CredentialResponse } from '../interfaces/google';
 import { useForm } from '@pankod/refine-react-hook-form';
 import { LoginComponent } from 'components';
 import SignupComponent from 'components/login-and-signup/SignupComponent';
+import { LoginSignup } from 'assets';
 
 export const TextInput = ({
   title,
@@ -28,7 +29,6 @@ export const TextInput = ({
 }) => (
   <FormControl
     sx={{
-      flex: 1,
       width: '100%',
     }}
   >
@@ -105,20 +105,22 @@ export const Login: React.FC = () => {
         backgroundSize: 'cover',
       }}
     >
-      <Container
+      <Box
         component='main'
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
-          height: '100%',
+          padding: { sm: '0px !important' },
         }}
       >
         <Box
           sx={{
             display: 'flex',
+            flex: 1,
             flexDirection: 'column',
             alignItems: 'center',
             marginTop: '85px',
+            padding: '0 20px',
           }}
         >
           {form === 'signin' ? (
@@ -139,8 +141,22 @@ export const Login: React.FC = () => {
             />
           )}
         </Box>
-        <Box></Box>
-      </Container>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            flex: { xs: 1, lg: 2 },
+          }}
+        >
+          <img
+            src={LoginSignup}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+            alt='login-signup'
+          />
+        </Box>
+      </Box>
     </Box>
   );
 };

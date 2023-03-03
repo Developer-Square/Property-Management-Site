@@ -18,7 +18,6 @@ const CustomButton = ({
       type={type === 'submit' ? 'submit' : 'button'}
       disabled={active}
       sx={{
-        flex: fullWidth ? 1 : 'unset',
         padding: '10px 15px',
         width: fullWidth ? '100%' : 'fit-content',
         minWidth: 130,
@@ -32,6 +31,7 @@ const CustomButton = ({
           opacity: 0.9,
           backgroundColor,
         },
+        height: '46px',
       }}
       onClick={handleClick}
     >

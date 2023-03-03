@@ -19,7 +19,16 @@ const LoginComponent = ({
   setForm: React.Dispatch<SetStateAction<string>>;
 }) => {
   return (
-    <>
+    <Box
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+        maxWidth: { lg: '362px' },
+      }}
+    >
       <Typography fontSize={37} fontWeight={700} color='#11142D'>
         Welcome Back
       </Typography>
@@ -97,7 +106,7 @@ const LoginComponent = ({
           Sign up
         </span>
       </Typography>
-    </>
+    </Box>
   );
 };
 
