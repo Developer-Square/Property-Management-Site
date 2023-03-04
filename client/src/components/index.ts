@@ -7,6 +7,7 @@ import Filters from './common/Filters';
 import PropertyList from './common/PropertyList';
 import ImageView from './common/ImageView';
 import EditPopover from './common/EditPopover';
+import SearchField from './common/SearchField';
 
 // charts
 import PieChart from './charts/PieChart';
@@ -65,4 +66,5 @@ export {
   LoginComponent,
   LatestSales,
   Customer,
+  SearchField,
 };

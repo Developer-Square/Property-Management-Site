@@ -1,10 +1,16 @@
 import React, { useMemo } from 'react';
-import { Add, Search } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
 import { useTable } from '@pankod/refine-core';
-import { Box, Stack, TextField, Typography } from '@pankod/refine-mui';
+import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 
-import { PropertyCard, CustomButton, Pagination, Filters } from 'components';
+import {
+  PropertyCard,
+  CustomButton,
+  Pagination,
+  Filters,
+  SearchField,
+} from 'components';
 
 const AllProperties = () => {
   const navigate = useNavigate();
@@ -79,38 +85,12 @@ const AllProperties = () => {
           alignItems: 'center',
         }}
       >
-        <Stack
-          direction='row'
-          alignItems='center'
-          sx={{
-            minWidth: '169px',
-            height: '43px',
-            width: '100% !important',
-            flex: 1,
-          }}
-          className='filter'
-        >
-          <Search sx={{ marginRight: '5px' }} />
-          <TextField
-            fullWidth
-            id='outlined-basic'
-            color='info'
-            variant='outlined'
-            value={currentFilterValues.title}
-            onChange={(e: any) => {
-              setFilters([
-                {
-                  field: 'title',
-                  operator: 'contains',
-                  value: e.target.value ? e.target.value : undefined,
-                },
-              ]);
-            }}
-            className='search-input'
-            placeholder='Enter an address or city...'
-            sx={{ marginRight: '15px' }}
-          />
-        </Stack>
+        <SearchField
+          field='title'
+          placeholder='Enter an address or city...'
+          currentFilterValues={currentFilterValues}
+          setFilters={setFilters}
+        />
         <Filters
           defaultValue='for-sale'
           style={{

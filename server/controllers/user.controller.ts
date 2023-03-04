@@ -5,9 +5,20 @@ const cloudinary = require('cloudinary').v2;
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({})
-      .limit(req.query._end)
-      .skip(req.query._start);
+    const query = {};
+    const { _end, _start, name_like = '' } = req.query;
+
+    if (name_like !== '') {
+      // @ts-ignore
+      query.name = { $regex: name_like, $options: 'i' };
+    }
+
+    const count = await Property.countDocuments({ query });
+
+    const users = await User.find(query).limit(_end).skip(_start);
+
+    res.header('x-total-count', count);
+    res.header('Access-Control-Expose-Headers', 'x-total-count');
 
     res.status(200).json(users);
   } catch (error) {

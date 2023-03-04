@@ -1,18 +1,35 @@
-import React from 'react';
-import { useList } from '@pankod/refine-core';
+import React, { useMemo } from 'react';
+import { useTable } from '@pankod/refine-core';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import { Add } from '@mui/icons-material';
 
-import { AgentCard, CustomButton } from 'components';
+import { AgentCard, CustomButton, Pagination, SearchField } from 'components';
 
 const Agents = () => {
-  const { data, isLoading, isError } = useList({
-    resource: 'users',
-  });
+  const {
+    tableQueryResult: { data, isLoading, isError },
+    current,
+    setCurrent,
+    pageCount,
+    pageSize,
+    setPageSize,
+    filters,
+    setFilters,
+  } = useTable();
   const navigate = useNavigate();
 
   const allAgents: any[] = data?.data ?? [];
+
+  const currentFilterValues = useMemo(() => {
+    const logicalFilters = filters.flatMap((item) =>
+      'field' in item ? item : []
+    );
+
+    return {
+      name: logicalFilters.find((item) => item.field === 'name')?.value || '',
+    };
+  }, [filters]);
 
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error!</Typography>;
@@ -35,6 +52,26 @@ const Agents = () => {
       <Box
         sx={{
           marginTop: '20px',
+          backgroundColor: '#fcfcfc',
+          padding: '15px',
+          borderRadius: '15px',
+          height: 'fit-content',
+          display: 'flex',
+          alignItems: 'center',
+          maxWidth: '405px',
+        }}
+      >
+        <SearchField
+          field='name'
+          placeholder='Search agents...'
+          currentFilterValues={currentFilterValues}
+          setFilters={setFilters}
+        />
+      </Box>
+
+      <Box
+        sx={{
+          marginTop: '20px',
           display: 'flex',
           flexWrap: 'wrap',
           gap: '20px',
@@ -52,6 +89,17 @@ const Agents = () => {
           />
         ))}
       </Box>
+      {allAgents.length !== 0 ? (
+        <Pagination
+          pageSize={pageSize}
+          pageCount={pageCount}
+          setPageSize={setPageSize}
+          current={current}
+          setCurrent={setCurrent}
+        />
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };
