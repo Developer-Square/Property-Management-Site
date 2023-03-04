@@ -4,6 +4,7 @@ import { convertString } from 'utils/convertString';
 
 interface IProps {
   defaultValue: string;
+  margin: string;
   style: any;
   menuItems: string[];
   label?: string;
@@ -15,12 +16,22 @@ const Filters = ({
   defaultValue,
   style,
   menuItems,
+  margin,
   label,
   onChange,
   type,
 }: IProps) => {
   return (
-    <FormControl fullWidth sx={{ marginRight: '30px' }}>
+    <FormControl
+      fullWidth
+      sx={{
+        marginRight: '15px',
+        marginTop: { xs: margin, sm: '0px' },
+        flex: 1,
+        minWidth: '169px',
+      }}
+      className='filter'
+    >
       {label ? (
         <InputLabel id='demo-simple-select-label'>Price</InputLabel>
       ) : (

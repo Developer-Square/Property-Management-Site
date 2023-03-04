@@ -69,7 +69,7 @@ export const Header: React.FC = () => {
                   src={user?.avatar}
                   alt={user?.name}
                 />
-                <Stack direction='column'>
+                <Stack direction='column' display={{ xs: 'none', sm: 'flex' }}>
                   <Typography fontSize={14} fontWeight={600}>
                     {user?.name}
                   </Typography>

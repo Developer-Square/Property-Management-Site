@@ -17,7 +17,7 @@ const Myprofile = () => {
   if (isError) return <Typography>Error!</Typography>;
 
   return (
-    <Box mt={{ xs: '45px', sm: '0px' }}>
+    <Box mt={{ xs: '45px', lg: '0px' }}>
       <Profile
         type='My'
         name={myProfile.name}

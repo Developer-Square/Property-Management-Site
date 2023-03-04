@@ -4,7 +4,6 @@ import { Typography, Box, Stack, Rating } from '@pankod/refine-mui';
 import { useDelete, useGetIdentity, useShow } from '@pankod/refine-core';
 import { useParams, useNavigate } from '@pankod/refine-react-router-v6';
 import {
-  AddBoxRounded,
   ArrowBackIosOutlined,
   BalconyOutlined,
   BathtubOutlined,
@@ -62,7 +61,7 @@ const PropertyDetails = () => {
 
   return (
     <Box
-      mt={{ xs: '45px', sm: '0px' }}
+      mt={{ xs: '45px', lg: '0px' }}
       sx={{
         borderRadius: '15px',
         padding: '20px',

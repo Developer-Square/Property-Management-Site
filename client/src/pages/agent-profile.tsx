@@ -19,7 +19,7 @@ const AgentProfile = () => {
   if (isError) return <Typography>Error!</Typography>;
 
   return (
-    <Box mt={{ xs: '45px', sm: '0px' }}>
+    <Box mt={{ xs: '45px', lg: '0px' }}>
       <Typography fontSize={25} fontWeight={700} color='#11142d'>
         Agent Details
       </Typography>

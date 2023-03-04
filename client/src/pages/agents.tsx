@@ -18,7 +18,7 @@ const Agents = () => {
   if (isError) return <Typography>Error!</Typography>;
 
   return (
-    <Box mt={{ xs: '45px', sm: '0px' }}>
+    <Box mt={{ xs: '45px', lg: '0px' }}>
       <Stack direction='row' justifyContent='space-between'>
         <Typography fontSize={25} fontWeight={700} color='#11142d'>
           Agents List
@@ -33,8 +33,8 @@ const Agents = () => {
       </Stack>
 
       <Box
-        mt='20px'
         sx={{
+          marginTop: '20px',
           display: 'flex',
           flexWrap: 'wrap',
           gap: '20px',

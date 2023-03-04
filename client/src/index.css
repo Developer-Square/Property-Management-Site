@@ -26,17 +26,18 @@ a {
 }
 
 .search-input > div > input {
-  height: 8px;
+  height: 10px;
   border-radius: 8px;
 }
 
 .search-input > div > select {
-  height: 8px;
   border-radius: 8px;
 }
 
-.search-input > div > input {
-  height: 100%;
+@media only screen and (max-width: 450px) {
+  .filter {
+    min-width: 140px !important;
+  }
 }
 
 @media only screen and (max-width: 576px) {

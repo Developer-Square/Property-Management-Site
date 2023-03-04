@@ -49,7 +49,7 @@ const AllProperties = () => {
   if (isError) return <Typography>Error!</Typography>;
 
   return (
-    <Box mt={{ xs: '45px', sm: '0px' }}>
+    <Box mt={{ xs: '45px', lg: '0px' }}>
       <Stack direction='row' justifyContent='space-between' alignItems='center'>
         <Typography fontSize={25} fontWeight={700} color='#11142d'>
           Propery List
@@ -67,94 +67,90 @@ const AllProperties = () => {
         sx={{
           marginTop: '20px',
           backgroundColor: '#fcfcfc',
-          padding: '10px',
+          padding: '15px',
           borderRadius: '15px',
           height: 'fit-content',
+          display: 'flex',
+          flexDirection: {
+            xs: 'row',
+            sm: 'row',
+          },
+          flexWrap: 'wrap',
+          alignItems: 'center',
         }}
       >
         <Stack
-          sx={{
-            flexDirection: {
-              xs: 'column',
-              sm: 'row',
-            },
-          }}
+          direction='row'
           alignItems='center'
+          sx={{
+            minWidth: '169px',
+            height: '43px',
+            width: '100% !important',
+            flex: 1,
+          }}
+          className='filter'
         >
-          <Stack
-            direction='row'
-            alignItems='center'
-            sx={{
-              marginBottom: {
-                xs: '15px',
-                sm: '0px',
-              },
-              width: '100% !important',
+          <Search sx={{ marginRight: '5px' }} />
+          <TextField
+            fullWidth
+            id='outlined-basic'
+            color='info'
+            variant='outlined'
+            value={currentFilterValues.title}
+            onChange={(e: any) => {
+              setFilters([
+                {
+                  field: 'title',
+                  operator: 'contains',
+                  value: e.target.value ? e.target.value : undefined,
+                },
+              ]);
             }}
-          >
-            <Search sx={{ marginRight: '5px' }} />
-            <TextField
-              fullWidth
-              id='outlined-basic'
-              color='info'
-              variant='outlined'
-              value={currentFilterValues.title}
-              onChange={(e: any) => {
-                setFilters([
-                  {
-                    field: 'title',
-                    operator: 'contains',
-                    value: e.target.value ? e.target.value : undefined,
-                  },
-                ]);
-              }}
-              className='search-input'
-              placeholder='Enter an address or city...'
-              sx={{ marginRight: '30px' }}
-            />
-          </Stack>
-          <Filters
-            defaultValue='for-sale'
-            style={{
-              height: '43px',
-              marginBottom: {
-                xs: '15px',
-                sm: '0px',
-              },
-            }}
-            type='propertyStatus'
-            onChange={setFilters}
-            menuItems={['For Sale', 'For Rent']}
-          />
-          <Filters
-            defaultValue='apartment'
-            style={{
-              height: '43px',
-            }}
-            type='propertyType'
-            onChange={setFilters}
-            menuItems={[
-              'Apartment',
-              'Villa',
-              'FarmHouse',
-              'Condos',
-              'Townhouse',
-              'Duplex',
-              'Studio',
-              'Chalet',
-            ]}
-          />
-          <Filters
-            defaultValue='high-to-low'
-            style={{
-              height: '43px',
-            }}
-            type='price'
-            label='Price'
-            onChange={toggleSort}
-            menuItems={['High to Low', 'Low to High']}
+            className='search-input'
+            placeholder='Enter an address or city...'
+            sx={{ marginRight: '15px' }}
           />
         </Stack>
+        <Filters
+          defaultValue='for-sale'
+          style={{
+            height: '43px',
+          }}
+          margin='0px'
+          type='propertyStatus'
+          onChange={setFilters}
+          menuItems={['For Sale', 'For Rent']}
+        />
+        <Filters
+          defaultValue='apartment'
+          style={{
+            height: '43px',
+          }}
+          margin='20px'
+          type='propertyType'
+          onChange={setFilters}
+          menuItems={[
+            'Apartment',
+            'Villa',
+            'FarmHouse',
+            'Condos',
+            'Townhouse',
+            'Duplex',
+            'Studio',
+            'Chalet',
+          ]}
+        />
+        <Filters
+          defaultValue='high-to-low'
+          style={{
+            height: '43px',
+          }}
+          margin='20px'
+          type='price'
+          label='Price'
+          onChange={toggleSort}
+          menuItems={['High to Low', 'Low to High']}
+        />
       </Box>
 
       <Box
