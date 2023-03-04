@@ -1,3 +1,5 @@
+/* eslint-disable react/style-prop-object */
+/* eslint-disable jsx-a11y/iframe-has-title */
 import React from 'react';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { ChatBubble, Place, Delete, Edit, Phone } from '@mui/icons-material';
@@ -108,13 +110,15 @@ const PropertyDetailsAgent = ({
       </Stack>
 
       <Stack>
-        <img
-          src='https://serpmedia.org/scigen/images/googlemaps-nyc-standard.png?crc=3787557525'
-          alt='Google Map'
+        <iframe
+          src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d255282.35853727176!2d36.707308948466846!3d-1.3028617924598906!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1172d84d49a7%3A0xf7cf0254b297924c!2sNairobi!5e0!3m2!1sen!2ske!4v1677905339381!5m2!1sen!2ske'
           width='100%'
-          height={306}
-          style={{ borderRadius: 10, objectFit: 'cover' }}
-        />
+          height='306'
+          style={{ border: 0, borderRadius: 10 }}
+          allowFullScreen={false}
+          loading='lazy'
+          referrerPolicy='no-referrer-when-downgrade'
+        ></iframe>
       </Stack>
 
       <Box>

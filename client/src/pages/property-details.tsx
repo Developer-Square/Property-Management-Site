@@ -3,7 +3,19 @@ import React, { useMemo } from 'react';
 import { Typography, Box, Stack, Rating } from '@pankod/refine-mui';
 import { useDelete, useGetIdentity, useShow } from '@pankod/refine-core';
 import { useParams, useNavigate } from '@pankod/refine-react-router-v6';
-import { ArrowBackIosOutlined, Place } from '@mui/icons-material';
+import {
+  AddBoxRounded,
+  ArrowBackIosOutlined,
+  BalconyOutlined,
+  BathtubOutlined,
+  BedOutlined,
+  GpsFixedOutlined,
+  KitchenOutlined,
+  LocalParkingOutlined,
+  Place,
+  SmokingRoomsOutlined,
+  WifiOutlined,
+} from '@mui/icons-material';
 import { ImageViewer, PropertyDetailsAgent } from 'components';
 
 const checkImage = (url: any) => {
@@ -149,6 +161,86 @@ const PropertyDetails = () => {
                   ) : (
                     <></>
                   )}
+                </Stack>
+              </Box>
+            </Stack>
+
+            <Stack direction='column' mt='20px'>
+              <Typography
+                mb='20px'
+                fontSize={18}
+                fontWeight={500}
+                color='#11142D'
+              >
+                Facility
+              </Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: {
+                    xs: 'repeat(3, 1fr)',
+                    sm: 'repeat(4, 1fr)',
+                  },
+                }}
+              >
+                <Stack direction='row' gap='7px'>
+                  <BedOutlined />
+                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                    4 Beds
+                  </Typography>
+                </Stack>
+                <Stack direction='row' gap='7px'>
+                  <BathtubOutlined />
+                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                    2 Baths
+                  </Typography>
+                </Stack>
+                <Stack direction='row' gap='7px'>
+                  <GpsFixedOutlined />
+                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                    28M Area
+                  </Typography>
+                </Stack>
+                <Stack direction='row' gap='7px' mt={{ xs: '10px', sm: '0px' }}>
+                  <SmokingRoomsOutlined />
+                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                    Smoking Area
+                  </Typography>
+                </Stack>
+              </Box>
+              <Box
+                sx={{
+                  display: 'grid',
+                  marginTop: '20px',
+                  gridTemplateColumns: {
+                    xs: 'repeat(3, 1fr)',
+                    sm: 'repeat(4, 1fr)',
+                  },
+                }}
+              >
+                <Stack direction='row' gap='7px'>
+                  <KitchenOutlined />
+                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                    Kitchen
+                  </Typography>
+                </Stack>
+                <Stack direction='row' gap='7px'>
+                  <BalconyOutlined />
+                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                    Balcony
+                  </Typography>
+                </Stack>
+                <Stack direction='row' gap='7px'>
+                  <WifiOutlined />
+                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                    Wifi
+                  </Typography>
+                </Stack>
+                <Stack direction='row' gap='7px' mt={{ xs: '10px', sm: '0px' }}>
+                  <LocalParkingOutlined />
+                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                    Parking
+                  </Typography>
                 </Stack>
               </Box>
             </Stack>
