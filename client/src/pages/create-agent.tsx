@@ -40,7 +40,7 @@ const CreateAgent = () => {
     await onFinish({ ...data, avatar: propertyImage.url, type: 'agent' });
   };
   return (
-    <Box>
+    <Box mt={{ xs: '45px', sm: '0px' }}>
       <Typography fontSize={25} fontWeight={700} color='#11142d'>
         Add New Agent
       </Typography>

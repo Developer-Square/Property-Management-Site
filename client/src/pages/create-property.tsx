@@ -3,6 +3,7 @@ import { useGetIdentity } from '@pankod/refine-core';
 import { FieldValues, useForm } from '@pankod/refine-react-hook-form';
 
 import { Form } from 'components';
+import { Box } from '@pankod/refine-mui';
 
 const CreateProperty = () => {
   const { data: user } = useGetIdentity();
@@ -35,16 +36,18 @@ const CreateProperty = () => {
   };
 
   return (
-    <Form
-      type='Create'
-      register={register}
-      onFinish={onFinish}
-      formLoading={formLoading}
-      handleSubmit={handleSubmit}
-      propertyImage={propertyImage}
-      handleImageChange={handleImageChange}
-      onFinishHandler={onFinishHandler}
-    />
+    <Box mt={{ xs: '45px', sm: '0px' }}>
+      <Form
+        type='Create'
+        register={register}
+        onFinish={onFinish}
+        formLoading={formLoading}
+        handleSubmit={handleSubmit}
+        propertyImage={propertyImage}
+        handleImageChange={handleImageChange}
+        onFinishHandler={onFinishHandler}
+      />
+    </Box>
   );
 };
 

@@ -20,7 +20,7 @@ const Home = () => {
   const allProperties = data?.data ?? [];
 
   return (
-    <Box>
+    <Box mt={{ xs: '45px', sm: '0px' }}>
       <Typography fontSize={25} fontWeight={700} color='#11142d'>
         Dashboard
       </Typography>

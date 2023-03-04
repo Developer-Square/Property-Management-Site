@@ -9,6 +9,7 @@ const messages: string[] = [
   'Quiero vivir con mis perros y gatos en mi casa grande',
   'Amo el anime',
   'Me encanta ir la gimnasio',
+  'Hola mi nombre es Ryan Njoroge',
 ];
 
 const MessageProfile = ({

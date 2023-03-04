@@ -2,7 +2,7 @@ import React from 'react';
 import { useGetIdentity, useOne } from '@pankod/refine-core';
 
 import { Profile } from 'components';
-import { Typography } from '@pankod/refine-mui';
+import { Box, Typography } from '@pankod/refine-mui';
 
 const Myprofile = () => {
   const { data: user } = useGetIdentity();
@@ -17,15 +17,17 @@ const Myprofile = () => {
   if (isError) return <Typography>Error!</Typography>;
 
   return (
-    <Profile
-      type='My'
-      name={myProfile.name}
-      email={myProfile.email}
-      avatar={myProfile.avatar}
-      country={myProfile.country || 'Kenya'}
-      phone={myProfile.phoneNumber || '+254 7934 134 313'}
-      properties={myProfile.allProperties}
-    />
+    <Box mt={{ xs: '45px', sm: '0px' }}>
+      <Profile
+        type='My'
+        name={myProfile.name}
+        email={myProfile.email}
+        avatar={myProfile.avatar}
+        country={myProfile.country || 'Kenya'}
+        phone={myProfile.phoneNumber || '+254 7934 134 313'}
+        properties={myProfile.allProperties}
+      />
+    </Box>
   );
 };
 

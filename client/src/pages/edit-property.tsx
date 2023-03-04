@@ -3,6 +3,7 @@ import { useGetIdentity } from '@pankod/refine-core';
 import { FieldValues, useForm } from '@pankod/refine-react-hook-form';
 import Form from 'components/common/Form';
 import { useParams } from '@pankod/refine-react-router-v6';
+import { Box } from '@pankod/refine-mui';
 
 const EditProperty = () => {
   const { data: user } = useGetIdentity();
@@ -56,17 +57,19 @@ const EditProperty = () => {
   };
 
   return (
-    <Form
-      type='Edit'
-      register={register}
-      onFinish={onFinish}
-      formLoading={formLoading}
-      handleSubmit={handleSubmit}
-      handleImageChange={handleImageChange}
-      onFinishHandler={onFinishHandler}
-      backendImages={backendImages}
-      setBackendImages={setBackendImages}
-    />
+    <Box mt={{ xs: '45px', sm: '0px' }}>
+      <Form
+        type='Edit'
+        register={register}
+        onFinish={onFinish}
+        formLoading={formLoading}
+        handleSubmit={handleSubmit}
+        handleImageChange={handleImageChange}
+        onFinishHandler={onFinishHandler}
+        backendImages={backendImages}
+        setBackendImages={setBackendImages}
+      />
+    </Box>
   );
 };
 

@@ -49,7 +49,7 @@ const AllProperties = () => {
   if (isError) return <Typography>Error!</Typography>;
 
   return (
-    <Box>
+    <Box mt={{ xs: '45px', sm: '0px' }}>
       <Stack direction='row' justifyContent='space-between' alignItems='center'>
         <Typography fontSize={25} fontWeight={700} color='#11142d'>
           Propery List

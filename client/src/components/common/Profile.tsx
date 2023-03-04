@@ -108,13 +108,25 @@ const Profile = ({
                 justifyContent='space-between'
                 gap='30px'
               >
-                <Stack direction='column'>
-                  <Typography fontSize={22} fontWeight={600} color='#11142D'>
-                    {name}
-                  </Typography>
-                  <Typography fontSize={16} color='#808191'>
-                    Real estate Agent
-                  </Typography>
+                <Stack direction='row' justifyContent='space-between'>
+                  <Stack direction='column'>
+                    <Typography fontSize={22} fontWeight={600} color='#11142D'>
+                      {name}
+                    </Typography>
+                    <Typography fontSize={16} color='#808191'>
+                      Real estate Agent
+                    </Typography>
+                  </Stack>
+                  <Box display={{ xs: 'block', sm: 'none' }}>
+                    <EditPopover
+                      popoverId={popoverId}
+                      anchorEl={anchorEl}
+                      setAnchorEl={setAnchorEl}
+                      open={open}
+                      handleUpdate={handleUpdate}
+                      handleDelete={handleDelete}
+                    />
+                  </Box>
                 </Stack>
 
                 <Stack direction='column' gap='30px'>
@@ -182,14 +194,16 @@ const Profile = ({
               </Box>
             </Box>
           </Box>
-          <EditPopover
-            popoverId={popoverId}
-            anchorEl={anchorEl}
-            setAnchorEl={setAnchorEl}
-            open={open}
-            handleUpdate={handleUpdate}
-            handleDelete={handleDelete}
-          />
+          <Box display={{ xs: 'none', sm: 'block' }}>
+            <EditPopover
+              popoverId={popoverId}
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
+              open={open}
+              handleUpdate={handleUpdate}
+              handleDelete={handleDelete}
+            />
+          </Box>
         </Box>
       </Box>
       <PropertyList type={type} properties={properties} />

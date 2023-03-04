@@ -36,7 +36,7 @@ const VideoCall = () => {
   return (
     <Box
       sx={{
-        marginTop: '30px',
+        marginTop: { xs: '45px', sm: '30px' },
         padding: '20px',
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },

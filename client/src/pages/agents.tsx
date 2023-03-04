@@ -18,7 +18,7 @@ const Agents = () => {
   if (isError) return <Typography>Error!</Typography>;
 
   return (
-    <Box>
+    <Box mt={{ xs: '45px', sm: '0px' }}>
       <Stack direction='row' justifyContent='space-between'>
         <Typography fontSize={25} fontWeight={700} color='#11142d'>
           Agents List

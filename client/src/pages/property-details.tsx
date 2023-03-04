@@ -50,6 +50,7 @@ const PropertyDetails = () => {
 
   return (
     <Box
+      mt={{ xs: '45px', sm: '0px' }}
       sx={{
         borderRadius: '15px',
         padding: '20px',

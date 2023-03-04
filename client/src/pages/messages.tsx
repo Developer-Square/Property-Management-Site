@@ -29,7 +29,7 @@ const Messages = () => {
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error!</Typography>;
   return (
-    <Box>
+    <Box mt={{ xs: '45px', sm: '0px' }}>
       <Typography fontSize={25} fontWeight={700} color='#11142d'>
         Messages
       </Typography>
