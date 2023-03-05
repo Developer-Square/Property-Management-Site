@@ -3,9 +3,10 @@ import { Email, Phone, Place } from '@mui/icons-material';
 import { useDelete, useLogout } from '@pankod/refine-core';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
+import { ColorModeContext } from 'contexts';
 
 import { ProfileProps } from 'interfaces/common';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import EditPopover from './EditPopover';
 import PropertyList from './PropertyList';
 
@@ -28,6 +29,7 @@ const Profile = ({
   const navigate = useNavigate();
   const { mutate } = useDelete();
   const { mutate: mutateLogout } = useLogout();
+  const { mode } = useContext(ColorModeContext);
 
   const user = localStorage.getItem('user') || '';
   const userObj = JSON.parse(user);
@@ -52,11 +54,20 @@ const Profile = ({
   };
   return (
     <Box>
-      <Typography fontSize={25} fontWeight={700} color='#11142D'>
+      <Typography
+        fontSize={25}
+        fontWeight={700}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         {type} Profile
       </Typography>
 
-      <Box mt='20px' borderRadius='15px' padding='20px' bgcolor='#FCFCFC'>
+      <Box
+        mt='20px'
+        borderRadius='15px'
+        padding='20px'
+        bgcolor={mode === 'light' ? '#fcfcfc' : '#1A1D1F'}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -110,7 +121,11 @@ const Profile = ({
               >
                 <Stack direction='row' justifyContent='space-between'>
                   <Stack direction='column'>
-                    <Typography fontSize={22} fontWeight={600} color='#11142D'>
+                    <Typography
+                      fontSize={22}
+                      fontWeight={600}
+                      color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                    >
                       {name}
                     </Typography>
                     <Typography fontSize={16} color='#808191'>
@@ -140,8 +155,13 @@ const Profile = ({
                       alignItems='center'
                       gap='10px'
                     >
-                      <Place sx={{ color: '#11142D' }} />
-                      <Typography fontSize={14} color='#11142D'>
+                      <Place
+                        sx={{ color: mode === 'light' ? '#11142d' : '#EFEFEF' }}
+                      />
+                      <Typography
+                        fontSize={14}
+                        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                      >
                         {country}
                       </Typography>
                     </Box>
@@ -162,8 +182,16 @@ const Profile = ({
                         alignItems='center'
                         gap='10px'
                       >
-                        <Phone sx={{ color: '#11142D' }} />
-                        <Typography fontSize={14} color='#11142D' noWrap>
+                        <Phone
+                          sx={{
+                            color: mode === 'light' ? '#11142d' : '#EFEFEF',
+                          }}
+                        />
+                        <Typography
+                          fontSize={14}
+                          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                          noWrap
+                        >
                           {phone}
                         </Typography>
                       </Box>
@@ -183,8 +211,15 @@ const Profile = ({
                         alignItems='center'
                         gap='10px'
                       >
-                        <Email sx={{ color: '#11142D' }} />
-                        <Typography fontSize={14} color='#11142D'>
+                        <Email
+                          sx={{
+                            color: mode === 'light' ? '#11142d' : '#EFEFEF',
+                          }}
+                        />
+                        <Typography
+                          fontSize={14}
+                          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                        >
                           {email}
                         </Typography>
                       </Box>
