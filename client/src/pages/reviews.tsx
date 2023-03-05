@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Typography } from '@pankod/refine-mui';
 import { Pagination, ReviewCard } from 'components';
 import { useTable } from '@pankod/refine-core';
+import { ColorModeContext } from 'contexts';
 
 const NavItem = ({
   title,
@@ -44,6 +45,7 @@ const Reviews = () => {
     pageSize,
     setPageSize,
   } = useTable();
+  const { mode } = useContext(ColorModeContext);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const allReviews: any[] = data?.data ?? [];
@@ -67,14 +69,18 @@ const Reviews = () => {
   if (isError) return <Typography>Error!</Typography>;
   return (
     <Box mt={{ xs: '45px', lg: '0px' }}>
-      <Typography fontSize={25} fontWeight={700} color='#11142d'>
+      <Typography
+        fontSize={25}
+        fontWeight={700}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         Review List
       </Typography>
 
       <Box
         sx={{
           marginTop: '20px',
-          backgroundColor: '#fcfcfc',
+          backgroundColor: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
           borderRadius: '15px',
           height: '56px',
           display: 'flex',
@@ -111,6 +117,7 @@ const Reviews = () => {
             name={review.name}
             comment={review.comment}
             navItem={navItem}
+            mode={mode}
           />
         ))}
       </Box>

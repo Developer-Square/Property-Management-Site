@@ -9,6 +9,7 @@ interface IReviewCardProps {
   name: string;
   comment: string;
   navItem: string;
+  mode: string;
 }
 
 const ReviewCard = ({
@@ -18,6 +19,7 @@ const ReviewCard = ({
   name,
   comment,
   navItem,
+  mode,
 }: IReviewCardProps) => {
   const [value, setValue] = useState(ratingValue);
   return (
@@ -25,7 +27,7 @@ const ReviewCard = ({
       sx={{
         padding: '20px',
         marginBottom: '30px',
-        background: '#fcfcfc',
+        background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
         borderRadius: '10px',
         display: 'flex',
         flexDirection: {
@@ -52,7 +54,10 @@ const ReviewCard = ({
           <Typography fontSize={14} color='#475BE8'>
             #{id.slice(0, 5).toUpperCase()}
           </Typography>
-          <Typography fontSize={16} color='#11142d'>
+          <Typography
+            fontSize={16}
+            color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+          >
             {name}
           </Typography>
           <Typography fontSize={14} color='#808191'>
@@ -129,7 +134,11 @@ const ReviewCard = ({
           }}
         >
           <Stack direction='row'>
-            <Typography fontSize={22} marginRight='10px' color='#11142d'>
+            <Typography
+              fontSize={22}
+              marginRight='10px'
+              color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+            >
               {ratingValue.toFixed(1)}
             </Typography>
             <Rating
