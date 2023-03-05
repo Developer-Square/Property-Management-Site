@@ -1,4 +1,4 @@
-import React, { SetStateAction } from 'react';
+import React, { SetStateAction, useContext } from 'react';
 import { Box } from '@mui/system';
 import {
   ArrowBackIosNewOutlined,
@@ -6,6 +6,7 @@ import {
 } from '@mui/icons-material';
 import { MenuItem, Select } from '@pankod/refine-mui';
 import { isMobile } from 'react-device-detect';
+import { ColorModeContext } from 'contexts';
 
 const PageNumber = ({
   selected,
@@ -47,6 +48,8 @@ const Pagination = ({
   setPageSize,
   pageCount,
 }: IPaginationProps) => {
+  const { mode } = useContext(ColorModeContext);
+
   return (
     <Box
       id='pagination'
@@ -55,9 +58,10 @@ const Pagination = ({
         display: 'flex',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        background: '#fcfcfc',
+        background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
         width: 'fit-content',
         padding: '10px',
+        borderRadius: '6px',
         marginLeft: 'auto',
       }}
     >

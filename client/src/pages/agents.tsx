@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useTable } from '@pankod/refine-core';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import { Add } from '@mui/icons-material';
 
 import { AgentCard, CustomButton, Pagination, SearchField } from 'components';
+import { ColorModeContext } from 'contexts';
 
 const Agents = () => {
   const {
@@ -18,6 +19,7 @@ const Agents = () => {
     setFilters,
   } = useTable();
   const navigate = useNavigate();
+  const { mode } = useContext(ColorModeContext);
 
   const allAgents: any[] = data?.data ?? [];
 
@@ -37,7 +39,11 @@ const Agents = () => {
   return (
     <Box mt={{ xs: '45px', lg: '0px' }}>
       <Stack direction='row' justifyContent='space-between'>
-        <Typography fontSize={25} fontWeight={700} color='#11142d'>
+        <Typography
+          fontSize={25}
+          fontWeight={700}
+          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+        >
           Agents List
         </Typography>
         <CustomButton
@@ -52,7 +58,7 @@ const Agents = () => {
       <Box
         sx={{
           marginTop: '20px',
-          backgroundColor: '#fcfcfc',
+          backgroundColor: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
           padding: '15px',
           borderRadius: '15px',
           height: 'fit-content',
@@ -74,8 +80,9 @@ const Agents = () => {
           marginTop: '20px',
           display: 'flex',
           flexWrap: 'wrap',
+          borderRadius: '10px',
           gap: '20px',
-          backgroundColor: '#fcfcfc',
+          backgroundColor: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
         }}
       >
         {allAgents.map((agent) => (

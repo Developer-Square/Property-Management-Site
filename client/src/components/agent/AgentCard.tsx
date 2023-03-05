@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import React from 'react';
+import React, { useContext } from 'react';
 import { EmailOutlined, LocationCity, Phone, Place } from '@mui/icons-material';
 import { useDelete, useGetIdentity } from '@pankod/refine-core';
 import { Box, Typography, Stack } from '@pankod/refine-mui';
@@ -7,6 +7,7 @@ import { Link, useNavigate } from '@pankod/refine-react-router-v6';
 
 import { AgentCardProp, InfoBarProps } from 'interfaces/agent';
 import EditPopover from 'components/common/EditPopover';
+import { ColorModeContext } from 'contexts';
 
 const InfoBar = ({ icon, name }: InfoBarProps) => (
   <Stack
@@ -37,6 +38,7 @@ const AgentCard = ({
   );
   const navigate = useNavigate();
   const { mutate } = useDelete();
+  const { mode } = useContext(ColorModeContext);
 
   const open = Boolean(anchorEl);
   const popoverId = open ? 'simple-popover' : undefined;
@@ -107,7 +109,7 @@ const AgentCard = ({
             <Typography
               fontSize={{ xs: 20, sm: 22 }}
               fontWeight={600}
-              color='#11142d'
+              color={mode === 'light' ? '#11142d' : '#EFEFEF'}
             >
               {name}
             </Typography>
