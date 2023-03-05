@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Typography, Stack } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import { useList } from '@pankod/refine-core';
 
 import CustomButton from 'components/common/CustomButton';
+import { ColorModeContext } from 'contexts';
 
-const TopAgentItem = ({ name, avatar }: { name: string; avatar: string }) => (
+const TopAgentItem = ({
+  name,
+  avatar,
+  mode,
+}: {
+  name: string;
+  avatar: string;
+  mode: string;
+}) => (
   <Stack direction='row' marginBottom='15px'>
     <img
       src={avatar}
@@ -18,7 +27,11 @@ const TopAgentItem = ({ name, avatar }: { name: string; avatar: string }) => (
       }}
     />
     <Stack direction='column'>
-      <Typography fontSize={14} fontWeight={500} color='#11142d'>
+      <Typography
+        fontSize={14}
+        fontWeight={500}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         {name}
       </Typography>
       <Typography fontSize={12} fontWeight={400} color='#808191'>
@@ -30,6 +43,7 @@ const TopAgentItem = ({ name, avatar }: { name: string; avatar: string }) => (
 
 const TopAgent = () => {
   const navigate = useNavigate();
+  const { mode } = useContext(ColorModeContext);
   const { data, isLoading, isError } = useList({
     resource: 'users',
   });
@@ -43,7 +57,7 @@ const TopAgent = () => {
       sx={{
         padding: '20px',
         width: '100%',
-        background: '#fcfcfc',
+        background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
         borderRadius: '10px',
         flex: 1,
       }}
@@ -55,12 +69,16 @@ const TopAgent = () => {
           justifyContent='space-between'
           marginBottom='20px'
         >
-          <Typography fontSize={18} fontWeight={600} color='#11142d'>
+          <Typography
+            fontSize={18}
+            fontWeight={600}
+            color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+          >
             Top Agent
           </Typography>
           <CustomButton
             title='View all'
-            color='#808191'
+            color={mode === 'light' ? '#808191' : '#EFEFEF'}
             backgroundColor='transparent'
             border='1px solid #E4E4E4'
             handleClick={() => navigate('/agents')}
@@ -79,6 +97,7 @@ const TopAgent = () => {
                 key={agent._id}
                 name={agent.name}
                 avatar={agent.avatar}
+                mode={mode}
               />
             ))
           ) : (

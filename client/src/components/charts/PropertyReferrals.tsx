@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Typography, Stack } from '@pankod/refine-mui';
 
 import { propertyReferralsInfo } from 'constants/index';
+import { ColorModeContext } from 'contexts';
 
 interface IProgressBarProps {
   title: string;
   percentage: number;
   color: string;
+  mode: string;
 }
 
-const ProgressBar = ({ title, percentage, color }: IProgressBarProps) => (
+const ProgressBar = ({ title, percentage, color, mode }: IProgressBarProps) => (
   <Box width='100%'>
     <Stack direction='row' alignItems='center' justifyContent='space-between'>
-      <Typography fontSize={16} fontWeight={500} color='#11142d'>
+      <Typography
+        fontSize={16}
+        fontWeight={500}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         {title}
       </Typography>
-      <Typography fontSize={16} fontWeight={500} color='#11142d'>
+      <Typography
+        fontSize={16}
+        fontWeight={500}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         {percentage}%
       </Typography>
     </Stack>
@@ -40,23 +50,28 @@ const ProgressBar = ({ title, percentage, color }: IProgressBarProps) => (
 );
 
 const PropertyReferrals = () => {
+  const { mode } = useContext(ColorModeContext);
   return (
     <Box
       p={4}
-      bgcolor='#fcfcfc'
+      bgcolor={mode === 'light' ? '#fcfcfc' : '#1A1D1F'}
       id='chart'
       minWidth={340}
       display='flex'
       flexDirection='column'
       borderRadius='15px'
     >
-      <Typography fontSize={18} fontWeight={600} color='#11142d'>
+      <Typography
+        fontSize={18}
+        fontWeight={600}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         Property Referrals
       </Typography>
 
       <Stack my='20px' direction='column' gap={4}>
         {propertyReferralsInfo.map((item) => (
-          <ProgressBar key={item.title} {...item} />
+          <ProgressBar key={item.title} {...item} mode={mode} />
         ))}
       </Stack>
     </Box>

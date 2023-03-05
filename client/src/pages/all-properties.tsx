@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Add } from '@mui/icons-material';
 import { useTable } from '@pankod/refine-core';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
@@ -11,6 +11,7 @@ import {
   Filters,
   SearchField,
 } from 'components';
+import { ColorModeContext } from 'contexts';
 
 const AllProperties = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const AllProperties = () => {
     filters,
     setFilters,
   } = useTable();
+  const { mode } = useContext(ColorModeContext);
 
   const allProperties: any[] = data?.data ?? [];
 
@@ -57,7 +59,11 @@ const AllProperties = () => {
   return (
     <Box mt={{ xs: '45px', lg: '0px' }}>
       <Stack direction='row' justifyContent='space-between' alignItems='center'>
-        <Typography fontSize={25} fontWeight={700} color='#11142d'>
+        <Typography
+          fontSize={25}
+          fontWeight={700}
+          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+        >
           Propery List
         </Typography>
         <CustomButton
@@ -72,7 +78,7 @@ const AllProperties = () => {
       <Box
         sx={{
           marginTop: '20px',
-          backgroundColor: '#fcfcfc',
+          backgroundColor: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
           padding: '15px',
           borderRadius: '15px',
           height: 'fit-content',
@@ -151,6 +157,7 @@ const AllProperties = () => {
               price={property.price}
               location={property.location}
               photos={property.photos}
+              mode={mode}
             />
           ))
         ) : (

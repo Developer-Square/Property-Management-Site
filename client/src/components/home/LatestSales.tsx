@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Typography, Stack } from '@pankod/refine-mui';
 import { useList } from '@pankod/refine-core';
+import { ColorModeContext } from 'contexts';
 
 const LatestSale = ({
   name,
   avatar,
   price,
   location,
+  mode,
 }: {
   name: string;
   avatar: string;
   location: string;
   price: string;
+  mode: string;
 }) => (
   <Stack direction='row' marginBottom='15px'>
     <img
@@ -32,7 +35,11 @@ const LatestSale = ({
       justifyContent='space-between'
     >
       <Stack direction='column'>
-        <Typography fontSize={14} fontWeight={500} color='#11142d'>
+        <Typography
+          fontSize={14}
+          fontWeight={500}
+          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+        >
           {name}
         </Typography>
         <Typography fontSize={12} fontWeight={400} color='#808191'>
@@ -50,6 +57,7 @@ const LatestSales = () => {
   const { data, isLoading, isError } = useList({
     resource: 'properties',
   });
+  const { mode } = useContext(ColorModeContext);
 
   const allProperties: any[] = data?.data ?? [];
 
@@ -60,7 +68,7 @@ const LatestSales = () => {
       sx={{
         padding: '20px',
         width: '100%',
-        background: '#fcfcfc',
+        background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
         borderRadius: '10px',
         flex: 1,
       }}
@@ -72,7 +80,11 @@ const LatestSales = () => {
           justifyContent='space-between'
           marginBottom='20px'
         >
-          <Typography fontSize={18} fontWeight={600} color='#11142d'>
+          <Typography
+            fontSize={18}
+            fontWeight={600}
+            color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+          >
             Latest Sales
           </Typography>
         </Stack>
@@ -91,6 +103,7 @@ const LatestSales = () => {
                 avatar={property.photos[0]}
                 price={property.price}
                 location={property.location}
+                mode={mode}
               />
             ))
           ) : (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 
@@ -6,6 +6,7 @@ import CustomButton from './CustomButton';
 import { PropertyProps } from 'interfaces/common';
 import PropertyCard from './PropertyCard';
 import { shuffle } from 'utils/shuffle';
+import { ColorModeContext } from 'contexts';
 
 const PropertyList = ({
   type,
@@ -17,6 +18,7 @@ const PropertyList = ({
   const [activeButton, setActiveButton] = useState('Popular');
   const [sortedProperties, setSortedProperties] = useState(properties);
   const navigate = useNavigate();
+  const { mode } = useContext(ColorModeContext);
 
   const handleSort = (btn: string) => {
     setActiveButton(btn);
@@ -24,19 +26,34 @@ const PropertyList = ({
   };
 
   return (
-    <Box mt={2.5} borderRadius='15px' padding='20px' bgcolor='#FCFCFC'>
+    <Box
+      mt={2.5}
+      borderRadius='15px'
+      padding='20px'
+      bgcolor={mode === 'light' ? '#fcfcfc' : '#1A1D1F'}
+    >
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         justifyContent='space-between'
         gap={{ xs: 2, sm: 0 }}
       >
-        <Typography fontSize={18} fontWeight={600} color='#11142D'>
+        <Typography
+          fontSize={18}
+          fontWeight={600}
+          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+        >
           {type === 'home' ? 'Property List' : `${type} Properties`}
         </Typography>
         <Stack gap={1} direction='row' flexWrap='wrap'>
           <CustomButton
             title='Popular'
-            backgroundColor={activeButton === 'Popular' ? '#475BE8' : '#F7F7F7'}
+            backgroundColor={
+              activeButton === 'Popular'
+                ? '#475BE8'
+                : mode === 'light'
+                ? '#F7F7F7'
+                : '#111315'
+            }
             color={activeButton === 'Popular' ? '#fcfcfc' : '#808191'}
             active={properties.length < 0}
             handleClick={() => handleSort('Popular')}
@@ -44,7 +61,11 @@ const PropertyList = ({
           <CustomButton
             title='Recommended'
             backgroundColor={
-              activeButton === 'Recommended' ? '#475BE8' : '#F7F7F7'
+              activeButton === 'Recommended'
+                ? '#475BE8'
+                : mode === 'light'
+                ? '#F7F7F7'
+                : '#111315'
             }
             color={activeButton === 'Recommended' ? '#fcfcfc' : '#808191'}
             active={properties.length < 0}

@@ -23,6 +23,7 @@ const PropertyCard = ({
   location,
   price,
   photos,
+  mode,
 }: PropertyCardProps) => {
   return (
     <Card
@@ -34,9 +35,11 @@ const PropertyCard = ({
         padding: '10px',
         height: 'fit-content',
         '&:hover': {
-          boxShadow: '0 22px 2px rgba(176, 176, 176, 0.1)',
+          boxShadow:
+            mode === 'light' ? '0 22px 2px rgba(176, 176, 176, 0.1)' : '',
         },
         cursor: 'pointer',
+        background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
       }}
       elevation={0}
     >
@@ -62,7 +65,7 @@ const PropertyCard = ({
           px={1.5}
           py={0.5}
           borderRadius={1}
-          bgcolor='#dadefa'
+          bgcolor={mode === 'light' ? '#dadefa' : '#111315'}
           height='fit-content'
           width='fit-content'
         >
@@ -71,7 +74,11 @@ const PropertyCard = ({
           </Typography>
         </Box>
         <Stack direction='column' gap={1}>
-          <Typography fontSize={14} fontWeight={500} color='#11142d'>
+          <Typography
+            fontSize={14}
+            fontWeight={500}
+            color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+          >
             {title}
           </Typography>
           <Stack
@@ -81,7 +88,10 @@ const PropertyCard = ({
             justifyContent='flex-start'
           >
             <PlaceOutlined
-              sx={{ fontSize: 18, color: '#11142d', marginTop: 0.5 }}
+              sx={{
+                fontSize: 18,
+                color: mode === 'light' ? '#11142d' : '#EFEFEF',
+              }}
             />
             <Typography fontSize={14} color='#808191'>
               {location}
@@ -94,7 +104,7 @@ const PropertyCard = ({
             <Typography
               marginLeft={1}
               fontSize={12}
-              color='#11142d'
+              color={mode === 'light' ? '#11142d' : '#EFEFEF'}
               fontWeight={600}
             >
               {randomNumber(7)} Beds
@@ -105,7 +115,7 @@ const PropertyCard = ({
             <Typography
               marginLeft={1}
               fontSize={12}
-              color='#11142d'
+              color={mode === 'light' ? '#11142d' : '#EFEFEF'}
               fontWeight={600}
             >
               {randomNumber(170)}M
