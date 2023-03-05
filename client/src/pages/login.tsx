@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useLogin } from '@pankod/refine-core';
 import {
   Box,
@@ -12,6 +12,7 @@ import { useForm } from '@pankod/refine-react-hook-form';
 import { LoginComponent } from 'components';
 import SignupComponent from 'components/login-and-signup/SignupComponent';
 import { LoginSignup } from 'assets';
+import { ColorModeContext } from 'contexts';
 
 export const TextInput = ({
   title,
@@ -19,12 +20,14 @@ export const TextInput = ({
   fieldValue,
   register,
   placeholder,
+  mode,
 }: {
   title: string;
   type: string;
   fieldValue: string;
   register: any;
   placeholder?: string;
+  mode?: string;
 }) => (
   <FormControl
     sx={{
@@ -36,7 +39,7 @@ export const TextInput = ({
         fontWeight: 500,
         margin: '10px 0',
         fontSize: 16,
-        color: '#11142d',
+        color: mode === 'light' ? '#11142d' : '#EFEFEF',
       }}
     >
       {title}
@@ -56,6 +59,7 @@ export const TextInput = ({
 export const Login: React.FC = () => {
   const { mutate: login } = useLogin<CredentialResponse>();
   const [form, setForm] = useState('login');
+  const { mode } = useContext(ColorModeContext);
 
   const {
     refineCore: { formLoading },
@@ -100,7 +104,7 @@ export const Login: React.FC = () => {
     <Box
       component='div'
       sx={{
-        background: '#FCFCFC',
+        background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
         backgroundSize: 'cover',
       }}
     >

@@ -1,9 +1,10 @@
-import React, { SetStateAction } from 'react';
+import React, { SetStateAction, useContext } from 'react';
 import { Typography, Box } from '@pankod/refine-mui';
 import { FieldValues, UseFormRegister } from '@pankod/refine-react-hook-form';
 import CustomButton from 'components/common/CustomButton';
-import { DarkLogo } from 'assets';
+import { DarkLogo, LightLogo } from 'assets';
 import { TextInput } from 'pages/login';
+import { ColorModeContext } from 'contexts';
 
 const SignupComponent = ({
   GoogleButton,
@@ -18,6 +19,8 @@ const SignupComponent = ({
   formLoading: boolean;
   setForm: React.Dispatch<SetStateAction<string>>;
 }) => {
+  const { mode } = useContext(ColorModeContext);
+
   return (
     <Box
       sx={{
@@ -29,14 +32,18 @@ const SignupComponent = ({
         maxWidth: { lg: '362px' },
       }}
     >
-      <Typography fontSize={37} fontWeight={700} color='#11142D'>
+      <Typography
+        fontSize={37}
+        fontWeight={700}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         Hi! Welcome
       </Typography>
       <Typography fontSize={16} color='#808191'>
         Sign up for our site and make your life easier
       </Typography>
       <img
-        src={DarkLogo}
+        src={mode === 'light' ? DarkLogo : LightLogo}
         style={{
           height: '70px',
           margin: '40px 0',
@@ -51,6 +58,7 @@ const SignupComponent = ({
         placeholder='Enter your username'
         register={register}
         type='text'
+        mode={mode}
       />
       <TextInput
         title={'Email'}
@@ -58,6 +66,7 @@ const SignupComponent = ({
         placeholder='Enter your email'
         register={register}
         type='text'
+        mode={mode}
       />
       <TextInput
         title={'Password'}
@@ -65,6 +74,7 @@ const SignupComponent = ({
         placeholder='********'
         register={register}
         type='password'
+        mode={mode}
       />
       <TextInput
         title={'Confirm Password'}
@@ -72,6 +82,7 @@ const SignupComponent = ({
         placeholder='********'
         register={register}
         type='password'
+        mode={mode}
       />
       <Box marginBottom='20px'></Box>
       <CustomButton
