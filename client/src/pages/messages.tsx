@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Typography } from '@pankod/refine-mui';
 import { useList } from '@pankod/refine-core';
 import { MessageContent, MessagesList } from 'components';
+import { ColorModeContext } from 'contexts';
 
 const Messages = () => {
   const { data, isLoading, isError } = useList({
@@ -10,6 +11,7 @@ const Messages = () => {
   const [showMessageContent, setShowMessageContent] = useState(true);
   const [showMessageList, setShowMessageList] = useState(true);
   const screenSize: number = window.innerWidth;
+  const { mode } = useContext(ColorModeContext);
 
   useEffect(() => {
     if (screenSize <= 576) {
@@ -30,7 +32,11 @@ const Messages = () => {
   if (isError) return <Typography>Error!</Typography>;
   return (
     <Box mt={{ xs: '45px', lg: '0px' }}>
-      <Typography fontSize={25} fontWeight={700} color='#11142d'>
+      <Typography
+        fontSize={25}
+        fontWeight={700}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         Messages
       </Typography>
       <Box
@@ -39,7 +45,7 @@ const Messages = () => {
           padding: '20px',
           display: 'flex',
           flexDirection: 'row',
-          background: '#fcfcfc',
+          background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
           borderRadius: '15px',
           gap: '40px',
         }}
@@ -49,6 +55,7 @@ const Messages = () => {
             <MessagesList
               users={users}
               handleScreenSwitch={handleScreenSwitch}
+              mode={mode}
             />
           </Box>
         ) : (
@@ -58,10 +65,13 @@ const Messages = () => {
           <Box
             sx={{
               width: { xs: '100%', sm: '70%' },
-              borderLeft: { xs: 'none', sm: '1px solid #E4E4E4' },
+              borderLeft: {
+                xs: 'none',
+                sm: `1px solid ${mode === 'light' ? '#E4E4E4' : '#272B30'}`,
+              },
             }}
           >
-            <MessageContent users={users} />
+            <MessageContent users={users} mode={mode} />
           </Box>
         ) : (
           <></>

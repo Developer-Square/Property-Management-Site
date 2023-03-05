@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { ArrowBackIos } from '@mui/icons-material';
 
@@ -16,6 +16,7 @@ import {
 } from 'assets';
 import { useList } from '@pankod/refine-core';
 import { useNavigate } from '@pankod/refine-react-router-v6';
+import { ColorModeContext } from 'contexts';
 
 const VideoCall = () => {
   const { data, isLoading, isError } = useList({
@@ -25,6 +26,7 @@ const VideoCall = () => {
     null
   );
   const navigate = useNavigate();
+  const { mode } = useContext(ColorModeContext);
 
   const users = data?.data || [];
 
@@ -40,14 +42,17 @@ const VideoCall = () => {
         padding: '20px',
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
-        background: '#fcfcfc',
+        background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
         borderRadius: '15px',
         gap: '40px',
       }}
     >
       <Box
         width='70%'
-        sx={{ paddingRight: '25px', borderRight: '1px solid #E4E4E4' }}
+        sx={{
+          paddingRight: '25px',
+          borderRight: `1px solid ${mode === 'light' ? '#E4E4E4' : '#272B30'}`,
+        }}
       >
         <Stack
           direction='row'
@@ -59,9 +64,17 @@ const VideoCall = () => {
           <Stack alignItems='center' direction='row' gap='10px'>
             <ArrowBackIos
               onClick={() => navigate(-1)}
-              sx={{ fontSize: '18px', color: '#11142d', cursor: 'pointer' }}
+              sx={{
+                fontSize: '18px',
+                color: mode === 'light' ? '#11142d' : '#EFEFEF',
+                cursor: 'pointer',
+              }}
             />
-            <Typography fontSize={18} color='#11142d' fontWeight={600}>
+            <Typography
+              fontSize={18}
+              color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+              fontWeight={600}
+            >
               Video Call
             </Typography>
           </Stack>

@@ -52,9 +52,11 @@ const TextImage = ({
 const MessageContent = ({
   users,
   location,
+  mode,
 }: {
   users: any;
   location?: string;
+  mode?: string;
 }) => {
   const navigate = useNavigate();
   return (
@@ -66,8 +68,8 @@ const MessageContent = ({
           display: 'flex',
           flexDirection: 'row',
           color: '#808191',
-          background: '#fcfcfc',
-          borderBottom: '1px solid #E4E4E4',
+          background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
+          borderBottom: `1px solid ${mode === 'light' ? '#E4E4E4' : '#272B30'}`,
         }}
       >
         <Stack
@@ -100,7 +102,11 @@ const MessageContent = ({
           direction='column'
           gap='5px'
         >
-          <Typography fontSize={16} fontWeight={600} color='#11142d'>
+          <Typography
+            fontSize={16}
+            fontWeight={600}
+            color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+          >
             {users[0].name}
           </Typography>
           <Typography fontSize={14}>Active Now</Typography>
@@ -147,7 +153,7 @@ const MessageContent = ({
           fontSize={12}
           sx={{
             padding: '10px',
-            background: '#fcfcfc',
+            background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
             marginTop: '-20px',
           }}
         >
@@ -155,12 +161,22 @@ const MessageContent = ({
         </Typography>
       </Box>
       <Box sx={{ maxHeight: '600px', height: '100%', overflow: 'auto' }}>
-        <Text position='left' users={users} message={messages[0]} />
-        <Text position='right' users={users} message={messages[1]} />
-        <Text position='left' users={users} message={messages[2]} />
-        <Text position='right' users={users} message={messages[3]} />
+        <Text position='left' users={users} message={messages[0]} mode={mode} />
+        <Text
+          position='right'
+          users={users}
+          message={messages[1]}
+          mode={mode}
+        />
+        <Text position='left' users={users} message={messages[2]} mode={mode} />
+        <Text
+          position='right'
+          users={users}
+          message={messages[3]}
+          mode={mode}
+        />
         <TextImage position='right' images={[Property1, Property2]} />
-        <Text position='left' users={users} message={messages[4]} />
+        <Text position='left' users={users} message={messages[4]} mode={mode} />
       </Box>
       <Box
         sx={{
@@ -174,7 +190,7 @@ const MessageContent = ({
           fullWidth
           placeholder='Write a message here...'
           sx={{
-            background: '#F2F2F2',
+            background: mode === 'light' ? '#F2F2F2' : '#272B30',
           }}
         />
         <Box
@@ -207,7 +223,7 @@ const MessageContent = ({
             marginLeft: '10px',
             width: '56px',
             height: '56px',
-            background: '#f2f2f2',
+            background: mode === 'light' ? '#F2F2F2' : '#272B30',
             cursor: 'pointer',
           }}
         >

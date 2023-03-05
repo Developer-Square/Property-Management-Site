@@ -18,12 +18,14 @@ const MessageProfile = ({
   name,
   message,
   time,
+  mode,
 }: {
   active: boolean;
   avatar: string;
   name: string;
   message: string;
   time: string;
+  mode: string;
 }) => (
   <Box
     sx={{
@@ -33,7 +35,7 @@ const MessageProfile = ({
       display: 'flex',
       flexDirection: 'row',
       color: active ? '#fcfcfc' : '#808191',
-      background: active ? '#475BE8' : '#fcfcfc',
+      background: active ? '#475BE8' : mode === 'light' ? '#fcfcfc' : '#1A1D1F',
     }}
   >
     <Stack width={{ xs: '21%', sm: '32%', lg: '18%' }} direction='row'>
@@ -66,7 +68,7 @@ const MessageProfile = ({
       <Typography
         fontSize={{ sm: 14, lg: 16 }}
         fontWeight={600}
-        color={active ? '#fcfcfc' : '#11142d'}
+        color={active ? '#fcfcfc' : mode === 'light' ? '#11142d' : '#EFEFEF'}
       >
         {name}
       </Typography>
@@ -77,6 +79,7 @@ const MessageProfile = ({
       textAlign='right'
       fontSize={{ sm: 13, lg: 16 }}
       fontWeight={600}
+      color={active ? '#fcfcfc' : mode === 'light' ? '#11142d' : '#EFEFEF'}
     >
       {time}
     </Typography>
@@ -86,9 +89,11 @@ const MessageProfile = ({
 const MessagesList = ({
   users,
   handleScreenSwitch,
+  mode,
 }: {
   users: any;
   handleScreenSwitch: () => void;
+  mode: string;
 }) => {
   const [searchText, setSearchText] = useState('');
   return (
@@ -134,6 +139,7 @@ const MessagesList = ({
               name={user.name}
               message={messages[index]}
               time={timeString12hr()}
+              mode={mode}
             />
           ))
         ) : (

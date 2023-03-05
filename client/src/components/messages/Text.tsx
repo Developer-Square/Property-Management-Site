@@ -25,10 +25,12 @@ const Text = ({
   users,
   message,
   position,
+  mode,
 }: {
   users: any;
   message: string;
   position: string;
+  mode: string | undefined;
 }) => {
   return (
     <Stack
@@ -59,12 +61,22 @@ const Text = ({
               maxWidth: { xs: 320, sm: 340 },
               width: 'auto',
               height: 'auto',
-              border: '1px solid #E4E4E4',
+              border: `1px solid ${mode === 'light' ? '#E4E4E4' : '#272B30'}`,
               borderRadius: '10px 10px 10px 0px',
-              background: position === 'left' ? '#fcfcfc' : '#F2F2F2',
+              background:
+                position === 'left'
+                  ? mode === 'light'
+                    ? '#fcfcfc'
+                    : '#1A1D1F'
+                  : mode === 'light'
+                  ? '#F2F2F2'
+                  : '#333333',
             }}
           >
-            <Typography fontSize={16} color='#11142D'>
+            <Typography
+              fontSize={16}
+              color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+            >
               {message}
             </Typography>
           </Box>
