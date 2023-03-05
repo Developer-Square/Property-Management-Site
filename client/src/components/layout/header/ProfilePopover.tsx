@@ -2,7 +2,8 @@ import { AccountCircle, Logout, ToggleOff } from '@mui/icons-material';
 import { useLogout } from '@pankod/refine-core';
 import { Popover, Stack, Typography } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
-import React from 'react';
+import { ColorModeContext } from 'contexts';
+import React, { useContext } from 'react';
 
 const PopoverItem = ({
   Icon,
@@ -41,6 +42,7 @@ const ProfilePopover = ({
 }) => {
   const navigate = useNavigate();
   const { mutate: mutateLogout } = useLogout();
+  const { setMode } = useContext(ColorModeContext);
   return (
     <Popover
       id={popoverId}
@@ -95,7 +97,7 @@ const ProfilePopover = ({
           />
         )}
         color='#808191'
-        navigateFn={() => {}}
+        navigateFn={() => setMode()}
         text={'Dark mode'}
       />
     </Popover>

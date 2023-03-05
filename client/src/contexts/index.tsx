@@ -3,9 +3,9 @@ import React, {
   createContext,
   useEffect,
   useState,
-} from "react";
-import { ThemeProvider } from "@pankod/refine-mui";
-import { DarkTheme, LightTheme } from "@pankod/refine-mui";
+} from 'react';
+import { ThemeProvider } from '@pankod/refine-mui';
+import { DarkTheme, LightTheme } from '@pankod/refine-mui';
 
 type ColorModeContextType = {
   mode: string;
@@ -19,25 +19,25 @@ export const ColorModeContext = createContext<ColorModeContextType>(
 export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const colorModeFromLocalStorage = localStorage.getItem("colorMode");
+  const colorModeFromLocalStorage = localStorage.getItem('colorMode');
   const isSystemPreferenceDark = window?.matchMedia(
-    "(prefers-color-scheme: dark)"
+    '(prefers-color-scheme: dark)'
   ).matches;
 
-  const systemPreference = isSystemPreferenceDark ? "dark" : "light";
+  const systemPreference = isSystemPreferenceDark ? 'dark' : 'light';
   const [mode, setMode] = useState(
     colorModeFromLocalStorage || systemPreference
   );
 
   useEffect(() => {
-    window.localStorage.setItem("colorMode", mode);
+    window.localStorage.setItem('colorMode', mode);
   }, [mode]);
 
   const setColorMode = () => {
-    if (mode === "light") {
-      setMode("dark");
+    if (mode === 'light') {
+      setMode('dark');
     } else {
-      setMode("light");
+      setMode('light');
     }
   };
 
@@ -48,7 +48,7 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
         mode,
       }}
     >
-      <ThemeProvider theme={mode === "light" ? LightTheme : DarkTheme}>
+      <ThemeProvider theme={mode === 'light' ? LightTheme : DarkTheme}>
         {children}
       </ThemeProvider>
     </ColorModeContext.Provider>

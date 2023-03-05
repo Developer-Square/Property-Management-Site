@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Typography, Stack } from '@pankod/refine-mui';
 import ReactApexChart from 'react-apexcharts';
 
 import { PieChartProps } from 'interfaces/home';
+import { ColorModeContext } from 'contexts';
 
 const PieChart = ({
   title,
@@ -11,12 +12,13 @@ const PieChart = ({
   colors,
   location,
 }: PieChartProps) => {
+  const { mode } = useContext(ColorModeContext);
   return (
     <Box
       id='pie-chart'
       flex={1}
       display='flex'
-      bgcolor='#fcfcfc'
+      bgcolor={mode === 'light' ? '#fcfcfc' : '#1A1D1F'}
       flexDirection={location === 'agents' ? 'column' : 'row'}
       justifyContent='space-between'
       alignItems='center'
@@ -31,10 +33,18 @@ const PieChart = ({
         direction='column'
         textAlign={location === 'agents' ? 'center' : 'initial'}
       >
-        <Typography fontSize={14} color='#808191'>
+        <Typography
+          fontSize={14}
+          color={mode === 'light' ? '#808191' : '#6F767E'}
+        >
           {title}
         </Typography>
-        <Typography fontSize={24} fontWeight={700} mt={1} color='#11142d'>
+        <Typography
+          fontSize={24}
+          fontWeight={700}
+          mt={1}
+          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+        >
           {value}
         </Typography>
       </Stack>
@@ -45,6 +55,13 @@ const PieChart = ({
           colors,
           legend: { show: false },
           dataLabels: { enabled: false },
+          grid: {
+            show: false,
+          },
+          stroke: {
+            colors: ['transparent'],
+            width: 4,
+          },
         }}
         series={series}
         type='donut'

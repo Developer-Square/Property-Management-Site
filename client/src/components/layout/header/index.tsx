@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useGetIdentity } from '@pankod/refine-core';
 import { AppBar, Stack, Toolbar, Avatar, Typography } from '@pankod/refine-mui';
 
 import ProfilePopover from './ProfilePopover';
 import { NotificationsOutlined } from '@mui/icons-material';
 import NotificationPopover from './NotificationPopover';
+import { ColorModeContext } from 'contexts';
 // import { DarkModeOutlined, LightModeOutlined } from '@mui/icons-material';
 
 // import { ColorModeContext } from 'contexts';
@@ -16,6 +17,7 @@ export const Header: React.FC = () => {
   );
   const [notificationAnchor, setNotificationAnchor] =
     React.useState<HTMLButtonElement | null>(null);
+  const { mode } = useContext(ColorModeContext);
 
   const { data: user } = useGetIdentity();
   const shouldRenderHeader = true; // since we are using the dark/light toggle; we don't need to check if user is logged in or not.
@@ -33,7 +35,7 @@ export const Header: React.FC = () => {
       position='sticky'
       elevation={0}
       sx={{
-        background: '#fcfcfc',
+        backgroundColor: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
       }}
     >
       <Toolbar>

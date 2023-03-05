@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { useList } from '@pankod/refine-core';
 
@@ -11,17 +11,23 @@ import {
   LatestSales,
   Customer,
 } from 'components';
+import { ColorModeContext } from 'contexts';
 
 const Home = () => {
   const { data, isLoading, isError } = useList({
     resource: 'properties',
   });
+  const { mode } = useContext(ColorModeContext);
 
   const allProperties = data?.data ?? [];
 
   return (
     <Box mt={{ xs: '45px', lg: '0px' }}>
-      <Typography fontSize={25} fontWeight={700} color='#11142d'>
+      <Typography
+        fontSize={25}
+        fontWeight={700}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         Dashboard
       </Typography>
 
@@ -30,25 +36,25 @@ const Home = () => {
           title='Properties for Sale'
           value={32}
           series={[75, 25]}
-          colors={['#475be8', '#F2F6FC']}
+          colors={['#475be8', mode === 'light' ? '#F2F6FC' : '#272B30']}
         />
         <PieChart
           title='Properties for Rent'
           value={73}
           series={[60, 40]}
-          colors={['#FD8539', '#F2F6FC']}
+          colors={['#FD8539', mode === 'light' ? '#F2F6FC' : '#272B30']}
         />
         <PieChart
           title='Total Customers'
           value={323}
           series={[75, 25]}
-          colors={['#2ED480', '#F2F6FC']}
+          colors={['#2ED480', mode === 'light' ? '#F2F6FC' : '#272B30']}
         />
         <PieChart
           title='Properties for Cities'
           value={52}
           series={[60, 40]}
-          colors={['#FE6D8E', '#F2F6FC']}
+          colors={['#FE6D8E', mode === 'light' ? '#F2F6FC' : '#272B30']}
         />
       </Box>
 

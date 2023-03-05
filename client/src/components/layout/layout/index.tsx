@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { LayoutProps } from '@pankod/refine-core';
 import { Box } from '@pankod/refine-mui';
 
 import { Sider as DefaultSider } from '../sider';
 import { Header as DefaultHeader } from '../header';
+import { ColorModeContext } from 'contexts';
 
 export const Layout: React.FC<LayoutProps> = ({
   Sider,
@@ -14,6 +15,7 @@ export const Layout: React.FC<LayoutProps> = ({
 }) => {
   const SiderToRender = Sider ?? DefaultSider;
   const HeaderToRender = Header ?? DefaultHeader;
+  const { mode } = useContext(ColorModeContext);
 
   return (
     <Box display='flex' flexDirection='row' sx={{ overflowX: 'hidden' }}>
@@ -33,7 +35,7 @@ export const Layout: React.FC<LayoutProps> = ({
           sx={{
             p: { xs: 1, md: 2, lg: 3 },
             flexGrow: 1,
-            bgcolor: (theme) => theme.palette.background.default,
+            bgcolor: mode === 'light' ? '#F4F4F4' : '#111315',
           }}
         >
           {children}

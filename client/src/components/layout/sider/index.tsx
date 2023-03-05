@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Box,
   Drawer,
@@ -35,6 +35,7 @@ import {
 } from '@pankod/refine-core';
 
 import { Title as DefaultTitle } from '../title';
+import { ColorModeContext } from 'contexts';
 
 export const Sider: typeof DefaultSider = ({ render }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -56,6 +57,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
   const Title = useTitle();
 
   const [open, setOpen] = useState<{ [k: string]: any }>({});
+  const { mode } = useContext(ColorModeContext);
 
   React.useEffect(() => {
     setOpen((previousOpen) => {
@@ -73,6 +75,9 @@ export const Sider: typeof DefaultSider = ({ render }) => {
   const handleClick = (key: string) => {
     setOpen({ ...open, [key]: !open[key] });
   };
+
+  // const isSelected = route === selectedKey;
+  const isSelected = '/' === selectedKey;
 
   const renderTreeView = (tree: ITreeMenu[], selectedKey: string) => {
     return tree.map((item: ITreeMenu) => {
@@ -193,7 +198,11 @@ export const Sider: typeof DefaultSider = ({ render }) => {
                 sx={{
                   justifyContent: 'center',
                   minWidth: 36,
-                  color: isSelected ? '#fff' : '#808191',
+                  color: isSelected
+                    ? '#fff'
+                    : mode === 'light'
+                    ? '#808191'
+                    : '#6F767E',
                 }}
               >
                 {icon ?? <ListOutlined />}
@@ -204,7 +213,11 @@ export const Sider: typeof DefaultSider = ({ render }) => {
                   noWrap: true,
                   fontSize: '16px',
                   fontWeight: isSelected ? 'bold' : 'normal',
-                  color: isSelected ? '#fff' : '#808191',
+                  color: isSelected
+                    ? '#fff'
+                    : mode === 'light'
+                    ? '#808191'
+                    : '#6F767E',
                   marginLeft: '10px',
                 }}
               />
@@ -231,13 +244,14 @@ export const Sider: typeof DefaultSider = ({ render }) => {
             setOpened(false);
           }}
           sx={{
-            pl: 2,
-            py: 1,
+            margin: '10px auto',
+            width: '90%',
+            borderRadius: '12px',
             '&.Mui-selected': {
               '&:hover': {
-                backgroundColor: 'transparent',
+                backgroundColor: isSelected ? '#1e36e8' : 'transparent',
               },
-              backgroundColor: 'transparent',
+              backgroundColor: isSelected ? '#475be8' : 'transparent',
             },
             justifyContent: 'center',
           }}
@@ -246,7 +260,11 @@ export const Sider: typeof DefaultSider = ({ render }) => {
             sx={{
               justifyContent: 'center',
               minWidth: 36,
-              color: '#808191',
+              color: isSelected
+                ? '#fcfcfc'
+                : mode === 'light'
+                ? '#808191'
+                : '#6F767E',
               marginLeft: '6px',
               marginRight: '14px',
             }}
@@ -258,6 +276,11 @@ export const Sider: typeof DefaultSider = ({ render }) => {
             primaryTypographyProps={{
               noWrap: true,
               fontSize: '16px',
+              color: isSelected
+                ? '#fcfcfc'
+                : mode === 'light'
+                ? '#808191'
+                : '#6F767E',
               fontWeight: selectedKey === '/' ? 'bold' : 'normal',
             }}
           />
@@ -361,7 +384,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
             display: { sm: 'block', md: 'none' },
             '& .MuiDrawer-paper': {
               width: 256,
-              bgcolor: '#FCFCFC',
+              bgcolor: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
             },
           }}
         >
@@ -384,7 +407,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
             display: { xs: 'none', md: 'block' },
             '& .MuiDrawer-paper': {
               width: drawerWidth,
-              bgcolor: '#FCFCFC',
+              bgcolor: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
               overflow: 'hidden',
               transition: 'width 200ms cubic-bezier(0.4, 0, 0.6, 1) 0ms',
             },
