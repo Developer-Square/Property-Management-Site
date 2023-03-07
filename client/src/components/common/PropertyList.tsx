@@ -102,6 +102,7 @@ const PropertyList = ({
               location={property.location}
               price={property.price}
               photos={property.photos}
+              mode={mode}
             />
           ))}
         </Box>
