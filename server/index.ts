@@ -1,37 +1,38 @@
-const express = require('express');
-const cors = require('cors');
-const connectToDatabase = require('./mongodb/connect');
-const userRouter = require('./routes/user.routes');
-const propertyRouter = require('./routes/property.routes');
-const reviewRouter = require('./routes/review.routes');
+import mongoose from 'mongoose';
+import app from './app';
+import { config, logger } from './config';
 
-require('dotenv').config();
-
-const app = express();
-app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-
-app.get('/', (req, res) => {
-  res.send('Hola de Kenya!');
+let server: any;
+mongoose.set('strictQuery', true);
+mongoose.connect(config.mongoose.url).then(() => {
+  logger.info('Connected to MongoDB');
+  server = app.listen(config.port, () => {
+    logger.info(`Listening to port ${config.port}`);
+  });
 });
 
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/agents', userRouter);
-app.use('/api/v1/properties', propertyRouter);
-app.use('/api/v1/reviews', reviewRouter);
-
-const port = process.env.PORT || 5000;
-
-const startServer = async () => {
-  try {
-    // Connect to the database
-    await connectToDatabase(process.env.MONGODB_URI || '');
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
+const exitHandler = () => {
+  if (server) {
+    server.close(() => {
+      logger.info('Server closed');
+      process.exit(1);
     });
-  } catch (error) {
-    console.log(error);
+  } else {
+    process.exit(1);
   }
 };
 
-startServer();
+const unexpectedErrorHandler = (error: string) => {
+  logger.error(error);
+  exitHandler();
+};
+
+process.on('uncaughtException', unexpectedErrorHandler);
+process.on('unhandledRejection', unexpectedErrorHandler);
+
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received');
+  if (server) {
+    server.close();
+  }
+});

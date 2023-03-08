@@ -1,15 +1,12 @@
-const express = require('express');
-const {
-  getSpecificReviews,
-  getReviews,
-  createReview,
-} = require('../controllers/review.controller');
+import express from 'express';
+import { getSpecificReviews } from '../controllers/review.controller';
+import { createReviewController, getReviewController, getReviewsController } from '../controllers/review.controller.v2';
 
 const router = express.Router();
 
-router.route('/').get(getReviews);
-router.route('/').post(createReview);
-router.route('/:id').get(getSpecificReviews);
+router.route('/').get(getReviewsController);
+router.route('/').post(createReviewController);
+// TODO Change this to get review by id
+router.route('/:reviewId').get(getSpecificReviews);
 
-module.exports = router;
-export {};
+export default router;

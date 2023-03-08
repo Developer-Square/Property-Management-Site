@@ -1,5 +1,5 @@
-const Review = require('../mongodb/models/review');
-const mongoose = require('mongoose');
+import Review from '../mongodb/models/review';
+import mongoose from 'mongoose';
 const cloudinary = require('cloudinary').v2;
 
 require('dotenv').config();
@@ -9,7 +9,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const createReview = async (req, res) => {
+export const createReview = async (req, res) => {
   try {
     const { name, avatar, comment, rating, status } = req.body;
 
@@ -27,7 +27,7 @@ const createReview = async (req, res) => {
   }
 };
 
-const getReviews = async (req, res) => {
+export const getReviews = async (req, res) => {
   try {
     const { _end, _start } = req.query;
     const count = await Review.countDocuments({});
@@ -47,7 +47,7 @@ const getReviews = async (req, res) => {
   }
 };
 
-const getSpecificReviews = async (req, res) => {
+export const getSpecificReviews = async (req, res) => {
   try {
     const { status = '' } = req.query;
     const query = {};
@@ -69,6 +69,3 @@ const getSpecificReviews = async (req, res) => {
   }
 };
 
-module.exports = { getSpecificReviews, getReviews, createReview };
-
-export {};

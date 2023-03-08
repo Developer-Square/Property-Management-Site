@@ -1,19 +1,12 @@
-const express = require('express');
-const {
-  createProperty,
-  deleteProperty,
-  getAllProperties,
-  getPropertyDetail,
-  updateProperty,
-} = require('../controllers/property.controller');
+import express from 'express';
+import { createPropertyController, deletePropertyController, getPropertiesController, getPropertyController, updatePropertyController } from "../controllers/property.controller.v2";
 
 const router = express.Router();
 
-router.route('/').get(getAllProperties);
-router.route('/').post(createProperty);
-router.route('/:id').get(getPropertyDetail);
-router.route('/:id').patch(updateProperty);
-router.route('/:id').delete(deleteProperty);
+router.route('/').get(getPropertiesController);
+router.route('/').post(createPropertyController);
+router.route('/:propertyId').get(getPropertyController);
+router.route('/:propertyId').patch(updatePropertyController);
+router.route('/:propertyId').delete(deletePropertyController);
 
-module.exports = router;
-export {};
+export default router;

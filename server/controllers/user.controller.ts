@@ -1,6 +1,6 @@
-const User = require('../mongodb/models/user');
+import User from '../mongodb/models/user';
 const Property = require('../mongodb/models/property');
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const cloudinary = require('cloudinary').v2;
 
 const getAllUsers = async (req, res) => {
@@ -127,7 +127,7 @@ const deleteUser = async (req, res) => {
 
     const properties = userToDelete.allProperties;
 
-    if (properties.length) {
+    if (properties && properties.length) {
       properties.map(async (id) => {
         const session = await mongoose.startSession();
         session.startTransaction();
