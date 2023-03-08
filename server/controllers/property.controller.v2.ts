@@ -6,7 +6,6 @@ import ApiError from '../errors/ApiError';
 import pick from '../utils/pick';
 import { createProperty, queryProperties, getPropertyById, updatePropertyById, deletePropertyById } from '../services/property.service';
 import { IPaginationOptions } from '../mongodb/plugins/paginate';
-import { IPropertyDoc } from '../mongodb/models/property';
 import { checkUser } from '../services/auth.service';
 
 export const createPropertyController = catchAsync(async (req: Request, res: Response) => {
@@ -40,14 +39,14 @@ export const getPropertyController = catchAsync(async (req: Request, res: Respon
 
 export const updatePropertyController = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['propertyId'] === 'string') {
-    const property = await updatePropertyById(new mongoose.Types.ObjectId(req.params['propertyId']), req.body);
+    const property = await updatePropertyById(new mongoose.Types.ObjectId(req.params['propertyId']), req.body, req.user);
     res.send(property);
   }
 });
 
 export const deletePropertyController = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['propertyId'] === 'string') {
-    await deletePropertyById(new mongoose.Types.ObjectId(req.params['propertyId']));
+    await deletePropertyById(new mongoose.Types.ObjectId(req.params['propertyId']), req.user);
     res.status(httpStatus.NO_CONTENT).send();
   }
 });

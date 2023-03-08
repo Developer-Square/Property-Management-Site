@@ -34,14 +34,14 @@ export const getUserController = catchAsync(async (req: Request, res: Response) 
 
 export const updateUserController = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
-    const user = await updateUserById(new mongoose.Types.ObjectId(req.params['userId']), req.body);
+    const user = await updateUserById(new mongoose.Types.ObjectId(req.params['userId']), req.body, req.user);
     res.send(user);
   }
 });
 
 export const deleteUserController = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
-    await deleteUserById(new mongoose.Types.ObjectId(req.params['userId']));
+    await deleteUserById(new mongoose.Types.ObjectId(req.params['userId']), req.user);
     res.status(httpStatus.NO_CONTENT).send();
   }
 });

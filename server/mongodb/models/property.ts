@@ -12,7 +12,7 @@ const propertySchema = new mongoose.Schema<IPropertyDoc, IPropertyModel>({
   location: { type: String, required: true },
   price: { type: Number, required: true },
   photos: [{ type: String, required: true }],
-  creator: { type: mongoose.Schema.Types.ObjectId, ref: 'Property' },
+  creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 },
 {
   timestamps: true,

@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
+import { Roles } from '../config/roles';
 import { ApiError } from '../errors';
 import Token, { TokenTypes } from '../mongodb/models/token';
 import User, { IUser, IUserDoc, IUserWithTokens } from '../mongodb/models/user';
@@ -15,7 +16,10 @@ import { getUserByEmail, getUserById, updateUserById } from './user.service';
  */
 export const loginUserWithEmailAndPassword = async (email: string, password: string): Promise<IUserDoc> => {
     const user = await getUserByEmail(email);
-    if (!user || !(await user.isPasswordMatch(password))) {
+    if (!user || (user && !user.password)) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Please login with Google');
+    }
+    if (!(await user.isPasswordMatch(password))) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
     }
     return user;
@@ -109,4 +113,16 @@ export const checkUser = (user?: Express.User): IUserDoc => {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized');
     }
     return user as IUserDoc;
+}
+
+/**
+ * Confirms that the user is the one who created the record
+ * @param creator User who created the record
+ * @param user logged in user
+ */
+export const confirmUserPermissions = (creator: IUserDoc, user?: Express.User) => {
+    const authUser = checkUser(user);
+    if ((authUser.role !== Roles.ADMIN) && (authUser._id.toString() !== creator._id.toString())) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
+    }
 }

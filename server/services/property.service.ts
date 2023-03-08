@@ -5,6 +5,7 @@ import { ApiError } from '../errors';
 import { IPaginationOptions, QueryResult } from '../mongodb/plugins/paginate';
 import { uploadManyPhotos } from './cloudinary.service';
 import { IUserDoc } from '../mongodb/models/user';
+import { checkUser, confirmUserPermissions } from './auth.service';
 
 /**
  * Create a property
@@ -56,12 +57,14 @@ export const getPropertyInfoById = async (id: mongoose.Types.ObjectId): Promise<
  */
 export const updatePropertyById = async (
     propertyId: mongoose.Types.ObjectId,
-    updateBody: Partial<IProperty>
+    updateBody: Partial<IProperty>,
+    loggedInUser?: Express.User
   ): Promise<IPropertyDoc | null> => {
     const property = await getPropertyInfoById(propertyId);
     if (!property) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Property not found');
     }
+    confirmUserPermissions(property.creator, loggedInUser);
 
     if (updateBody.photos) {
         const uploadedPhotos = await uploadManyPhotos(updateBody.photos);
@@ -78,11 +81,15 @@ export const updatePropertyById = async (
  * @param {mongoose.Types.ObjectId} propertyId
  * @returns {Promise<void>}
  */
-export const deletePropertyById = async (propertyId: mongoose.Types.ObjectId): Promise<void> => {
+export const deletePropertyById = async (
+    propertyId: mongoose.Types.ObjectId, 
+    loggedInUser?: Express.User
+): Promise<void> => {
     const property = await getPropertyInfoById(propertyId);
     if (!property) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Property not found');
     }
+    confirmUserPermissions(property.creator, loggedInUser);
 
     const session = await mongoose.startSession();
     session.startTransaction();

@@ -142,9 +142,6 @@ class Api {
                 createUser: (data: any) => this.instance.post(`users/`, data),
                 updateUser: (id: string, data: any) => this.instance.patch(`users/${id}`, data),
                 deleteUser: (id: string) => this.instance.delete(`users/${id}`),
-                approveUser: (id: string) => this.instance.post(`approve/${id}`),
-                changeRole: (id: string, data: any) => this.instance.put(`approve/${id}`, data),
-                blacklist: (id: string) => this.instance.patch(`approve/${id}`),
             }
         }
     }

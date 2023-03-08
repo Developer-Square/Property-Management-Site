@@ -5,6 +5,7 @@ import { ApiError } from '../errors';
 import { IPaginationOptions, QueryResult } from '../mongodb/plugins/paginate';
 import { uploadOnePhoto } from './cloudinary.service';
 import Property from '../mongodb/models/property';
+import { checkUser, confirmUserPermissions } from './auth.service';
 
 /**
  * Create a user
@@ -62,12 +63,14 @@ export const getUserByEmail = async (email: string): Promise<IUserDoc | null> =>
  */
 export const updateUserById = async (
     userId: mongoose.Types.ObjectId,
-    updateBody: Partial<IUser>
+    updateBody: Partial<IUser>,
+    loggedInUser?: Express.User
   ): Promise<IUserDoc | null> => {
     const user = await getUserById(userId);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
+    confirmUserPermissions(user, loggedInUser);
     if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
     }
@@ -87,11 +90,15 @@ export const updateUserById = async (
  * @param {mongoose.Types.ObjectId} userId
  * @returns {Promise<void>}
  */
-export const deleteUserById = async (userId: mongoose.Types.ObjectId): Promise<void> => {
+export const deleteUserById = async (
+    userId: mongoose.Types.ObjectId, 
+    loggedInUser?: Express.User
+    ): Promise<void> => {
     const user = await getUserInfoById(userId);
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
+    confirmUserPermissions(user, loggedInUser);
     const session = await mongoose.startSession();
     session.startTransaction();
 

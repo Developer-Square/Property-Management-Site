@@ -6,12 +6,12 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(createUserController)
-  .get(getUsersController);
+  .post(authMiddleware(), createUserController)
+  .get(authMiddleware(), getUsersController);
 router
   .route('/:userId')
-  .get(getUserController)
-  .patch(updateUserController)
-  .delete(deleteUserController);
+  .get(authMiddleware(), getUserController)
+  .patch(authMiddleware(), updateUserController)
+  .delete(authMiddleware(), deleteUserController);
 
 export default router;
