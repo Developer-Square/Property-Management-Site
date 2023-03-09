@@ -5,7 +5,7 @@ import { ApiError } from '../errors';
 import { IPaginationOptions, QueryResult } from '../mongodb/plugins/paginate';
 import { uploadOnePhoto } from './cloudinary.service';
 import Property from '../mongodb/models/property';
-import { checkUser, confirmUserPermissions } from './auth.service';
+import { confirmUserPermissions } from './auth.service';
 
 /**
  * Create a user
@@ -70,7 +70,7 @@ export const updateUserById = async (
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
-    confirmUserPermissions(user, loggedInUser);
+    await confirmUserPermissions(user, loggedInUser);
     if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
     }
@@ -98,7 +98,7 @@ export const deleteUserById = async (
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
-    confirmUserPermissions(user, loggedInUser);
+    await confirmUserPermissions(user, loggedInUser);
     const session = await mongoose.startSession();
     session.startTransaction();
 

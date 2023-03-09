@@ -9,7 +9,7 @@ import { IPaginationOptions } from '../mongodb/plugins/paginate';
 import { checkUser } from '../services/auth.service';
 
 export const createPropertyController = catchAsync(async (req: Request, res: Response) => {
-  const user = checkUser(req.user)
+  const user = await checkUser(req.user)
   const property = await createProperty(req.body, user);
   res.status(httpStatus.CREATED).send(property);
 });

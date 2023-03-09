@@ -48,13 +48,13 @@ export const resetPasswordController = catchAsync(async (req: Request, res: Resp
 });
 
 export const setPasswordController = catchAsync(async (req: Request, res: Response) => {
-  const user = checkUser(req.user);
+  const user = await checkUser(req.user);
   await updateUserById(user._id, { password: req.body.password });
   res.status(httpStatus.NO_CONTENT).send();
 });
 
 export const sendVerificationEmailController = catchAsync(async (req: Request, res: Response) => {
-  const user = checkUser(req.user);
+  const user = await checkUser(req.user);
   const verifyEmailToken = await generateVerifyEmailToken(user);
   await sendVerificationEmail(user.email, verifyEmailToken, user.name);
   res.status(httpStatus.NO_CONTENT).send();

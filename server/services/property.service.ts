@@ -5,7 +5,7 @@ import { ApiError } from '../errors';
 import { IPaginationOptions, QueryResult } from '../mongodb/plugins/paginate';
 import { uploadManyPhotos } from './cloudinary.service';
 import { IUserDoc } from '../mongodb/models/user';
-import { checkUser, confirmUserPermissions } from './auth.service';
+import { confirmUserPermissions } from './auth.service';
 
 /**
  * Create a property
@@ -64,7 +64,7 @@ export const updatePropertyById = async (
     if (!property) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Property not found');
     }
-    confirmUserPermissions(property.creator, loggedInUser);
+    await confirmUserPermissions(property.creator, loggedInUser);
 
     if (updateBody.photos) {
         const uploadedPhotos = await uploadManyPhotos(updateBody.photos);
@@ -89,7 +89,7 @@ export const deletePropertyById = async (
     if (!property) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Property not found');
     }
-    confirmUserPermissions(property.creator, loggedInUser);
+    await confirmUserPermissions(property.creator, loggedInUser);
 
     const session = await mongoose.startSession();
     session.startTransaction();

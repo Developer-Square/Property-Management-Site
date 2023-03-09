@@ -108,11 +108,11 @@ export const verifyEmail = async (verifyEmailToken: any): Promise<IUserDoc | nul
  * @param user logged in user
  * @returns logged in user
  */
-export const checkUser = (user?: Express.User): IUserDoc => {
+export const checkUser = async (user?: Express.User): Promise<IUserDoc> => {
     if (!user) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized');
     }
-    return user as IUserDoc;
+    return Promise.resolve(user as IUserDoc);
 }
 
 /**
@@ -120,8 +120,8 @@ export const checkUser = (user?: Express.User): IUserDoc => {
  * @param creator User who created the record
  * @param user logged in user
  */
-export const confirmUserPermissions = (creator: IUserDoc, user?: Express.User) => {
-    const authUser = checkUser(user);
+export const confirmUserPermissions = async (creator: IUserDoc, user?: Express.User) => {
+    const authUser = await checkUser(user);
     if ((authUser.role !== Roles.ADMIN) && (authUser._id.toString() !== creator._id.toString())) {
         throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
     }
