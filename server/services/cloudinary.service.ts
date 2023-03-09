@@ -1,4 +1,4 @@
-const cloudinary = require('cloudinary').v2;
+import { v2 as cloudinary } from 'cloudinary';
 import { config } from "../config";
 
 cloudinary.config({
@@ -17,7 +17,7 @@ export const uploadOnePhoto = async (url: string): Promise<string> => {
         return url;
     }
     const result = await cloudinary.uploader.upload(url);
-    return result.url as string;
+    return result.url;
 }
 
 /**
@@ -31,7 +31,7 @@ export const uploadManyPhotos = async (urls: string[]): Promise<string[]> => {
             return url;
         }
         const result = await cloudinary.uploader.upload(url);
-        return result.url as string;
+        return result.url;
     })
     return Promise.all(photos);
 }
