@@ -123,6 +123,7 @@ export const checkUser = async (user?: Express.User): Promise<IUserDoc> => {
 export const confirmUserPermissions = async (creator: IUserDoc, user?: Express.User) => {
     const authUser = await checkUser(user);
     if ((authUser.role !== Roles.ADMIN) && (authUser._id.toString() !== creator._id.toString())) {
-        throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
+        return Promise.reject(new ApiError(httpStatus.FORBIDDEN, 'Forbidden'));
     }
+    return Promise.resolve();
 }
