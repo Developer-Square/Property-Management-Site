@@ -6,13 +6,13 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(authMiddleware(), getPropertiesController)
-    .post(authMiddleware(), createPropertyController);
+    .get(getPropertiesController)
+    .post(createPropertyController);
 
 router
     .route('/:propertyId')
-    .get(authMiddleware(), getPropertyController)
-    .patch(authMiddleware(), updatePropertyController)
-    .delete(authMiddleware(), deletePropertyController);
+    .get(getPropertyController)
+    .patch(updatePropertyController)
+    .delete(deletePropertyController);
 
 export default router;

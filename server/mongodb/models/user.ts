@@ -1,13 +1,11 @@
 import mongoose, { Model, Document, Types, FilterQuery } from 'mongoose';
 import bcrypt from 'bcryptjs';
-import type { toZod } from "tozod";
 import { z } from "zod";
 import { AccessAndRefreshTokens } from './token';
 import { roles } from '../../config';
 import paginate, { IPaginationOptions, QueryResult } from '../plugins/paginate';
 import { Roles } from '../../config/roles';
 import { IPropertyDoc } from './property';
-import { createSchema } from '../../utils/createSchema';
 
 const userSchema = new mongoose.Schema<IUserDoc, IUserModel>({
   name: {

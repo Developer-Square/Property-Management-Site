@@ -7,8 +7,8 @@ const router = express.Router();
 
 router
     .route('/')
-    .get(authMiddleware(), getReviewsController)
-    .post(authMiddleware(), createReviewController);
+    .get(getReviewsController)
+    .post(createReviewController);
 // TODO Change this to get review by id
 router.route('/:reviewId').get(getSpecificReviews);
 
