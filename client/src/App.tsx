@@ -20,7 +20,6 @@ import {
 import dataProvider from '@pankod/refine-simple-rest';
 import routerProvider from '@pankod/refine-react-router-v6';
 import axios, { AxiosRequestConfig } from 'axios';
-import { io } from "socket.io-client";
 
 import { ColorModeContextProvider } from 'contexts';
 import { Title, Sider, Layout, Header } from 'components/layout';
@@ -45,8 +44,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import EditAgent from 'pages/edit-agent';
 import Reviews from 'pages/reviews';
 import Messages from 'pages/messages';
-
-const socket = io('http://localhost:5000');
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
