@@ -137,7 +137,7 @@ const MessagesList = ({
               active={index === 0}
               avatar={user.avatar}
               name={user.name}
-              message={messages[index]}
+              message={messages[index] ?? messages[0]}
               time={timeString12hr()}
               mode={mode}
             />
