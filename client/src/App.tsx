@@ -20,6 +20,7 @@ import {
 import dataProvider from '@pankod/refine-simple-rest';
 import routerProvider from '@pankod/refine-react-router-v6';
 import axios, { AxiosRequestConfig } from 'axios';
+
 import { ColorModeContextProvider } from 'contexts';
 import { Title, Sider, Layout, Header } from 'components/layout';
 import { CredentialResponse } from 'interfaces/google';
@@ -47,7 +48,7 @@ import VideoCall from 'pages/video-call';
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('accessToken');
   if (request.headers) {
     request.headers['Authorization'] = `Bearer ${token}`;
   } else {
@@ -66,15 +67,14 @@ function App() {
 
       if (profileObj) {
         const response = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL}/api/v1/users`,
+          `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/google`,
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              name: profileObj.name,
-              email: profileObj.email,
+              ...profileObj,
               avatar: profileObj.picture,
             }),
           }
@@ -83,28 +83,23 @@ function App() {
         const data = await response.json();
 
         if (response.status === 200) {
-          localStorage.setItem(
-            'user',
-            JSON.stringify({
-              ...profileObj,
-              avatar: profileObj.picture,
-              userid: data._id,
-            })
-          );
+          localStorage.setItem('accessToken', data.tokens.access.token);
+          localStorage.setItem('accessTokenExpires', data.tokens.access.expires);
+          localStorage.setItem('refreshToken', data.tokens.refresh.token);
+          localStorage.setItem('user', JSON.stringify({ ...data.user, userid: data.user._id }));
         } else {
           return Promise.reject();
         }
       }
 
-      localStorage.setItem('token', `${credential}`);
-
       return Promise.resolve();
     },
     logout: () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('accessToken');
 
       if (token && typeof window !== 'undefined') {
-        localStorage.removeItem('token');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         axios.defaults.headers.common = {};
         window.google?.accounts.id.revoke(token, () => {
@@ -116,9 +111,9 @@ function App() {
     },
     checkError: () => Promise.resolve(),
     checkAuth: async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('accessToken');
 
-      if (token) {
+      if (token){
         return Promise.resolve();
       }
       return Promise.reject();

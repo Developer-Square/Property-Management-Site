@@ -1,4 +1,5 @@
-const Property = require('../mongodb/models/property');
+import Property, { IPropertyWithUserDetails } from '../mongodb/models/property';
+import { Request } from 'express';
 const User = require('../mongodb/models/user');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
@@ -46,6 +47,9 @@ const getAllProperties = async (req, res) => {
       .skip(_start)
       .sort({ [_sort]: _order });
 
+    const testResult = await Property.paginate(query, { _end, _start, _sort, _order });
+    console.log({ docs: testResult.docs });
+
     res.header('x-total-count', count);
     res.header('Access-Control-Expose-Headers', 'x-total-count');
 
@@ -66,7 +70,7 @@ const getPropertyDetail = async (req, res) => {
     res.status(404).json({ message: 'Property not found' });
   }
 };
-const createProperty = async (req, res) => {
+const createProperty = async (req: Request, res) => {
   try {
     const {
       title,
@@ -167,7 +171,9 @@ const deleteProperty = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const propertyToDelete = await Property.findOne({ _id: id });
+    const propertyToDelete = await Property.findOne({ _id: id }).populate(
+      'creator'
+    ) as IPropertyWithUserDetails;
 
     if (!propertyToDelete) throw new Error('Property not found!');
 
