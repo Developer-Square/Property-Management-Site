@@ -31,8 +31,9 @@ const CreateProperty = () => {
 
   const onFinishHandler = async (data: FieldValues) => {
     if (!propertyImage.length) return alert('Please upload a property image');
+    const imageUrls = propertyImage.map((image) => image.url);
 
-    await onFinish({ ...data, photos: propertyImage, email: user.email });
+    await onFinish({ ...data, photos: imageUrls, email: user.email });
   };
 
   return (
