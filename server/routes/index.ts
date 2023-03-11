@@ -22,6 +22,10 @@ const defaultIRoute: IRoute[] = [
     route: userRoute,
   },
   {
+    path: '/agents',
+    route: userRoute,
+  },
+  {
     path: '/reviews',
     route: reviewRoute,
   },

@@ -35,7 +35,7 @@ class Api {
                 const originalReq = err.config;
                 if (err.response !== undefined) {
                     //To stop the refresh token from being sent when logging in
-                    if (this.getRefreshToken() != null) {
+                    if (this.getRefreshToken() !== null) {
                         if (err.response.status === 401 && err.config) {
                             let res = fetch(`${API_URL}auth/refresh-tokens`, {
                                 method: 'POST',
