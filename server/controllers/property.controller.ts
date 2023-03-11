@@ -1,6 +1,6 @@
 import Property, { IPropertyWithUserDetails } from '../mongodb/models/property';
 import { Request } from 'express';
-const User = require('../mongodb/models/user');
+import User from '../mongodb/models/user';
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 
@@ -47,7 +47,12 @@ const getAllProperties = async (req, res) => {
       .skip(_start)
       .sort({ [_sort]: _order });
 
-    const testResult = await Property.paginate(query, { _end, _start, _sort, _order });
+    const testResult = await Property.paginate(query, {
+      _end,
+      _start,
+      _sort,
+      _order,
+    });
     console.log({ docs: testResult.docs });
 
     res.header('x-total-count', count);
@@ -70,7 +75,7 @@ const getPropertyDetail = async (req, res) => {
     res.status(404).json({ message: 'Property not found' });
   }
 };
-const createProperty = async (req: Request, res) => {
+export const createProperty = async (req: Request, res) => {
   try {
     const {
       title,
@@ -82,7 +87,7 @@ const createProperty = async (req: Request, res) => {
       photos,
       email,
     } = req.body;
-    const cloudinaryLinks = [];
+    const cloudinaryLinks: any[] = [];
 
     // Start a new Mongodb session
     const session = await mongoose.startSession();
@@ -96,7 +101,7 @@ const createProperty = async (req: Request, res) => {
     }
 
     photos.map(async (item) => {
-      const photoUrl = await cloudinary.uploader.upload(item.url);
+      const photoUrl = await cloudinary.uploader.upload(item);
       cloudinaryLinks.push(photoUrl.url);
 
       if (cloudinaryLinks.length === photos.length) {
@@ -123,7 +128,7 @@ const createProperty = async (req: Request, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-const updateProperty = async (req, res) => {
+export const updateProperty = async (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -135,7 +140,7 @@ const updateProperty = async (req, res) => {
       price,
       photos,
     } = req.body;
-    const cloudinaryLinks = [];
+    const cloudinaryLinks: any[] = [];
 
     photos.map(async (item) => {
       if (item.includes('https://res.cloudinary.com')) {
@@ -171,9 +176,9 @@ const deleteProperty = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const propertyToDelete = await Property.findOne({ _id: id }).populate(
+    const propertyToDelete = (await Property.findOne({ _id: id }).populate(
       'creator'
-    ) as IPropertyWithUserDetails;
+    )) as IPropertyWithUserDetails;
 
     if (!propertyToDelete) throw new Error('Property not found!');
 
@@ -199,4 +204,3 @@ module.exports = {
   updateProperty,
   deleteProperty,
 };
-export {};
