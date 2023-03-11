@@ -107,7 +107,7 @@ const LatestSales = () => {
               />
             ))
           ) : (
-            <></>
+            <Typography>No Sales yet</Typography>
           )}
         </Box>
       </Stack>

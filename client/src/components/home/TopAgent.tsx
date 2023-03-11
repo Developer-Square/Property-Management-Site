@@ -101,7 +101,7 @@ const TopAgent = () => {
               />
             ))
           ) : (
-            <></>
+            <Typography>No Agents yet</Typography>
           )}
         </Box>
       </Stack>
