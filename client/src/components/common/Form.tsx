@@ -15,6 +15,8 @@ import {
 import { FormProps } from 'interfaces/common';
 import CustomButton from './CustomButton';
 import ImageView from './ImageView';
+import { ArrowBackIosOutlined } from '@mui/icons-material';
+import { useNavigate } from '@pankod/refine-react-router-v6';
 
 const Form = ({
   type,
@@ -28,6 +30,8 @@ const Form = ({
   setBackendImages,
   mode,
 }: FormProps) => {
+  const navigate = useNavigate();
+
   const handleRemoveImage = (img: string) => {
     // filter out the image from the images array then set the state
     const filteredImages = backendImages?.filter((image) => image !== img);
@@ -35,13 +39,24 @@ const Form = ({
   };
   return (
     <Box>
-      <Typography
-        fontSize={25}
-        fontWeight={700}
-        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
-      >
-        {type} a Property
-      </Typography>
+      <Stack direction='row' alignItems='center'>
+        <ArrowBackIosOutlined
+          sx={{
+            color: mode === 'light' ? '#11142d' : '#EFEFEF',
+            marginRight: '15px',
+            fontSize: '19px',
+            cursor: 'pointer',
+          }}
+          onClick={() => navigate(-1)}
+        />
+        <Typography
+          fontSize={25}
+          fontWeight={700}
+          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+        >
+          {type} a Property
+        </Typography>
+      </Stack>
 
       <Box
         mt={2.5}
