@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useGetIdentity } from '@pankod/refine-core';
 import { FieldValues, useForm } from '@pankod/refine-react-hook-form';
 
 import { Form } from 'components';
 import { Box } from '@pankod/refine-mui';
+import { ColorModeContext } from 'contexts';
 
 const CreateProperty = () => {
   const { data: user } = useGetIdentity();
@@ -15,6 +16,7 @@ const CreateProperty = () => {
     register,
     handleSubmit,
   } = useForm();
+  const { mode } = useContext(ColorModeContext);
 
   const handleImageChange = (file: File) => {
     const reader = (readFile: File) =>
@@ -47,6 +49,7 @@ const CreateProperty = () => {
         propertyImage={propertyImage}
         handleImageChange={handleImageChange}
         onFinishHandler={onFinishHandler}
+        mode={mode}
       />
     </Box>
   );

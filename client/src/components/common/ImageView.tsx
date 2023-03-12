@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Close } from '@mui/icons-material';
 import { Stack } from '@pankod/refine-mui';
+import { ColorModeContext } from 'contexts';
 
 const ImageView = ({
   backendImages,
@@ -9,13 +10,18 @@ const ImageView = ({
   backendImages: string[];
   handleRemoveImage: (img: string) => void;
 }) => {
+  const { mode } = useContext(ColorModeContext);
+
   return (
     <>
       {backendImages.map((image: string, index: number) => (
         <Stack direction='column' key={index}>
           <Close
             onClick={() => handleRemoveImage(image)}
-            sx={{ color: '#11142d', cursor: 'pointer' }}
+            sx={{
+              color: mode === 'light' ? '#11142d' : '#EFEFEF',
+              cursor: 'pointer',
+            }}
           />
           <img
             src={image}

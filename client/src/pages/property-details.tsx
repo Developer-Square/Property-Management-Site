@@ -1,7 +1,12 @@
 /* eslint-disable no-restricted-globals */
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Typography, Box, Stack, Rating } from '@pankod/refine-mui';
-import { useDelete, useGetIdentity, useShow } from '@pankod/refine-core';
+import {
+  useDelete,
+  useGetIdentity,
+  useOne,
+  useShow,
+} from '@pankod/refine-core';
 import { useParams, useNavigate } from '@pankod/refine-react-router-v6';
 import {
   ArrowBackIosOutlined,
@@ -16,6 +21,7 @@ import {
   WifiOutlined,
 } from '@mui/icons-material';
 import { ImageViewer, PropertyDetailsAgent } from 'components';
+import { ColorModeContext } from 'contexts';
 
 const checkImage = (url: any) => {
   const img = new Image();
@@ -31,17 +37,30 @@ const PropertyDetails = () => {
   const { mutate } = useDelete();
   const { queryResult } = useShow();
   const [value, setValue] = React.useState(4);
+  const { mode } = useContext(ColorModeContext);
 
   const { data, isError, isLoading: isPropertyLoading } = queryResult;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const propertyDetails = data?.data || {};
 
+  const {
+    data: agentData,
+    isLoading: isUserLoading,
+    isError: isUserError,
+  } = useOne({
+    resource: 'users',
+    id: propertyDetails.creator,
+  });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const agentDetails = agentData?.data ?? [];
+
   const isCurrentUser = useMemo(() => {
-    if (identity && Object.keys(propertyDetails).length > 0) {
-      return identity.email === propertyDetails.creator.email;
+    if (identity && Object.keys(agentDetails).length > 0) {
+      return identity.email === agentDetails.email;
     }
-  }, [identity, propertyDetails]);
+  }, [identity, agentDetails]);
 
   const handleDeleteProperty = () => {
     const response = confirm('Are you sure you want to delete this property?');
@@ -55,9 +74,9 @@ const PropertyDetails = () => {
     }
   };
 
-  if (isLoading || isPropertyLoading)
+  if (isLoading || isPropertyLoading || isUserLoading)
     return <Typography>Loading...</Typography>;
-  if (isError) return <Typography>Error!</Typography>;
+  if (isError || isUserError) return <Typography>Error!</Typography>;
 
   return (
     <Box
@@ -65,21 +84,25 @@ const PropertyDetails = () => {
       sx={{
         borderRadius: '15px',
         padding: '20px',
-        backgroundColor: '#fcfcfc',
+        backgroundColor: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
         width: '100%',
       }}
     >
       <Stack direction='row' alignItems='center'>
         <ArrowBackIosOutlined
           sx={{
-            color: '#11142d',
+            color: mode === 'light' ? '#11142d' : '#EFEFEF',
             marginRight: '15px',
             fontSize: '19px',
             cursor: 'pointer',
           }}
           onClick={() => navigate(-1)}
         />
-        <Typography fontSize={25} fontWeight={700} color='#11142d'>
+        <Typography
+          fontSize={25}
+          fontWeight={700}
+          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+        >
           Details
         </Typography>
       </Stack>
@@ -101,7 +124,7 @@ const PropertyDetails = () => {
               <Typography
                 fontSize={18}
                 fontWeight={500}
-                color='#11142d'
+                color={mode === 'light' ? '#11142d' : '#EFEFEF'}
                 textTransform='capitalize'
               >
                 {propertyDetails.propertyType}
@@ -127,7 +150,7 @@ const PropertyDetails = () => {
                 <Typography
                   fontSize={22}
                   fontWeight={600}
-                  color='#11142d'
+                  color={mode === 'light' ? '#11142d' : '#EFEFEF'}
                   textTransform='capitalize'
                 >
                   {propertyDetails.title}
@@ -145,7 +168,7 @@ const PropertyDetails = () => {
                   fontSize={16}
                   fontWeight={600}
                   mt='10px'
-                  color='#11142D'
+                  color={mode === 'light' ? '#11142d' : '#EFEFEF'}
                 >
                   Price
                 </Typography>
@@ -169,7 +192,7 @@ const PropertyDetails = () => {
                 mb='20px'
                 fontSize={18}
                 fontWeight={500}
-                color='#11142D'
+                color={mode === 'light' ? '#11142d' : '#EFEFEF'}
               >
                 Facility
               </Typography>
@@ -184,25 +207,41 @@ const PropertyDetails = () => {
               >
                 <Stack direction='row' gap='7px'>
                   <BedOutlined />
-                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                  <Typography
+                    fontSize={14}
+                    fontWeight={500}
+                    color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                  >
                     4 Beds
                   </Typography>
                 </Stack>
                 <Stack direction='row' gap='7px'>
                   <BathtubOutlined />
-                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                  <Typography
+                    fontSize={14}
+                    fontWeight={500}
+                    color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                  >
                     2 Baths
                   </Typography>
                 </Stack>
                 <Stack direction='row' gap='7px'>
                   <GpsFixedOutlined />
-                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                  <Typography
+                    fontSize={14}
+                    fontWeight={500}
+                    color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                  >
                     28M Area
                   </Typography>
                 </Stack>
                 <Stack direction='row' gap='7px' mt={{ xs: '10px', sm: '0px' }}>
                   <SmokingRoomsOutlined />
-                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                  <Typography
+                    fontSize={14}
+                    fontWeight={500}
+                    color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                  >
                     Smoking Area
                   </Typography>
                 </Stack>
@@ -219,25 +258,41 @@ const PropertyDetails = () => {
               >
                 <Stack direction='row' gap='7px'>
                   <KitchenOutlined />
-                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                  <Typography
+                    fontSize={14}
+                    fontWeight={500}
+                    color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                  >
                     Kitchen
                   </Typography>
                 </Stack>
                 <Stack direction='row' gap='7px'>
                   <BalconyOutlined />
-                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                  <Typography
+                    fontSize={14}
+                    fontWeight={500}
+                    color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                  >
                     Balcony
                   </Typography>
                 </Stack>
                 <Stack direction='row' gap='7px'>
                   <WifiOutlined />
-                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                  <Typography
+                    fontSize={14}
+                    fontWeight={500}
+                    color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                  >
                     Wifi
                   </Typography>
                 </Stack>
                 <Stack direction='row' gap='7px' mt={{ xs: '10px', sm: '0px' }}>
                   <LocalParkingOutlined />
-                  <Typography fontSize={14} fontWeight={500} color='#11142D'>
+                  <Typography
+                    fontSize={14}
+                    fontWeight={500}
+                    color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+                  >
                     Parking
                   </Typography>
                 </Stack>
@@ -245,7 +300,10 @@ const PropertyDetails = () => {
             </Stack>
 
             <Stack mt='25px' direction='column' gap='10px'>
-              <Typography fontSize={18} color='#11142D'>
+              <Typography
+                fontSize={18}
+                color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+              >
                 Description
               </Typography>
               <Typography fontSize={14} color='#808191'>
@@ -260,6 +318,8 @@ const PropertyDetails = () => {
           handleDeleteProperty={handleDeleteProperty}
           propertyDetails={propertyDetails}
           isCurrentUser={isCurrentUser}
+          mode={mode}
+          agentDetails={agentDetails}
         />
       </Box>
     </Box>

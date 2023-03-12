@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Typography, Stack } from '@pankod/refine-mui';
 import { useNavigate, useParams } from '@pankod/refine-react-router-v6';
 import { FieldValues, useForm } from '@pankod/refine-react-hook-form';
 
 import { CreateAgentImg } from 'assets';
 import { CreateAgentForm, CustomButton } from 'components';
+import { ColorModeContext } from 'contexts';
 
 // Todo: Only admins can edit agents
 // Hide update agent button from agents page
@@ -17,6 +18,7 @@ const EditAgent = () => {
   } = useForm();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { mode } = useContext(ColorModeContext);
 
   useEffect(() => {
     if (!profileUrl.length) {
@@ -61,7 +63,11 @@ const EditAgent = () => {
 
   return (
     <Box mt={{ xs: '45px', lg: '0px' }}>
-      <Typography fontSize={25} fontWeight={700} color='#11142d'>
+      <Typography
+        fontSize={25}
+        fontWeight={700}
+        color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+      >
         Update Agent
       </Typography>
       <Box
@@ -70,7 +76,7 @@ const EditAgent = () => {
           display: 'flex',
           flexDirection: 'column',
           borderRadius: '15px',
-          backgroundColor: '#fcfcfc',
+          backgroundColor: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
           paddingBottom: '60px',
         }}
       >
@@ -109,7 +115,11 @@ const EditAgent = () => {
             marginBottom: '20px',
           }}
         >
-          <Typography fontSize={18} fontWeight={600} color='#11142D'>
+          <Typography
+            fontSize={18}
+            fontWeight={600}
+            color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+          >
             Agent Details
           </Typography>
           <CreateAgentForm
@@ -117,6 +127,7 @@ const EditAgent = () => {
             profileUrl={profileUrl}
             setProfileUrl={setProfileUrl}
             handleImageChange={handleImageChange}
+            mode={mode}
           />
         </Box>
       </Box>
