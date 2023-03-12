@@ -100,7 +100,7 @@ const PropertyDetailsAgent = ({
             icon={isCurrentUser ? <Edit /> : <ChatBubble />}
             handleClick={() => {
               if (isCurrentUser) {
-                navigate(`/properties/edit/${agentDetails._id}`);
+                navigate(`/properties/edit/${propertyDetails._id}`);
               }
             }}
           />

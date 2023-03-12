@@ -50,7 +50,7 @@ const PropertyDetails = () => {
     isError: isUserError,
   } = useOne({
     resource: 'users',
-    id: propertyDetails.creator,
+    id: propertyDetails?.creator,
   });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
