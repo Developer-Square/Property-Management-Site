@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useGetIdentity } from '@pankod/refine-core';
 import { FieldValues, useForm } from '@pankod/refine-react-hook-form';
 import Form from 'components/common/Form';
 import { useParams } from '@pankod/refine-react-router-v6';
 import { Box } from '@pankod/refine-mui';
+import { ColorModeContext } from 'contexts';
 
 const EditProperty = () => {
   const { data: user } = useGetIdentity();
@@ -14,6 +15,7 @@ const EditProperty = () => {
     handleSubmit,
   } = useForm();
   const { id } = useParams();
+  const { mode } = useContext(ColorModeContext);
 
   useEffect(() => {
     if (backendImages.length) {
@@ -68,6 +70,7 @@ const EditProperty = () => {
         onFinishHandler={onFinishHandler}
         backendImages={backendImages}
         setBackendImages={setBackendImages}
+        mode={mode}
       />
     </Box>
   );

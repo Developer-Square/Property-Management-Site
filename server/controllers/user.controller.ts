@@ -133,27 +133,19 @@ const deleteUser = async (req, res) => {
 
     if (!userToDelete) throw new Error('Property not found!');
 
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
     const properties = userToDelete.allProperties;
 
     if (properties && properties.length) {
       properties.map(async (id) => {
-        const session = await mongoose.startSession();
-        session.startTransaction();
         const propertyToDelete = await Property.findOne({ _id: id });
 
         if (!propertyToDelete) throw new Error('Property not found!');
 
-        propertyToDelete.remove({ session });
-        await session.commitTransaction();
+        propertyToDelete.remove();
       });
     }
 
-    userToDelete.remove({ session });
-
-    await session.commitTransaction();
+    userToDelete.remove();
 
     res.status(200).json({ message: 'User deleted successfully' });
   } catch (error) {

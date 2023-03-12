@@ -89,10 +89,6 @@ export const createProperty = async (req: Request, res) => {
     } = req.body;
     const cloudinaryLinks: any[] = [];
 
-    // Start a new Mongodb session
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -117,9 +113,7 @@ export const createProperty = async (req: Request, res) => {
         });
 
         user.allProperties.push(newProperty._id);
-        await user.save({ session });
-
-        await session.commitTransaction();
+        await user.save();
 
         res.status(201).json({ message: 'Property created successfully' });
       }
@@ -182,14 +176,10 @@ const deleteProperty = async (req, res) => {
 
     if (!propertyToDelete) throw new Error('Property not found!');
 
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    propertyToDelete.remove({ session });
+    propertyToDelete.remove();
     propertyToDelete.creator.allProperties.pull(propertyToDelete);
 
-    await propertyToDelete.creator.save({ session });
-    await session.commitTransaction();
+    await propertyToDelete.creator.save();
 
     res.status(200).json({ message: 'Property deleted successfully' });
   } catch (error) {
