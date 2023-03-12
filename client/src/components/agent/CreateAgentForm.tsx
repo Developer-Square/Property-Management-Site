@@ -19,12 +19,14 @@ const TextInput = ({
   fieldValue,
   register,
   placeholder,
+  mode,
 }: {
   title: string;
   type: string;
   fieldValue: string;
   register: any;
   placeholder?: string;
+  mode: string;
 }) => (
   <FormControl
     sx={{
@@ -36,7 +38,7 @@ const TextInput = ({
         fontWeight: 500,
         margin: '10px 0',
         fontSize: 16,
-        color: '#11142d',
+        color: mode === 'light' ? '#11142d' : '#EFEFEF',
       }}
     >
       {title}
@@ -59,6 +61,7 @@ interface ICreateAgentForm {
   propertyImage?: { name: string; url: string };
   profileUrl?: string;
   setProfileUrl?: React.Dispatch<SetStateAction<string>>;
+  mode: string;
 }
 
 const CreateAgentForm = ({
@@ -67,6 +70,7 @@ const CreateAgentForm = ({
   handleImageChange,
   profileUrl,
   setProfileUrl,
+  mode,
 }: ICreateAgentForm) => {
   return (
     <form
@@ -84,6 +88,7 @@ const CreateAgentForm = ({
           fieldValue={'name'}
           register={register}
           type='text'
+          mode={mode}
         />
       </Stack>
       <Stack direction={{ xs: 'column', sm: 'row' }} gap='20px'>
@@ -93,6 +98,7 @@ const CreateAgentForm = ({
           register={register}
           type='number'
           placeholder='+254732934359'
+          mode={mode}
         />
         <TextInput
           title={'Properties'}
@@ -100,6 +106,7 @@ const CreateAgentForm = ({
           register={register}
           type='number'
           placeholder='23'
+          mode={mode}
         />
       </Stack>
       <Stack direction={{ xs: 'column', sm: 'row' }} gap='20px'>
@@ -109,7 +116,7 @@ const CreateAgentForm = ({
               fontWeight: 500,
               margin: '10px 0',
               fontSize: 16,
-              color: '#11142d',
+              color: mode === 'light' ? '#11142d' : '#EFEFEF',
             }}
           >
             Gender
@@ -133,6 +140,7 @@ const CreateAgentForm = ({
           fieldValue={'email'}
           register={register}
           type='text'
+          mode={mode}
         />
       </Stack>
       <Stack direction={{ xs: 'column', sm: 'row' }} gap='20px'>
@@ -141,9 +149,15 @@ const CreateAgentForm = ({
           fieldValue={'country'}
           register={register}
           type='text'
+          mode={mode}
         />
         <Box sx={{ flex: 1 }}>
-          <Typography color='#11142d' fontSize={16} fontWeight={500} my='10px'>
+          <Typography
+            color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+            fontSize={16}
+            fontWeight={500}
+            my='10px'
+          >
             Property Photos
           </Typography>
 

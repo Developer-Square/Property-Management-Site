@@ -44,4 +44,5 @@ export interface FormProps {
   propertyImage?: { name: string; url: string }[];
   backendImages?: string[];
   setBackendImages?: Dispatch<SetStateAction<string[]>>;
+  mode: string;
 }
