@@ -1,3 +1,4 @@
+import { CloseOutlined } from '@mui/icons-material';
 import { Popover, Stack, Typography } from '@pankod/refine-mui';
 import { Calendar, NotificationSettings, Payment } from 'assets';
 import React from 'react';
@@ -82,6 +83,16 @@ const NotificationPopover = ({
         horizontal: 'right',
       }}
     >
+      <Stack
+        direction='row'
+        justifyContent='flex-end'
+        sx={{
+          cursor: 'pointer',
+        }}
+        onClick={() => setAnchorEl(null)}
+      >
+        <CloseOutlined sx={{ marginTop: '10px', marginRight: '10px' }} />
+      </Stack>
       <NotificationItem
         img={Payment}
         title='Payment Success'
