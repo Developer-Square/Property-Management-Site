@@ -117,7 +117,20 @@ const AgentCard = ({
               Real-Estate Agent
             </Typography>
           </Stack>
-          {currentUser.email !== email && (
+          {/* Only show this popover if the current card has the same email as the current user */}
+          {currentUser.email === email && currentUser.role !== 'admin' && (
+            <EditPopover
+              popoverId={popoverId}
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
+              open={open}
+              handleUpdate={handleUpdate}
+              handleDelete={handleDelete}
+            />
+          )}
+
+          {/* Show all popovers if the current user is an admin */}
+          {currentUser.role === 'admin' && (
             <EditPopover
               popoverId={popoverId}
               anchorEl={anchorEl}
