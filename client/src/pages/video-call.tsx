@@ -114,6 +114,7 @@ const VideoCall = () => {
           <Box
             sx={{
               position: 'absolute',
+              width: '100%',
             }}
           >
             <img
@@ -124,9 +125,9 @@ const VideoCall = () => {
             <Box
               sx={{
                 position: 'absolute',
+                bottom: '40px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                bottom: '40px',
               }}
             >
               <img
@@ -163,7 +164,7 @@ const VideoCall = () => {
         </Box>
       </Box>
       <Box width='30%'>
-        <MessageContent users={users} location='video-call' />
+        <MessageContent mode={mode} users={users} location='video-call' />
       </Box>
     </Box>
   );
