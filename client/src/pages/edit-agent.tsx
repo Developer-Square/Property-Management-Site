@@ -6,10 +6,10 @@ import { FieldValues, useForm } from '@pankod/refine-react-hook-form';
 import { CreateAgentImg } from 'assets';
 import { CreateAgentForm, CustomButton } from 'components';
 import { ColorModeContext } from 'contexts';
+import Api from 'utils/api';
 
-// Todo: Only admins can edit agents
-// Hide update agent button from agents page
 const EditAgent = () => {
+  const api = new Api();
   const [profileUrl, setProfileUrl] = useState('');
   const {
     refineCore: { onFinish, formLoading },
@@ -31,6 +31,7 @@ const EditAgent = () => {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
+              Authorization: `Bearer ${api.getToken()}`,
             },
           }
         );
