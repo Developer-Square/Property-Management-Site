@@ -117,6 +117,7 @@ function App() {
   const authProvider: AuthProvider = {
     login: async ({ credential }: CredentialResponse) => {
       const profileObj = credential ? parseJwt(credential) : null;
+      console.log('profileObj', profileObj);
 
       if (profileObj) {
         const response = await fetch(

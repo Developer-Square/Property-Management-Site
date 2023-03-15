@@ -8,24 +8,24 @@ import {
 } from '@pankod/refine-mui';
 
 import { CredentialResponse } from '../interfaces/google';
-import { useForm } from '@pankod/refine-react-hook-form';
 import { LoginComponent } from 'components';
 import SignupComponent from 'components/login-and-signup/SignupComponent';
 import { LoginSignup } from 'assets';
 import { ColorModeContext } from 'contexts';
+import Api from 'utils/api';
 
 export const TextInput = ({
   title,
   type,
   fieldValue,
-  register,
+  setFieldValue,
   placeholder,
   mode,
 }: {
   title: string;
   type: string;
   fieldValue: string;
-  register: any;
+  setFieldValue: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
   mode?: string;
 }) => (
@@ -50,22 +50,73 @@ export const TextInput = ({
       id='outlined-basic'
       color='info'
       variant='outlined'
+      value={fieldValue}
+      onChange={(e) => setFieldValue(e.target.value)}
       placeholder={placeholder}
-      {...register(fieldValue, { required: true })}
     />
   </FormControl>
 );
 
 export const Login: React.FC = () => {
   const { mutate: login } = useLogin<CredentialResponse>();
-  const [form, setForm] = useState('login');
+  const [form, setForm] = useState('signin');
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const { mode } = useContext(ColorModeContext);
+  const api = new Api();
 
-  const {
-    refineCore: { formLoading },
-    register,
-    handleSubmit,
-  } = useForm();
+  const handleSubmit = (data: any) => {
+    if (form === 'signin') {
+      const { email, password } = data;
+      if (email === '' || password === '') {
+        // Todo: Add error notification
+        console.log('No email or password');
+        return;
+      }
+
+      setIsFormLoading(true);
+      api
+        .auth()
+        .login(data)
+        .then((res) => {
+          setIsFormLoading(false);
+          api.storeTokens(res.data);
+        })
+        .catch((err) => {
+          setIsFormLoading(false);
+          console.log(err);
+        });
+    } else {
+      const { email, name, password, confirmPassword, userImage } = data;
+      if (
+        email === '' ||
+        name === '' ||
+        password === '' ||
+        confirmPassword === '' ||
+        userImage.name === ''
+      ) {
+        // Todo: Add error notification
+        return;
+      }
+
+      if (data.password !== data.confirmPassword) {
+        // Todo: Add error notification
+        return;
+      }
+
+      setIsFormLoading(true);
+      api
+        .auth()
+        .registerUser({ ...data, avatar: data.userImage.url })
+        .then((res) => {
+          setIsFormLoading(false);
+          api.storeTokens(res.data);
+        })
+        .catch((err) => {
+          setIsFormLoading(false);
+          console.log(err);
+        });
+    }
+  };
 
   const GoogleButton = (): JSX.Element => {
     const divRef = useRef<HTMLDivElement>(null);
@@ -129,17 +180,15 @@ export const Login: React.FC = () => {
           {form === 'signin' ? (
             <LoginComponent
               GoogleButton={GoogleButton}
-              register={register}
               handleSubmit={handleSubmit}
-              formLoading={formLoading}
+              formLoading={isFormLoading}
               setForm={setForm}
             />
           ) : (
             <SignupComponent
               GoogleButton={GoogleButton}
-              register={register}
               handleSubmit={handleSubmit}
-              formLoading={formLoading}
+              formLoading={isFormLoading}
               setForm={setForm}
             />
           )}
