@@ -52,41 +52,43 @@ const LoginComponent = ({
         }}
         alt='Techive Logo'
       />
-      <TextInput
-        title={'Email'}
-        fieldValue={'email'}
-        register={register}
-        placeholder='Enter your email'
-        type='text'
-        mode={mode}
-      />
-      <TextInput
-        title={'Password'}
-        fieldValue={'password'}
-        placeholder='********'
-        register={register}
-        type='password'
-        mode={mode}
-      />
-      <Typography
-        sx={{
-          fontSize: '14px',
-          textAlign: 'right',
-          width: '100%',
-          color: '#475BE8',
-          marginTop: '10px',
-          marginBottom: '20px',
-        }}
-      >
-        Forgot Password
-      </Typography>
+      <form>
+        <TextInput
+          title={'Email'}
+          fieldValue={'email'}
+          register={register}
+          placeholder='Enter your email'
+          type='text'
+          mode={mode}
+        />
+        <TextInput
+          title={'Password'}
+          fieldValue={'password'}
+          placeholder='********'
+          register={register}
+          type='password'
+          mode={mode}
+        />
+        <Typography
+          sx={{
+            fontSize: '14px',
+            textAlign: 'right',
+            width: '100%',
+            color: '#475BE8',
+            marginTop: '10px',
+            marginBottom: '20px',
+          }}
+        >
+          Forgot Password
+        </Typography>
+      </form>
       <CustomButton
         fullWidth
         title={formLoading ? 'Loading...' : 'Signin'}
         backgroundColor='#475BE8'
         color='#fcfcfc'
         // @ts-ignore
-        handleClick={handleSubmit}
+        handleClick={handleSubmit()}
       />
       <Typography
         fontSize={16}

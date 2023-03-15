@@ -17,22 +17,22 @@ const defaultIRoute: IRoute[] = [
     path: '/auth',
     route: authRoute,
   },
-  // {
-  //   path: '/users',
-  //   route: userRoute,
-  // },
-  // {
-  //   path: '/agents',
-  //   route: userRoute,
-  // },
-  // {
-  //   path: '/reviews',
-  //   route: reviewRoute,
-  // },
-  // {
-  //   path: '/properties',
-  //   route: propertyRoute,
-  // },
+  {
+    path: '/users',
+    route: userRoute,
+  },
+  {
+    path: '/agents',
+    route: userRoute,
+  },
+  {
+    path: '/reviews',
+    route: reviewRoute,
+  },
+  {
+    path: '/properties',
+    route: propertyRoute,
+  },
 ];
 
 const devIRoute: IRoute[] = [
