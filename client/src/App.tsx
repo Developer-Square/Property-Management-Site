@@ -17,7 +17,6 @@ import {
   VillaOutlined,
 } from '@mui/icons-material';
 
-import dataProvider from '@pankod/refine-simple-rest';
 import routerProvider from '@pankod/refine-react-router-v6';
 import axios, { AxiosRequestConfig } from 'axios';
 
@@ -25,6 +24,7 @@ import { ColorModeContextProvider } from 'contexts';
 import { Title, Sider, Layout, Header } from 'components/layout';
 import { CredentialResponse } from 'interfaces/google';
 import { parseJwt } from 'utils/parse-jwt';
+import { dataProvider } from './rest-data-provider';
 
 import {
   Login,
@@ -83,10 +83,18 @@ function App() {
         const data = await response.json();
 
         if (response.status === 200) {
-          localStorage.setItem('accessToken', data.tokens.access.token);
-          localStorage.setItem('accessTokenExpires', data.tokens.access.expires);
-          localStorage.setItem('refreshToken', data.tokens.refresh.token);
-          localStorage.setItem('user', JSON.stringify({ ...data.user, userid: data.user._id }));
+          const accessToken = data.tokens.access.token;
+          const refreshToken = data.tokens.refresh.token;
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem(
+            'accessTokenExpires',
+            data.tokens.access.expires
+          );
+          localStorage.setItem('refreshToken', refreshToken);
+          localStorage.setItem(
+            'user',
+            JSON.stringify({ ...data.user, userid: data.user._id })
+          );
         } else {
           return Promise.reject();
         }
@@ -113,7 +121,7 @@ function App() {
     checkAuth: async () => {
       const token = localStorage.getItem('accessToken');
 
-      if (token){
+      if (token) {
         return Promise.resolve();
       }
       return Promise.reject();
@@ -135,7 +143,8 @@ function App() {
       <RefineSnackbarProvider>
         <Refine
           dataProvider={dataProvider(
-            `${process.env.REACT_APP_BACKEND_URL}/api/v1`
+            `${process.env.REACT_APP_BACKEND_URL}/api/v1`,
+            axiosInstance
           )}
           notificationProvider={notificationProvider}
           ReadyPage={ReadyPage}
