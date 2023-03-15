@@ -1,12 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import React, { useContext, useMemo } from 'react';
 import { Typography, Box, Stack, Rating } from '@pankod/refine-mui';
-import {
-  useDelete,
-  useGetIdentity,
-  useOne,
-  useShow,
-} from '@pankod/refine-core';
+import { useDelete, useGetIdentity, useShow } from '@pankod/refine-core';
 import { useParams, useNavigate } from '@pankod/refine-react-router-v6';
 import {
   ArrowBackIosOutlined,
@@ -43,18 +38,9 @@ const PropertyDetails = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const propertyDetails = data?.data || {};
-
-  const {
-    data: agentData,
-    isLoading: isUserLoading,
-    isError: isUserError,
-  } = useOne({
-    resource: 'users',
-    id: propertyDetails?.creator,
-  });
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const agentDetails = agentData?.data ?? [];
+  const agentDetails = propertyDetails.creator || {};
+  console.log(propertyDetails);
 
   const isCurrentUser = useMemo(() => {
     if (identity && Object.keys(agentDetails).length > 0) {
@@ -74,9 +60,9 @@ const PropertyDetails = () => {
     }
   };
 
-  if (isLoading || isPropertyLoading || isUserLoading)
+  if (isLoading || isPropertyLoading)
     return <Typography>Loading...</Typography>;
-  if (isError || isUserError) return <Typography>Error!</Typography>;
+  if (isError) return <Typography>Error!</Typography>;
 
   return (
     <Box
