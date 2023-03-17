@@ -65,6 +65,7 @@ const LoginComponent = ({
           placeholder='Enter your email'
           type='text'
           mode={mode}
+          active={formLoading}
         />
         <TextInput
           title={'Password'}
@@ -73,6 +74,7 @@ const LoginComponent = ({
           placeholder='********'
           type='password'
           mode={mode}
+          active={formLoading}
         />
       </form>
       <Typography
@@ -93,6 +95,7 @@ const LoginComponent = ({
         title={formLoading ? 'Loading...' : 'Signin'}
         backgroundColor='#475BE8'
         color='#fcfcfc'
+        active={formLoading}
         handleClick={() => handleSubmit({ email, password })}
       />
       <Typography

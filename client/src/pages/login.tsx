@@ -6,6 +6,7 @@ import {
   FormHelperText,
   FormControl,
 } from '@pankod/refine-mui';
+import { toast } from 'react-toastify';
 
 import { CredentialResponse } from '../interfaces/google';
 import { LoginComponent } from 'components';
@@ -13,6 +14,7 @@ import SignupComponent from 'components/login-and-signup/SignupComponent';
 import { LoginSignup } from 'assets';
 import { ColorModeContext } from 'contexts';
 import Api from 'utils/api';
+import { useNavigate } from '@pankod/refine-react-router-v6';
 
 export const TextInput = ({
   title,
@@ -21,6 +23,7 @@ export const TextInput = ({
   setFieldValue,
   placeholder,
   mode,
+  active,
 }: {
   title: string;
   type: string;
@@ -28,6 +31,7 @@ export const TextInput = ({
   setFieldValue: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
   mode?: string;
+  active: boolean;
 }) => (
   <FormControl
     sx={{
@@ -45,6 +49,7 @@ export const TextInput = ({
       {title}
     </FormHelperText>
     <TextField
+      disabled={active}
       type={type}
       required
       id='outlined-basic'
@@ -63,13 +68,13 @@ export const Login: React.FC = () => {
   const [isFormLoading, setIsFormLoading] = useState(false);
   const { mode } = useContext(ColorModeContext);
   const api = new Api();
+  const navigate = useNavigate();
 
   const handleSubmit = (data: any) => {
     if (form === 'signin') {
       const { email, password } = data;
       if (email === '' || password === '') {
-        // Todo: Add error notification
-        console.log('No email or password');
+        toast('Please enter email and password', { type: 'error' });
         return;
       }
 
@@ -79,11 +84,15 @@ export const Login: React.FC = () => {
         .login(data)
         .then((res) => {
           setIsFormLoading(false);
+          toast('Login successful', { type: 'success' });
           api.storeTokens(res.data);
+          navigate('/dashboard');
         })
         .catch((err) => {
           setIsFormLoading(false);
-          console.log(err);
+          toast(err.response.data.message || 'Something went wrong', {
+            type: 'error',
+          });
         });
     } else {
       const { email, name, password, confirmPassword, userImage } = data;
@@ -94,12 +103,12 @@ export const Login: React.FC = () => {
         confirmPassword === '' ||
         userImage.name === ''
       ) {
-        // Todo: Add error notification
+        toast('Please fill all fields', { type: 'error' });
         return;
       }
 
       if (data.password !== data.confirmPassword) {
-        // Todo: Add error notification
+        toast('Passwords do not match', { type: 'error' });
         return;
       }
 
@@ -109,11 +118,15 @@ export const Login: React.FC = () => {
         .registerUser({ ...data, avatar: data.userImage.url })
         .then((res) => {
           setIsFormLoading(false);
+          toast('Account created successfully', { type: 'success' });
           api.storeTokens(res.data);
+          setForm('signin');
         })
         .catch((err) => {
           setIsFormLoading(false);
-          console.log(err);
+          toast(err.response.data.message || 'Something went wrong', {
+            type: 'error',
+          });
         });
     }
   };

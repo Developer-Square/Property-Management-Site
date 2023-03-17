@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Refine, AuthProvider } from '@pankod/refine-core';
 import {
@@ -20,11 +20,12 @@ import {
 import routerProvider from '@pankod/refine-react-router-v6';
 import axios, { AxiosRequestConfig } from 'axios';
 
-import { ColorModeContextProvider } from 'contexts';
+import { ColorModeContext } from 'contexts';
 import { Title, Sider, Layout, Header } from 'components/layout';
 import { CredentialResponse } from 'interfaces/google';
 import { parseJwt } from 'utils/parse-jwt';
 import { dataProvider } from './rest-data-provider';
+import { ToastContainer } from 'react-toastify';
 
 import {
   Login,
@@ -46,6 +47,7 @@ import Reviews from 'pages/reviews';
 import Messages from 'pages/messages';
 import VideoCall from 'pages/video-call';
 import Api from 'utils/api';
+import 'react-toastify/dist/ReactToastify.css';
 
 const axiosInstance = axios.create();
 const api = new Api();
@@ -178,12 +180,25 @@ function App() {
       }
     },
   };
+  const { mode } = useContext(ColorModeContext);
 
   return (
-    <ColorModeContextProvider>
+    <>
       <CssBaseline />
       <GlobalStyles styles={{ html: { WebkitFontSmoothing: 'auto' } }} />
       <RefineSnackbarProvider>
+        <ToastContainer
+          position='top-right'
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable={false}
+          pauseOnHover={false}
+          theme={mode === 'light' ? 'light' : 'dark'}
+        />
         <Refine
           dataProvider={dataProvider(
             `${process.env.REACT_APP_BACKEND_URL}/api/v1`,
@@ -238,7 +253,7 @@ function App() {
           DashboardPage={Home}
         />
       </RefineSnackbarProvider>
-    </ColorModeContextProvider>
+    </>
   );
 }
 

@@ -87,6 +87,7 @@ const SignupComponent = ({
           placeholder='Enter your username'
           type='text'
           mode={mode}
+          active={formLoading}
         />
         <TextInput
           title={'Email'}
@@ -95,6 +96,7 @@ const SignupComponent = ({
           placeholder='Enter your email'
           type='text'
           mode={mode}
+          active={formLoading}
         />
         <Box sx={{ flex: 1 }}>
           <Typography
@@ -142,6 +144,7 @@ const SignupComponent = ({
           placeholder='********'
           type='password'
           mode={mode}
+          active={formLoading}
         />
         <TextInput
           title={'Confirm Password'}
@@ -150,6 +153,7 @@ const SignupComponent = ({
           placeholder='********'
           type='password'
           mode={mode}
+          active={formLoading}
         />
       </form>
       <Box marginBottom='20px'></Box>
@@ -158,6 +162,7 @@ const SignupComponent = ({
         title={formLoading ? 'Loading...' : 'Sign up'}
         backgroundColor='#475BE8'
         color='#fcfcfc'
+        active={formLoading}
         handleClick={() =>
           handleSubmit({
             email,
