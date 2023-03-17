@@ -22,10 +22,9 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 import { ColorModeContext } from 'contexts';
 import { Title, Sider, Layout, Header } from 'components/layout';
-import { CredentialResponse } from 'interfaces/google';
 import { parseJwt } from 'utils/parse-jwt';
 import { dataProvider } from './rest-data-provider';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 import {
   Login,
@@ -115,12 +114,17 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+export interface ILoginCredentials {
+  email?: string;
+  password?: string;
+  credential?: string;
+}
+
 function App() {
   const authProvider: AuthProvider = {
-    login: async ({ credential }: CredentialResponse) => {
+    login: async ({ email, password, credential }: ILoginCredentials) => {
       const profileObj = credential ? parseJwt(credential) : null;
-      console.log('profileObj', profileObj);
-
+      // If the user is logging in with google then send the profile object to the backend
       if (profileObj) {
         const response = await fetch(
           `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/google`,
@@ -143,6 +147,22 @@ function App() {
         } else {
           return Promise.reject();
         }
+      } else {
+        // If the user is logging in with email and password then send the email and password to the backend
+        api
+          .auth()
+          .login({ email, password })
+          .then((res) => {
+            toast('Login successful', { type: 'success' });
+            api.storeTokens(res.data);
+            return Promise.resolve();
+          })
+          .catch((err) => {
+            toast(err.response.data.message || 'Something went wrong', {
+              type: 'error',
+            });
+            return Promise.reject();
+          });
       }
 
       return Promise.resolve();

@@ -14,7 +14,7 @@ import SignupComponent from 'components/login-and-signup/SignupComponent';
 import { LoginSignup } from 'assets';
 import { ColorModeContext } from 'contexts';
 import Api from 'utils/api';
-import { useNavigate } from '@pankod/refine-react-router-v6';
+import { ILoginCredentials } from 'App';
 
 export const TextInput = ({
   title,
@@ -68,9 +68,9 @@ export const Login: React.FC = () => {
   const [isFormLoading, setIsFormLoading] = useState(false);
   const { mode } = useContext(ColorModeContext);
   const api = new Api();
-  const navigate = useNavigate();
+  const { mutate } = useLogin<ILoginCredentials>();
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = async (data: any) => {
     if (form === 'signin') {
       const { email, password } = data;
       if (email === '' || password === '') {
@@ -79,21 +79,8 @@ export const Login: React.FC = () => {
       }
 
       setIsFormLoading(true);
-      api
-        .auth()
-        .login(data)
-        .then((res) => {
-          setIsFormLoading(false);
-          toast('Login successful', { type: 'success' });
-          api.storeTokens(res.data);
-          navigate('/dashboard');
-        })
-        .catch((err) => {
-          setIsFormLoading(false);
-          toast(err.response.data.message || 'Something went wrong', {
-            type: 'error',
-          });
-        });
+      await mutate({ email, password });
+      setIsFormLoading(false);
     } else {
       const { email, name, password, confirmPassword, userImage } = data;
       if (
