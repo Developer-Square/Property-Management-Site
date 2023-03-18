@@ -85,7 +85,9 @@ const LoginComponent = ({
           color: '#475BE8',
           marginTop: '10px',
           marginBottom: '20px',
+          cursor: 'pointer',
         }}
+        onClick={() => setForm('forgot')}
       >
         Forgot Password
       </Typography>

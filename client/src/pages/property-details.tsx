@@ -40,7 +40,6 @@ const PropertyDetails = () => {
   const propertyDetails = data?.data || {};
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const agentDetails = propertyDetails.creator || {};
-  console.log(propertyDetails);
 
   const isCurrentUser = useMemo(() => {
     if (identity && Object.keys(agentDetails).length > 0) {

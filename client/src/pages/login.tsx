@@ -9,7 +9,7 @@ import {
 import { toast } from 'react-toastify';
 
 import { CredentialResponse } from '../interfaces/google';
-import { LoginComponent } from 'components';
+import { ForgotPasswordComponent, LoginComponent } from 'components';
 import SignupComponent from 'components/login-and-signup/SignupComponent';
 import { LoginSignup } from 'assets';
 import { ColorModeContext } from 'contexts';
@@ -62,13 +62,44 @@ export const TextInput = ({
   </FormControl>
 );
 
-export const Login: React.FC = () => {
+export const Login: React.FC = ({ page }: { page?: string }) => {
   const { mutate: login } = useLogin<CredentialResponse>();
   const [form, setForm] = useState('signin');
+  const [formComplete, setFormComplete] = useState(false);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const { mode } = useContext(ColorModeContext);
   const api = new Api();
   const { mutate } = useLogin<ILoginCredentials>();
+
+  // If we are on the reset password page, set the form to reset
+  useEffect(() => {
+    if (page === 'reset') {
+      setForm('reset');
+    }
+  }, [page]);
+
+  const handleForgotPassword = (email: string) => {
+    if (email === '') {
+      toast('Please enter email', { type: 'error' });
+      return;
+    }
+
+    setIsFormLoading(true);
+    api
+      .auth()
+      .forgotPassword({ email })
+      .then((res) => {
+        setIsFormLoading(false);
+        setFormComplete(true);
+        toast('Kindly check your email', { type: 'success' });
+      })
+      .catch((err) => {
+        setIsFormLoading(false);
+        toast(err.response.data.message || 'Something went wrong', {
+          type: 'error',
+        });
+      });
+  };
 
   const handleSubmit = async (data: any) => {
     if (form === 'signin') {
@@ -177,19 +208,30 @@ export const Login: React.FC = () => {
             padding: '0 20px',
           }}
         >
-          {form === 'signin' ? (
+          {form === 'signin' && (
             <LoginComponent
               GoogleButton={GoogleButton}
               handleSubmit={handleSubmit}
               formLoading={isFormLoading}
               setForm={setForm}
             />
-          ) : (
+          )}
+
+          {form === 'signup' && (
             <SignupComponent
               GoogleButton={GoogleButton}
               handleSubmit={handleSubmit}
               formLoading={isFormLoading}
               setForm={setForm}
+            />
+          )}
+
+          {form === 'forgot' && (
+            <ForgotPasswordComponent
+              handleSubmit={handleForgotPassword}
+              formLoading={isFormLoading}
+              formComplete={formComplete}
+              setFormComplete={setFormComplete}
             />
           )}
         </Box>

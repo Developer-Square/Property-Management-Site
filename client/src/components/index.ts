@@ -38,6 +38,9 @@ import MessageContent from './messages/MessageContent';
 
 // login and signup
 import LoginComponent from './login-and-signup/LoginComponent';
+import ForgotPasswordComponent from './login-and-signup/ForgotPasswordComponent';
+import ResetPasswordComponent from './login-and-signup/ResetPasswordComponent';
+import VerifyEmailComponent from './login-and-signup/VerifyEmailComponent';
 
 export {
   Profile,
@@ -67,4 +70,7 @@ export {
   LatestSales,
   Customer,
   SearchField,
+  ForgotPasswordComponent,
+  ResetPasswordComponent,
+  VerifyEmailComponent,
 };

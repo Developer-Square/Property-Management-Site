@@ -17,7 +17,11 @@ import {
   VillaOutlined,
 } from '@mui/icons-material';
 
-import routerProvider from '@pankod/refine-react-router-v6';
+import routerProvider, {
+  BrowserRouter,
+  Route,
+  Routes,
+} from '@pankod/refine-react-router-v6';
 import axios, { AxiosRequestConfig } from 'axios';
 
 import { ColorModeContext } from 'contexts';
@@ -219,59 +223,66 @@ function App() {
           pauseOnHover={false}
           theme={mode === 'light' ? 'light' : 'dark'}
         />
-        <Refine
-          dataProvider={dataProvider(
-            `${process.env.REACT_APP_BACKEND_URL}/api/v1`,
-            axiosInstance
-          )}
-          notificationProvider={notificationProvider}
-          ReadyPage={ReadyPage}
-          catchAll={<ErrorComponent />}
-          resources={[
-            {
-              name: 'properties',
-              list: AllProperties,
-              show: PropertyDetails,
-              create: CreateProperty,
-              edit: EditProperty,
-              icon: <VillaOutlined />,
-            },
-            {
-              name: 'agents',
-              list: Agents,
-              show: AgentProfile,
-              create: CreateAgent,
-              edit: EditAgent,
-              icon: <PeopleAltOutlined />,
-            },
-            {
-              name: 'reviews',
-              list: Reviews,
-              icon: <StarOutlineRounded />,
-            },
-            {
-              name: 'messages',
-              list: Messages,
-              show: VideoCall,
-              icon: <ChatBubbleOutline />,
-            },
-            {
-              name: 'my-profile',
-              options: { label: 'My Profile' },
-              list: MyProfile,
-              edit: EditAgent,
-              icon: <AccountCircleOutlined />,
-            },
-          ]}
-          Title={Title}
-          Sider={Sider}
-          Layout={Layout}
-          Header={Header}
-          routerProvider={routerProvider}
-          authProvider={authProvider}
-          LoginPage={Login}
-          DashboardPage={Home}
-        />
+        <BrowserRouter>
+          <Refine
+            routerProvider={routerProvider}
+            dataProvider={dataProvider(
+              `${process.env.REACT_APP_BACKEND_URL}/api/v1`,
+              axiosInstance
+            )}
+            notificationProvider={notificationProvider}
+            ReadyPage={ReadyPage}
+            catchAll={<ErrorComponent />}
+            resources={[
+              {
+                name: 'properties',
+                list: AllProperties,
+                show: PropertyDetails,
+                create: CreateProperty,
+                edit: EditProperty,
+                icon: <VillaOutlined />,
+              },
+              {
+                name: 'agents',
+                list: Agents,
+                show: AgentProfile,
+                create: CreateAgent,
+                edit: EditAgent,
+                icon: <PeopleAltOutlined />,
+              },
+              {
+                name: 'reviews',
+                list: Reviews,
+                icon: <StarOutlineRounded />,
+              },
+              {
+                name: 'messages',
+                list: Messages,
+                show: VideoCall,
+                icon: <ChatBubbleOutline />,
+              },
+              {
+                name: 'my-profile',
+                options: { label: 'My Profile' },
+                list: MyProfile,
+                edit: EditAgent,
+                icon: <AccountCircleOutlined />,
+              },
+            ]}
+            Title={Title}
+            Sider={Sider}
+            Layout={Layout}
+            Header={Header}
+            authProvider={authProvider}
+            LoginPage={Login}
+            DashboardPage={Home}
+          >
+            <Routes>
+              {/* @ts-ignore */}
+              <Route path='/reset-password' element={<Login page='reset' />} />
+            </Routes>
+          </Refine>
+        </BrowserRouter>
       </RefineSnackbarProvider>
     </>
   );
