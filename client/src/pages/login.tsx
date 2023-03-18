@@ -13,6 +13,7 @@ import {
   ForgotPasswordComponent,
   LoginComponent,
   ResetPasswordComponent,
+  VerifyEmailComponent,
 } from 'components';
 import SignupComponent from 'components/login-and-signup/SignupComponent';
 import { LoginSignup } from 'assets';
@@ -131,6 +132,24 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
         setIsFormLoading(false);
         toast('Password reset successfully', { type: 'success' });
         setForm('signin');
+      })
+      .catch((err) => {
+        setIsFormLoading(false);
+        toast(err.response.data.message || 'Something went wrong', {
+          type: 'error',
+        });
+      });
+  };
+
+  const handleVerifyEmail = () => {
+    setIsFormLoading(true);
+    api
+      .auth()
+      .verifyEmail()
+      .then((res) => {
+        setIsFormLoading(false);
+        setFormComplete(true);
+        toast('Email verified successfully', { type: 'success' });
       })
       .catch((err) => {
         setIsFormLoading(false);
@@ -277,6 +296,14 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
           {form === 'reset' && (
             <ResetPasswordComponent
               handleSubmit={handleResetPassword}
+              formLoading={isFormLoading}
+            />
+          )}
+
+          {form === 'verify' && (
+            <VerifyEmailComponent
+              handleSubmit={handleVerifyEmail}
+              formComplete={formComplete}
               formLoading={isFormLoading}
             />
           )}

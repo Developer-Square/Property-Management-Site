@@ -48,7 +48,6 @@ const ResetPasswordComponent = ({
         }}
         alt='Techive Logo'
       />
-
       <form
         style={{
           marginBottom: '20px',

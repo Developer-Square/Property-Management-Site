@@ -277,12 +277,14 @@ function App() {
             DashboardPage={Home}
           >
             <Routes>
+              {/* Todo: Protect this route */}
+              <Route path='/' element={<Home />} />
               {/* @ts-ignore */}
               <Route path='/login' element={<Login page='signin' />} />
               {/* @ts-ignore */}
-              <Route path='reset-password' element={<Login page='reset' />} />
+              <Route path='/reset-password' element={<Login page='reset' />} />
               {/* @ts-ignore */}
-              <Route path='verify-email' element={<Login page='verify' />} />
+              <Route path='/verify-email' element={<Login page='verify' />} />
             </Routes>
           </Refine>
         </BrowserRouter>

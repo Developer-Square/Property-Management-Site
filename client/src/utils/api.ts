@@ -8,7 +8,7 @@ class Api {
   constructor() {
     this.instance = axios.create({
       baseURL: API_URL,
-      timeout: 9000,
+      timeout: 15000,
       cancelToken: cancelTokenSource.token,
     });
 
@@ -133,6 +133,8 @@ class Api {
           },
           data,
         }),
+      sendVerificationEmail: () =>
+        this.instance.post(`auth/send-verification-email/`),
       verifyEmail: () =>
         this.instance({
           method: 'POST',

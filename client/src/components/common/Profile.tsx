@@ -1,8 +1,9 @@
 /* eslint-disable no-restricted-globals */
-import { Email, Phone, Place } from '@mui/icons-material';
+import { Phone, Place } from '@mui/icons-material';
 import { useDelete, useLogout } from '@pankod/refine-core';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
+import EmailVerification from 'components/profile/EmailVerification';
 import { ColorModeContext } from 'contexts';
 
 import { ProfileProps } from 'interfaces/common';
@@ -24,6 +25,7 @@ const Profile = ({
   email,
   phone,
   properties,
+  emailVerified,
 }: ProfileProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const navigate = useNavigate();
@@ -196,34 +198,10 @@ const Profile = ({
                         </Typography>
                       </Box>
                     </Stack>
-
-                    <Stack flex={1} gap='15px'>
-                      <Typography
-                        fontSize={14}
-                        fontWeight={500}
-                        color='#808191'
-                      >
-                        Email
-                      </Typography>
-                      <Box
-                        display='flex'
-                        flexDirection='row'
-                        alignItems='center'
-                        gap='10px'
-                      >
-                        <Email
-                          sx={{
-                            color: mode === 'light' ? '#11142d' : '#EFEFEF',
-                          }}
-                        />
-                        <Typography
-                          fontSize={14}
-                          color={mode === 'light' ? '#11142d' : '#EFEFEF'}
-                        >
-                          {email}
-                        </Typography>
-                      </Box>
-                    </Stack>
+                    <EmailVerification
+                      email={email}
+                      emailVerified={emailVerified}
+                    />
                   </Stack>
                 </Stack>
               </Box>

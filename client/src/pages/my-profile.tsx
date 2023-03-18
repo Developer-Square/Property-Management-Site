@@ -26,6 +26,7 @@ const Myprofile = () => {
         country={myProfile.country || 'Kenya'}
         phone={myProfile.phoneNumber || '+254 7934 134 313'}
         properties={myProfile.allProperties}
+        emailVerified={myProfile.email_verified}
       />
     </Box>
   );
