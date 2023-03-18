@@ -281,6 +281,8 @@ function App() {
               <Route path='/login' element={<Login page='signin' />} />
               {/* @ts-ignore */}
               <Route path='reset-password' element={<Login page='reset' />} />
+              {/* @ts-ignore */}
+              <Route path='verify-email' element={<Login page='verify' />} />
             </Routes>
           </Refine>
         </BrowserRouter>
