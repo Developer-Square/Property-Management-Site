@@ -17,11 +17,8 @@ import {
   VillaOutlined,
 } from '@mui/icons-material';
 
-import routerProvider, {
-  BrowserRouter,
-  Route,
-  Routes,
-} from '@pankod/refine-react-router-v6';
+import routerProvider from '@pankod/refine-react-router-v6';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import axios, { AxiosRequestConfig } from 'axios';
 
 import { ColorModeContext } from 'contexts';
@@ -51,6 +48,7 @@ import Messages from 'pages/messages';
 import VideoCall from 'pages/video-call';
 import Api from 'utils/api';
 import 'react-toastify/dist/ReactToastify.css';
+import Empty from 'components/login-and-signup/Empty';
 
 const axiosInstance = axios.create();
 const api = new Api();
@@ -273,13 +271,16 @@ function App() {
             Sider={Sider}
             Layout={Layout}
             Header={Header}
+            // This part of refine was interfering with the login route below and we couldn't remove it. So we had to give it an empty component.
+            LoginPage={Empty}
             authProvider={authProvider}
-            LoginPage={Login}
             DashboardPage={Home}
           >
             <Routes>
               {/* @ts-ignore */}
-              <Route path='/reset-password' element={<Login page='reset' />} />
+              <Route path='/login' element={<Login page='signin' />} />
+              {/* @ts-ignore */}
+              <Route path='reset-password' element={<Login page='reset' />} />
             </Routes>
           </Refine>
         </BrowserRouter>

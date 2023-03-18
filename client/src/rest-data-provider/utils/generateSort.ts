@@ -1,4 +1,5 @@
-import { CrudSorting } from "@pankod/refine-core";
+/* eslint-disable array-callback-return */
+import { CrudSorting } from '@pankod/refine-core';
 
 export const generateSort = (sort?: CrudSorting) => {
   if (sort && sort.length > 0) {

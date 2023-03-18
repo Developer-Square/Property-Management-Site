@@ -37,7 +37,7 @@ const ForgotPasswordComponent = ({
         fontWeight={700}
         color={mode === 'light' ? '#11142d' : '#EFEFEF'}
       >
-        Reset Password
+        Forgot Password
       </Typography>
       <Typography fontSize={16} color='#808191'>
         Forgot your password? No worries.

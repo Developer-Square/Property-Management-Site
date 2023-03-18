@@ -9,7 +9,11 @@ import {
 import { toast } from 'react-toastify';
 
 import { CredentialResponse } from '../interfaces/google';
-import { ForgotPasswordComponent, LoginComponent } from 'components';
+import {
+  ForgotPasswordComponent,
+  LoginComponent,
+  ResetPasswordComponent,
+} from 'components';
 import SignupComponent from 'components/login-and-signup/SignupComponent';
 import { LoginSignup } from 'assets';
 import { ColorModeContext } from 'contexts';
@@ -64,7 +68,7 @@ export const TextInput = ({
 
 export const Login: React.FC = ({ page }: { page?: string }) => {
   const { mutate: login } = useLogin<CredentialResponse>();
-  const [form, setForm] = useState('signin');
+  const [form, setForm] = useState('');
   const [formComplete, setFormComplete] = useState(false);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const { mode } = useContext(ColorModeContext);
@@ -75,6 +79,8 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
   useEffect(() => {
     if (page === 'reset') {
       setForm('reset');
+    } else {
+      setForm('signin');
     }
   }, [page]);
 
@@ -92,6 +98,39 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
         setIsFormLoading(false);
         setFormComplete(true);
         toast('Kindly check your email', { type: 'success' });
+      })
+      .catch((err) => {
+        setIsFormLoading(false);
+        toast(err.response.data.message || 'Something went wrong', {
+          type: 'error',
+        });
+      });
+  };
+
+  const handleResetPassword = (data: {
+    password: string;
+    confirmPassword: string;
+  }) => {
+    const { password, confirmPassword } = data;
+
+    if (password === '' || confirmPassword === '') {
+      toast('Please fill all the fields', { type: 'error' });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast('Passwords do not match', { type: 'error' });
+      return;
+    }
+
+    setIsFormLoading(true);
+    api
+      .auth()
+      .resetPassword({ password })
+      .then((res) => {
+        setIsFormLoading(false);
+        toast('Password reset successfully', { type: 'success' });
+        setForm('signin');
       })
       .catch((err) => {
         setIsFormLoading(false);
@@ -180,7 +219,7 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
     return <div ref={divRef} />;
   };
 
-  useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), []);
+  useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), [form]);
 
   return (
     <Box
@@ -232,6 +271,13 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
               formLoading={isFormLoading}
               formComplete={formComplete}
               setFormComplete={setFormComplete}
+            />
+          )}
+
+          {form === 'reset' && (
+            <ResetPasswordComponent
+              handleSubmit={handleResetPassword}
+              formLoading={isFormLoading}
             />
           )}
         </Box>

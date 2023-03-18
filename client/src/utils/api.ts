@@ -113,23 +113,8 @@ class Api {
     return localStorage.getItem('refreshToken');
   }
 
-  getParam(query: string) {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    return urlParams.get(query);
-  }
-
-  getUrl(lengthBeforeToken: number) {
-    const urlHash = window.location.hash;
-    let params = urlHash
-      .substr(lengthBeforeToken)
-      .split('&')
-      .reduce(function (res: any, item) {
-        var parts = item.split('=');
-        res[parts[0]] = parts[1];
-        return res;
-      }, {});
-    return params.token;
+  getParam() {
+    return window.location.search.slice(32);
   }
 
   auth() {
@@ -144,7 +129,7 @@ class Api {
           method: 'POST',
           url: 'auth/reset-password/',
           params: {
-            token: `${this.getUrl(17)}`,
+            token: `${this.getParam()}`,
           },
           data,
         }),
@@ -153,7 +138,7 @@ class Api {
           method: 'POST',
           url: 'auth/verify-email/',
           params: {
-            token: `${this.getUrl(15)}`,
+            token: `${this.getParam()}`,
           },
         }),
     };
