@@ -18,8 +18,6 @@ const Home = () => {
     resource: 'properties',
   });
   const { mode } = useContext(ColorModeContext);
-  const accessToken = localStorage.getItem('accessToken');
-  console.log(accessToken);
 
   const allProperties = data?.data ?? [];
 

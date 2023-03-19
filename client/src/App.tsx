@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { Refine, AuthProvider } from '@pankod/refine-core';
+import { Refine, AuthProvider, Authenticated } from '@pankod/refine-core';
 import {
   notificationProvider,
   RefineSnackbarProvider,
@@ -18,7 +18,7 @@ import {
 } from '@mui/icons-material';
 
 import routerProvider from '@pankod/refine-react-router-v6';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import axios, { AxiosRequestConfig } from 'axios';
 
 import { ColorModeContext } from 'contexts';
@@ -52,69 +52,8 @@ import Empty from 'components/login-and-signup/Empty';
 
 const axiosInstance = axios.create();
 const api = new Api();
-axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
-  const token = localStorage.getItem('accessToken');
-  if (request.headers) {
-    request.headers['Authorization'] = `Bearer ${token}`;
-  } else {
-    request.headers = {
-      Authorization: `Bearer ${token}`,
-    };
-  }
-
-  return request;
-});
-
-// Refresh the token when it expires so that users don't receive 401 errors
-// while they are using the dashboard.
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (err) => {
-    return new Promise((resolve, reject) => {
-      console.log('error', err);
-      const originalReq = err.config;
-      if (err.response !== undefined) {
-        // To stop the refresh token from being sent when logging in
-        if (
-          api.getRefreshToken() !== null &&
-          err.response.status === 401 &&
-          err.config
-        ) {
-          let res = fetch(
-            `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/refresh-tokens`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${api.getToken()}`,
-              },
-              body: JSON.stringify({
-                refreshToken: `${api.getRefreshToken()}`,
-              }),
-            }
-          )
-            .then((res) => res.json())
-            .then((res) => {
-              api.storeTokens(res);
-              originalReq.headers[
-                'Authorization'
-              ] = `Bearer ${res.tokens.access.token}`;
-
-              return axios(originalReq);
-            });
-          resolve(res);
-          // If the response is 404 or 400 then just return the error
-          // It will be displayed in a pop up notification
-        } else if (err.response.status === 404 || err.response.status === 400) {
-          reject(err);
-        }
-      }
-      return Promise.reject(err);
-    });
-  }
-);
+api.addAuthorizationHeader(axiosInstance);
+api.refreshTokens(axiosInstance);
 
 export interface ILoginCredentials {
   email?: string;
@@ -157,7 +96,6 @@ function App() {
           .then((res) => {
             toast('Login successful', { type: 'success' });
             api.storeTokens(res.data);
-            return Promise.resolve();
           })
           .catch((err) => {
             toast(err.response.data.message || 'Something went wrong', {
@@ -170,14 +108,29 @@ function App() {
       return Promise.resolve();
     },
     logout: () => {
-      const token = localStorage.getItem('accessToken');
+      const access = localStorage.getItem('accessToken');
+      const refresh = localStorage.getItem('refreshToken');
 
-      if (token && typeof window !== 'undefined') {
+      if (refresh && typeof window !== 'undefined') {
+        api
+          .auth()
+          .logout({ refreshToken: refresh })
+          .then(() => {
+            toast('Logout successful', { type: 'success' });
+          })
+          .catch((err) => {
+            toast(err.response.data.message || 'Something went wrong', {
+              type: 'error',
+            });
+          });
+      }
+
+      if (access && typeof window !== 'undefined') {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         axios.defaults.headers.common = {};
-        window.google?.accounts.id.revoke(token, () => {
+        window.google?.accounts.id.revoke(access, () => {
           return Promise.resolve();
         });
       }
@@ -221,73 +174,71 @@ function App() {
           pauseOnHover={false}
           theme={mode === 'light' ? 'light' : 'dark'}
         />
-        <BrowserRouter>
-          <Refine
-            routerProvider={routerProvider}
-            dataProvider={dataProvider(
-              `${process.env.REACT_APP_BACKEND_URL}/api/v1`,
-              axiosInstance
-            )}
-            notificationProvider={notificationProvider}
-            ReadyPage={ReadyPage}
-            catchAll={<ErrorComponent />}
-            resources={[
-              {
-                name: 'properties',
-                list: AllProperties,
-                show: PropertyDetails,
-                create: CreateProperty,
-                edit: EditProperty,
-                icon: <VillaOutlined />,
-              },
-              {
-                name: 'agents',
-                list: Agents,
-                show: AgentProfile,
-                create: CreateAgent,
-                edit: EditAgent,
-                icon: <PeopleAltOutlined />,
-              },
-              {
-                name: 'reviews',
-                list: Reviews,
-                icon: <StarOutlineRounded />,
-              },
-              {
-                name: 'messages',
-                list: Messages,
-                show: VideoCall,
-                icon: <ChatBubbleOutline />,
-              },
-              {
-                name: 'my-profile',
-                options: { label: 'My Profile' },
-                list: MyProfile,
-                edit: EditAgent,
-                icon: <AccountCircleOutlined />,
-              },
-            ]}
-            Title={Title}
-            Sider={Sider}
-            Layout={Layout}
-            Header={Header}
-            // This part of refine was interfering with the login route below and we couldn't remove it. So we had to give it an empty component.
-            LoginPage={Empty}
-            authProvider={authProvider}
-            DashboardPage={Home}
-          >
-            <Routes>
-              {/* Todo: Protect this route */}
-              <Route path='/' element={<Home />} />
-              {/* @ts-ignore */}
-              <Route path='/login' element={<Login page='signin' />} />
-              {/* @ts-ignore */}
-              <Route path='/reset-password' element={<Login page='reset' />} />
-              {/* @ts-ignore */}
-              <Route path='/verify-email' element={<Login page='verify' />} />
-            </Routes>
-          </Refine>
-        </BrowserRouter>
+        {/* <BrowserRouter> */}
+        <Refine
+          routerProvider={routerProvider}
+          dataProvider={dataProvider(
+            `${process.env.REACT_APP_BACKEND_URL}/api/v1`,
+            axiosInstance
+          )}
+          notificationProvider={notificationProvider}
+          ReadyPage={ReadyPage}
+          catchAll={<ErrorComponent />}
+          resources={[
+            {
+              name: 'properties',
+              list: AllProperties,
+              show: PropertyDetails,
+              create: CreateProperty,
+              edit: EditProperty,
+              icon: <VillaOutlined />,
+            },
+            {
+              name: 'agents',
+              list: Agents,
+              show: AgentProfile,
+              create: CreateAgent,
+              edit: EditAgent,
+              icon: <PeopleAltOutlined />,
+            },
+            {
+              name: 'reviews',
+              list: Reviews,
+              icon: <StarOutlineRounded />,
+            },
+            {
+              name: 'messages',
+              list: Messages,
+              show: VideoCall,
+              icon: <ChatBubbleOutline />,
+            },
+            {
+              name: 'my-profile',
+              options: { label: 'My Profile' },
+              list: MyProfile,
+              edit: EditAgent,
+              icon: <AccountCircleOutlined />,
+            },
+          ]}
+          Title={Title}
+          Sider={Sider}
+          Layout={Layout}
+          Header={Header}
+          // This part of refine was interfering with the login route below and we couldn't remove it. So we had to give it an empty component.
+          LoginPage={Login}
+          authProvider={authProvider}
+          DashboardPage={Home}
+        >
+          {/* <Routes> */}
+          {/* @ts-ignore */}
+          {/* <Route index path='/login' element={<Login page='signin' />} /> */}
+          {/* @ts-ignore */}
+          {/* <Route path='/reset-password' element={<Login page='reset' />} /> */}
+          {/* @ts-ignore */}
+          {/* <Route path='/verify-email' element={<Login page='verify' />} /> */}
+          {/* </Routes> */}
+        </Refine>
+        {/* </BrowserRouter> */}
       </RefineSnackbarProvider>
     </>
   );

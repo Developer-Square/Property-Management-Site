@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 export const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/v1/`;
 
@@ -12,72 +12,134 @@ class Api {
       cancelToken: cancelTokenSource.token,
     });
 
-    // Also Check whether there's a token before sending a request
-    this.instance.interceptors.request.use(
-      (request) => {
-        if (request.url && request.url.includes('auth')) {
-          return request;
-        } else if (this.getToken() && request.headers) {
-          request.headers['Authorization'] = `Bearer ${this.getToken()}`;
-          return request;
-        } else {
-          cancelTokenSource.cancel();
-        }
-      },
-      (error) => {
-        return Promise.reject(error);
+    this.instance.interceptors.request.use((request: AxiosRequestConfig) => {
+      const token = localStorage.getItem('accessToken');
+      if (request.headers) {
+        request.headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        request.headers = {
+          Authorization: `Bearer ${token}`,
+        };
       }
-    );
+      return request;
+    });
 
-    //Intercepting the response, if its okay then do nothing but if there's a 401
-    //then resend it.
+    // Refresh the token when it expires so that users don't receive 401 errors
+    // while they are using the dashboard.
     this.instance.interceptors.response.use(
       (response) => {
         return response;
       },
       (err) => {
         return new Promise((resolve, reject) => {
+          console.log('error', err);
           const originalReq = err.config;
           if (err.response !== undefined) {
-            //To stop the refresh token from being sent when logging in
-            if (this.getRefreshToken() !== null) {
-              if (err.response.status === 401 && err.config) {
-                let res = fetch(`${API_URL}auth/refresh-tokens`, {
+            // To stop the refresh token from being sent when logging in
+            if (
+              this.getRefreshToken() !== null &&
+              err.response.status === 401 &&
+              err.config
+            ) {
+              let res = fetch(
+                `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/refresh-tokens`,
+                {
                   method: 'POST',
-                  mode: 'cors',
-                  cache: 'no-cache',
-                  credentials: 'same-origin',
                   headers: {
                     'Content-Type': 'application/json',
-                    Token: `${this.getToken()}`,
+                    Authorization: `Bearer ${this.getToken()}`,
                   },
-                  redirect: 'follow',
-                  referrer: 'no-referrer',
                   body: JSON.stringify({
                     refreshToken: `${this.getRefreshToken()}`,
                   }),
-                })
-                  .then((res) => res.json())
-                  .then((res) => {
-                    localStorage.setItem('jwtToken', res.access.token);
-                    localStorage.setItem('refreshToken', res.refresh.token);
+                }
+              )
+                .then((res) => res.json())
+                .then((res) => {
+                  this.storeTokens(res);
+                  originalReq.headers[
+                    'Authorization'
+                  ] = `Bearer ${res.tokens.access.token}`;
 
-                    originalReq.headers[
-                      'Authorization'
-                    ] = `Bearer ${res.access.token}`;
+                  return axios(originalReq);
+                });
+              resolve(res);
+              // If the response is 404 or 400 then just return the error
+              // It will be displayed in a pop up notification
+            } else if (
+              err.response.status === 404 ||
+              err.response.status === 400
+            ) {
+              reject(err);
+            }
+          }
+          return Promise.reject(err);
+        });
+      }
+    );
+  }
 
-                    return axios(originalReq);
-                  });
-                resolve(res);
-                //If the response is 404 or 400 then just return the error
-                //It will be displayed in a pop up notification
-              } else if (
-                err.response.status === 404 ||
-                err.response.status === 400
-              ) {
-                reject(err);
-              }
-            } else {
+  // The following two methods(addAuthorizationHeader and refreshTokens) are for the axios instance in app.tsx.
+  // We've two instances of axios in the app, one for refine to carry out it's under the hood requests in app.tsx and one for us to make requests to our backend.
+  addAuthorizationHeader(axiosInstance: AxiosInstance) {
+    axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
+      const token = localStorage.getItem('accessToken');
+      if (request.headers) {
+        request.headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        request.headers = {
+          Authorization: `Bearer ${token}`,
+        };
+      }
+      return request;
+    });
+  }
+
+  refreshTokens(axiosInstance: AxiosInstance) {
+    axiosInstance.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (err) => {
+        return new Promise((resolve, reject) => {
+          console.log('error', err);
+          const originalReq = err.config;
+          if (err.response !== undefined) {
+            // To stop the refresh token from being sent when logging in
+            if (
+              this.getRefreshToken() !== null &&
+              err.response.status === 401 &&
+              err.config
+            ) {
+              let res = fetch(
+                `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/refresh-tokens`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${this.getToken()}`,
+                  },
+                  body: JSON.stringify({
+                    refreshToken: `${this.getRefreshToken()}`,
+                  }),
+                }
+              )
+                .then((res) => res.json())
+                .then((res) => {
+                  this.storeTokens(res);
+                  originalReq.headers[
+                    'Authorization'
+                  ] = `Bearer ${res.tokens.access.token}`;
+
+                  return axios(originalReq);
+                });
+              resolve(res);
+              // If the response is 404 or 400 then just return the error
+              // It will be displayed in a pop up notification
+            } else if (
+              err.response.status === 404 ||
+              err.response.status === 400
+            ) {
               reject(err);
             }
           }
@@ -144,14 +206,6 @@ class Api {
           },
         }),
     };
-  }
-
-  VerificationEmail() {
-    if (this.getToken()) {
-      return {
-        send: () => this.instance.post(`/auth/send-verification-email`),
-      };
-    }
   }
 
   User() {
