@@ -80,6 +80,8 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
   useEffect(() => {
     if (page === 'reset') {
       setForm('reset');
+    } else if (page === 'verify') {
+      setForm('verify');
     } else {
       setForm('signin');
     }

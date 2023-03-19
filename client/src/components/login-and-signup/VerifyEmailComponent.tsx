@@ -53,7 +53,7 @@ const VerifyEmailComponent = ({
         <CustomButton
           type='submit'
           fullWidth
-          title={formLoading ? 'Loading...' : 'Send'}
+          title={formLoading ? 'Loading...' : 'Verify'}
           backgroundColor='#475BE8'
           color='#fcfcfc'
           active={formLoading}

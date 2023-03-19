@@ -97,7 +97,7 @@ const MessagesList = ({
 }) => {
   const [searchText, setSearchText] = useState('');
   return (
-    <>
+    <Box>
       <Stack
         direction='row'
         alignItems='center'
@@ -146,7 +146,7 @@ const MessagesList = ({
           <></>
         )}
       </Box>
-    </>
+    </Box>
   );
 };
 

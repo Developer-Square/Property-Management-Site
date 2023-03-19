@@ -68,7 +68,7 @@ const ModalContainer = ({
 const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
   const [open, setModal] = useState(false);
   return (
-    <>
+    <Box>
       <ModalContainer
         open={open}
         setModal={setModal}
@@ -137,7 +137,7 @@ const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
           <></>
         )}
       </Stack>
-    </>
+    </Box>
   );
 };
 

@@ -60,7 +60,7 @@ const MessageContent = ({
 }) => {
   const navigate = useNavigate();
   return (
-    <>
+    <Box>
       <Box
         sx={{
           borderRadius: '6px',
@@ -230,7 +230,7 @@ const MessageContent = ({
           <Send />
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 

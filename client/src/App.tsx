@@ -8,6 +8,7 @@ import {
   GlobalStyles,
   ReadyPage,
   ErrorComponent,
+  Box,
 } from '@pankod/refine-mui';
 import {
   AccountCircleOutlined,
@@ -94,6 +95,7 @@ function App() {
           .then((res) => {
             toast('Login successful', { type: 'success' });
             api.storeTokens(res.data);
+            return Promise.resolve();
           })
           .catch((err) => {
             toast(err.response.data.message || 'Something went wrong', {
@@ -105,7 +107,7 @@ function App() {
 
       return Promise.resolve();
     },
-    logout: () => {
+    logout: async () => {
       const access = localStorage.getItem('accessToken');
       const refresh = localStorage.getItem('refreshToken');
 
@@ -135,7 +137,7 @@ function App() {
 
       return Promise.resolve();
     },
-    checkError: () => Promise.resolve(),
+    checkError: async () => Promise.resolve(),
     checkAuth: async () => {
       const token = localStorage.getItem('accessToken');
 
@@ -145,7 +147,7 @@ function App() {
       return Promise.reject();
     },
 
-    getPermissions: () => Promise.resolve(),
+    getPermissions: async () => Promise.resolve(),
     getUserIdentity: async () => {
       const user = localStorage.getItem('user');
       if (user) {
@@ -156,7 +158,7 @@ function App() {
   const { mode } = useContext(ColorModeContext);
 
   return (
-    <>
+    <Box>
       <CssBaseline />
       <GlobalStyles styles={{ html: { WebkitFontSmoothing: 'auto' } }} />
       <RefineSnackbarProvider>
@@ -173,7 +175,21 @@ function App() {
           theme={mode === 'light' ? 'light' : 'dark'}
         />
         <Refine
-          routerProvider={routerProvider}
+          routerProvider={{
+            ...routerProvider,
+            routes: [
+              {
+                // @ts-ignore
+                element: <Login page='reset' />,
+                path: '/reset-password',
+              },
+              {
+                // @ts-ignore
+                element: <Login page='verify' />,
+                path: '/verify-email',
+              },
+            ],
+          }}
           dataProvider={dataProvider(
             `${process.env.REACT_APP_BACKEND_URL}/api/v1`,
             axiosInstance
@@ -221,13 +237,12 @@ function App() {
           Sider={Sider}
           Layout={Layout}
           Header={Header}
-          // This part of refine was interfering with the login route below and we couldn't remove it. So we had to give it an empty component.
           LoginPage={Login}
           authProvider={authProvider}
           DashboardPage={Home}
         />
       </RefineSnackbarProvider>
-    </>
+    </Box>
   );
 }
 

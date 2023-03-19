@@ -58,7 +58,7 @@ const ForgotPasswordComponent = ({
           password
         </Typography>
       ) : (
-        <>
+        <Box>
           <form
             style={{
               marginBottom: '20px',
@@ -94,7 +94,7 @@ const ForgotPasswordComponent = ({
             active={formLoading}
             handleClick={() => navigate(-1)}
           />
-        </>
+        </Box>
       )}
     </Box>
   );

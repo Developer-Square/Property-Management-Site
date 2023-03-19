@@ -176,7 +176,7 @@ class Api {
   }
 
   getParam() {
-    return window.location.search.slice(32);
+    return window.location.search.split('=')[1];
   }
 
   auth() {
