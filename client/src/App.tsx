@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { Refine, AuthProvider, Authenticated } from '@pankod/refine-core';
+import { Refine, AuthProvider } from '@pankod/refine-core';
 import {
   notificationProvider,
   RefineSnackbarProvider,
@@ -18,8 +18,7 @@ import {
 } from '@mui/icons-material';
 
 import routerProvider from '@pankod/refine-react-router-v6';
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 import { ColorModeContext } from 'contexts';
 import { Title, Sider, Layout, Header } from 'components/layout';
@@ -48,7 +47,6 @@ import Messages from 'pages/messages';
 import VideoCall from 'pages/video-call';
 import Api from 'utils/api';
 import 'react-toastify/dist/ReactToastify.css';
-import Empty from 'components/login-and-signup/Empty';
 
 const axiosInstance = axios.create();
 const api = new Api();
@@ -174,7 +172,6 @@ function App() {
           pauseOnHover={false}
           theme={mode === 'light' ? 'light' : 'dark'}
         />
-        {/* <BrowserRouter> */}
         <Refine
           routerProvider={routerProvider}
           dataProvider={dataProvider(
@@ -228,17 +225,7 @@ function App() {
           LoginPage={Login}
           authProvider={authProvider}
           DashboardPage={Home}
-        >
-          {/* <Routes> */}
-          {/* @ts-ignore */}
-          {/* <Route index path='/login' element={<Login page='signin' />} /> */}
-          {/* @ts-ignore */}
-          {/* <Route path='/reset-password' element={<Login page='reset' />} /> */}
-          {/* @ts-ignore */}
-          {/* <Route path='/verify-email' element={<Login page='verify' />} /> */}
-          {/* </Routes> */}
-        </Refine>
-        {/* </BrowserRouter> */}
+        />
       </RefineSnackbarProvider>
     </>
   );
