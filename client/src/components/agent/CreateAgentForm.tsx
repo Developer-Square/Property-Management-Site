@@ -100,14 +100,6 @@ const CreateAgentForm = ({
           placeholder='+254732934359'
           mode={mode}
         />
-        <TextInput
-          title={'Properties'}
-          fieldValue={'properties'}
-          register={register}
-          type='number'
-          placeholder='23'
-          mode={mode}
-        />
       </Stack>
       <Stack direction={{ xs: 'column', sm: 'row' }} gap='20px'>
         <FormControl sx={{ flex: 1 }}>

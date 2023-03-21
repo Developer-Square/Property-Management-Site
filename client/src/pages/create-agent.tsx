@@ -7,8 +7,6 @@ import { CreateAgentImg } from 'assets';
 import { CreateAgentForm, CustomButton } from 'components';
 import { ColorModeContext } from 'contexts';
 
-// Todo: Only admins can create agents
-// Hide create agent button from agents page
 const CreateAgent = () => {
   const [propertyImage, setPropertyImage] = useState<{
     name: string;
