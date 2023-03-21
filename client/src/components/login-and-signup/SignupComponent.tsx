@@ -4,6 +4,7 @@ import CustomButton from 'components/common/CustomButton';
 import { DarkLogo, LightLogo } from 'assets';
 import { TextInput } from 'pages/login';
 import { ColorModeContext } from 'contexts';
+import { toast } from 'react-toastify';
 
 const SignupComponent = ({
   GoogleButton,
@@ -35,6 +36,12 @@ const SignupComponent = ({
       });
 
     reader(file).then((result: string) => {
+      if (file?.size / 1000000 > 3) {
+        toast('File size should be less than 3MB', {
+          type: 'error',
+        });
+        return;
+      }
       setUserImage({ name: file?.name, url: result });
     });
   };
