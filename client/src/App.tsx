@@ -61,50 +61,46 @@ export interface ILoginCredentials {
 }
 
 function App() {
+  const authenticate = async (url: string, content: Record<string, any>) => {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(content),
+    });
+
+    const data = await response.json();
+
+    if (response.status === 200) {
+      api.storeTokens(data);
+    } else {
+      return Promise.reject();
+    }
+  };
+
   const authProvider: AuthProvider = {
     login: async ({ email, password, credential }: ILoginCredentials) => {
       const profileObj = credential ? parseJwt(credential) : null;
       // If the user is logging in with google then send the profile object to the backend
       if (profileObj) {
-        const response = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/google`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              ...profileObj,
-              avatar: profileObj.picture,
-            }),
-          }
-        );
-
-        const data = await response.json();
-
-        if (response.status === 200) {
-          api.storeTokens(data);
-        } else {
-          return Promise.reject();
-        }
+        const url = `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/google`;
+        const content = {
+          ...profileObj,
+          avatar: profileObj.picture,
+        };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const reponse = await authenticate(url, content);
       } else {
         // If the user is logging in with email and password then send the email and password to the backend
-        api
-          .auth()
-          .login({ email, password })
-          .then((res) => {
-            toast('Login successful', { type: 'success' });
-            api.storeTokens(res.data);
-            return Promise.resolve();
-          })
-          .catch((err) => {
-            toast(err.response.data.message || 'Something went wrong', {
-              type: 'error',
-            });
-            return Promise.reject();
-          });
+        const url = `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/login`;
+        const content = {
+          email,
+          password,
+        };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const reponse = await authenticate(url, content);
       }
-
       return Promise.resolve();
     },
     logout: async () => {
