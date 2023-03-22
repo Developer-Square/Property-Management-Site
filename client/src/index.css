@@ -11,6 +11,10 @@ body img {
   display: none;
 }
 
+.avatar img {
+  display: block;
+}
+
 a {
   text-decoration: none !important;
 }
