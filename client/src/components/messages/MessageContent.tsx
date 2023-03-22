@@ -36,6 +36,7 @@ const TextImage = ({
           src={img}
           alt='Property'
           style={{
+            display: 'block',
             borderRadius: '10px',
             maxHeight: '125px',
             maxWidth: '201px',
@@ -80,6 +81,7 @@ const MessageContent = ({
             src={users[0].avatar}
             alt='profile'
             style={{
+              display: 'block',
               width: '46px',
               height: '46px',
               borderRadius: '50%',

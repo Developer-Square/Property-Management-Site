@@ -61,7 +61,11 @@ const CreateAgent = () => {
         <img
           src={CreateAgentImg}
           alt='create-agent'
-          style={{ width: '100%', borderRadius: '15px 15px 0 0' }}
+          style={{
+            display: 'block',
+            width: '100%',
+            borderRadius: '15px 15px 0 0',
+          }}
         />
         <Stack
           sx={{

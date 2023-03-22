@@ -46,6 +46,7 @@ const Text = ({
           src={users[0].avatar}
           alt='profile'
           style={{
+            display: 'block',
             width: '46px',
             height: '46px',
             borderRadius: '50%',

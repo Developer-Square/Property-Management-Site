@@ -247,7 +247,6 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
       component='div'
       sx={{
         background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
-        backgroundSize: 'cover',
       }}
     >
       <Box
@@ -256,6 +255,7 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
           padding: { sm: '0px !important' },
+          height: { sm: '1100px' },
         }}
       >
         <Box
@@ -319,6 +319,7 @@ export const Login: React.FC = ({ page }: { page?: string }) => {
           <img
             src={LoginSignup}
             style={{
+              display: 'block',
               width: '100%',
               height: '100%',
             }}

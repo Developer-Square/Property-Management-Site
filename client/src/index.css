@@ -6,6 +6,11 @@ body {
   overflow-x: hidden;
 }
 
+/* Had to set hide all images because refine keeps adding new images to the page automatically */
+body img {
+  display: none;
+}
+
 a {
   text-decoration: none !important;
 }

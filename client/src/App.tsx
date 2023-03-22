@@ -158,7 +158,12 @@ function App() {
   const { mode } = useContext(ColorModeContext);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        height: '100vh',
+        backgroundColor: mode === 'light' ? '#fcfcfc' : '#1a1a1a',
+      }}
+    >
       <CssBaseline />
       <GlobalStyles styles={{ html: { WebkitFontSmoothing: 'auto' } }} />
       <RefineSnackbarProvider>

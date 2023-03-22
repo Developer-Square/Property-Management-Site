@@ -64,6 +64,7 @@ const SignupComponent = ({
         alignItems: 'center',
         width: '100%',
         maxWidth: { lg: '362px' },
+        marginBottom: '85px',
       }}
     >
       <Typography
@@ -79,6 +80,7 @@ const SignupComponent = ({
       <img
         src={mode === 'light' ? DarkLogo : LightLogo}
         style={{
+          display: 'block',
           height: '70px',
           margin: '40px 0',
           width: '70px',

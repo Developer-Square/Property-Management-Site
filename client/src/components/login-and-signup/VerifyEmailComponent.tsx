@@ -40,6 +40,7 @@ const VerifyEmailComponent = ({
       <img
         src={mode === 'light' ? DarkLogo : LightLogo}
         style={{
+          display: 'block',
           height: '70px',
           margin: '40px 0',
           width: '70px',

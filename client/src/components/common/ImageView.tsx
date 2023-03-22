@@ -27,6 +27,7 @@ const ImageView = ({
             src={image}
             alt='Property'
             style={{
+              display: 'block',
               borderRadius: '10px',
               maxHeight: '249px',
               maxWidth: '230px',

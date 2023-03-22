@@ -100,6 +100,7 @@ const AgentCard = ({
           alt='user'
           width='100%'
           style={{
+            display: 'block',
             borderRadius: 8,
             objectFit: 'cover',
             height: '100%',
