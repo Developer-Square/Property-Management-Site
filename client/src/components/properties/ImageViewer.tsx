@@ -10,6 +10,7 @@ const Image = ({ image, title }: { image: string; title: string }) => (
     src={image}
     alt={title}
     style={{
+      display: 'block',
       objectFit: 'cover',
       borderRadius: '10px',
       height: '100%',
@@ -68,7 +69,7 @@ const ModalContainer = ({
 const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
   const [open, setModal] = useState(false);
   return (
-    <>
+    <Box>
       <ModalContainer
         open={open}
         setModal={setModal}
@@ -79,6 +80,7 @@ const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
           src={propertyDetails.photos[0]}
           alt={propertyDetails.title}
           style={{
+            display: 'block',
             objectFit: 'cover',
             borderRadius: '10px',
             width: propertyDetails.photos >= 3 ? '80%' : '100%',
@@ -137,7 +139,7 @@ const ImageViewer = ({ propertyDetails }: { propertyDetails: any }) => {
           <></>
         )}
       </Stack>
-    </>
+    </Box>
   );
 };
 

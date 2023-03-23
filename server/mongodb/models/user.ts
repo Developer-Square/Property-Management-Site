@@ -53,7 +53,6 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
       default: false,
     },
     avatar: { type: String, required: true },
-    properties: { type: String },
     phoneNumber: { type: String },
     gender: { type: String },
     country: { type: String },
@@ -115,7 +114,6 @@ export interface IUser {
   password?: string;
   role: string;
   email_verified: boolean;
-  properties?: string;
   phoneNumber?: string;
   gender?: string;
   country?: string;
@@ -129,7 +127,6 @@ export const UserObject = z.object({
   avatar: z.string().min(1),
   role: z.nativeEnum(Roles),
   email_verified: z.boolean(),
-  properties: z.string().min(1).optional(),
   phoneNumber: z.string().min(1).optional(),
   gender: z.string().min(1).optional(),
   country: z.string().min(1).optional(),

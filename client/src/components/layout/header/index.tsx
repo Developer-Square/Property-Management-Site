@@ -70,6 +70,7 @@ export const Header: React.FC = () => {
                   onClick={(e: any) => setAnchorEl(e.currentTarget)}
                   src={user?.avatar}
                   alt={user?.name}
+                  className='avatar'
                 />
                 <Stack direction='column' display={{ xs: 'none', sm: 'flex' }}>
                   <Typography fontSize={14} fontWeight={600}>

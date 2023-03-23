@@ -31,6 +31,7 @@ const NotificationItem = ({
     <img
       src={img}
       style={{
+        display: 'block',
         width: '38px',
         height: '38px',
       }}

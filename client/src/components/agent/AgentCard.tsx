@@ -76,7 +76,7 @@ const AgentCard = ({
 
   return (
     <Box
-      component={Link}
+      component={!isMobile ? 'div' : Link}
       to={!isMobile ? '/agents' : generateLink()}
       width='100%'
       sx={{
@@ -100,6 +100,7 @@ const AgentCard = ({
           alt='user'
           width='100%'
           style={{
+            display: 'block',
             borderRadius: 8,
             objectFit: 'cover',
             height: '100%',

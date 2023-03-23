@@ -16,13 +16,22 @@ export const Title: React.FC<TitleProps> = ({ collapsed }) => {
           <img
             src={mode === 'light' ? DarkLogo : LightLogo}
             alt='Logo'
-            style={{ width: '45px', borderRadius: '50%' }}
+            style={{
+              display: 'block',
+              width: '45px',
+              borderRadius: '50%',
+            }}
           />
         ) : (
           <img
             src={mode === 'light' ? DarkLogo : LightLogo}
             alt='Refine'
-            style={{ marginTop: '10px', width: '50px', borderRadius: '50%' }}
+            style={{
+              display: 'block',
+              marginTop: '10px',
+              width: '50px',
+              borderRadius: '50%',
+            }}
           />
         )}
       </Link>

@@ -340,11 +340,11 @@ export const Sider: typeof DefaultSider = ({ render }) => {
       });
     }
     return (
-      <>
+      <Box>
         {dashboard}
         {items}
         {logout}
-      </>
+      </Box>
     );
   };
 
@@ -355,7 +355,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
   );
 
   return (
-    <>
+    <Box>
       <Box
         sx={{
           width: { xs: drawerWidth() },
@@ -493,6 +493,6 @@ export const Sider: typeof DefaultSider = ({ render }) => {
           </IconButton>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };

@@ -43,6 +43,7 @@ const MessageProfile = ({
         src={avatar}
         alt='profile'
         style={{
+          display: 'block',
           width: '46px',
           height: '46px',
           borderRadius: '50%',
@@ -97,7 +98,7 @@ const MessagesList = ({
 }) => {
   const [searchText, setSearchText] = useState('');
   return (
-    <>
+    <Box>
       <Stack
         direction='row'
         alignItems='center'
@@ -146,7 +147,7 @@ const MessagesList = ({
           <></>
         )}
       </Box>
-    </>
+    </Box>
   );
 };
 

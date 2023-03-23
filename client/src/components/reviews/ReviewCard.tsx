@@ -45,6 +45,7 @@ const ReviewCard = ({
           src={profileUrl}
           alt='Profile'
           style={{
+            display: 'block',
             width: '70px',
             height: '70px',
             borderRadius: '10px',

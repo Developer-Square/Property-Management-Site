@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Close } from '@mui/icons-material';
-import { Stack } from '@pankod/refine-mui';
+import { Box, Stack } from '@pankod/refine-mui';
 import { ColorModeContext } from 'contexts';
 
 const ImageView = ({
@@ -13,7 +13,7 @@ const ImageView = ({
   const { mode } = useContext(ColorModeContext);
 
   return (
-    <>
+    <Box>
       {backendImages.map((image: string, index: number) => (
         <Stack direction='column' key={index}>
           <Close
@@ -27,6 +27,7 @@ const ImageView = ({
             src={image}
             alt='Property'
             style={{
+              display: 'block',
               borderRadius: '10px',
               maxHeight: '249px',
               maxWidth: '230px',
@@ -38,7 +39,7 @@ const ImageView = ({
           />
         </Stack>
       ))}
-    </>
+    </Box>
   );
 };
 

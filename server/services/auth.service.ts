@@ -100,7 +100,8 @@ export const resetPassword = async (
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
-  await updateUserById(user.id, { password: newPassword });
+  Object.assign(user, { password: newPassword });
+  await user.save();
   await Token.deleteMany({ user: user.id, type: TokenTypes.RESET_PASSWORD });
 };
 
@@ -123,8 +124,9 @@ export const verifyEmail = async (
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
   await Token.deleteMany({ user: user.id, type: TokenTypes.VERIFY_EMAIL });
-  const updatedUser = await updateUserById(user.id, { email_verified: true });
-  return updatedUser;
+  Object.assign(user, { email_verified: true });
+  await user.save();
+  return user;
 };
 
 /**

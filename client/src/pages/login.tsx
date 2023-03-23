@@ -6,28 +6,37 @@ import {
   FormHelperText,
   FormControl,
 } from '@pankod/refine-mui';
+import { toast } from 'react-toastify';
 
 import { CredentialResponse } from '../interfaces/google';
-import { useForm } from '@pankod/refine-react-hook-form';
-import { LoginComponent } from 'components';
+import {
+  ForgotPasswordComponent,
+  LoginComponent,
+  ResetPasswordComponent,
+  VerifyEmailComponent,
+} from 'components';
 import SignupComponent from 'components/login-and-signup/SignupComponent';
 import { LoginSignup } from 'assets';
 import { ColorModeContext } from 'contexts';
+import Api from 'utils/api';
+import { ILoginCredentials } from 'App';
 
 export const TextInput = ({
   title,
   type,
   fieldValue,
-  register,
+  setFieldValue,
   placeholder,
   mode,
+  active,
 }: {
   title: string;
   type: string;
   fieldValue: string;
-  register: any;
+  setFieldValue: React.Dispatch<React.SetStateAction<string>>;
   placeholder?: string;
   mode?: string;
+  active: boolean;
 }) => (
   <FormControl
     sx={{
@@ -45,27 +54,160 @@ export const TextInput = ({
       {title}
     </FormHelperText>
     <TextField
+      disabled={active}
       type={type}
       required
       id='outlined-basic'
       color='info'
       variant='outlined'
+      value={fieldValue}
+      onChange={(e) => setFieldValue(e.target.value)}
       placeholder={placeholder}
-      {...register(fieldValue, { required: true })}
     />
   </FormControl>
 );
 
-export const Login: React.FC = () => {
+export const Login: React.FC = ({ page }: { page?: string }) => {
   const { mutate: login } = useLogin<CredentialResponse>();
-  const [form, setForm] = useState('login');
+  const [form, setForm] = useState('');
+  const [formComplete, setFormComplete] = useState(false);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const { mode } = useContext(ColorModeContext);
+  const api = new Api();
+  const { mutate } = useLogin<ILoginCredentials>();
 
-  const {
-    refineCore: { formLoading },
-    register,
-    handleSubmit,
-  } = useForm();
+  // If we are on the reset password page, set the form to reset
+  useEffect(() => {
+    if (page === 'reset') {
+      setForm('reset');
+    } else if (page === 'verify') {
+      setForm('verify');
+    } else {
+      setForm('signin');
+    }
+  }, [page]);
+
+  const handleForgotPassword = (email: string) => {
+    if (email === '') {
+      toast('Please enter email', { type: 'error' });
+      return;
+    }
+
+    setIsFormLoading(true);
+    api
+      .auth()
+      .forgotPassword({ email })
+      .then((res) => {
+        setIsFormLoading(false);
+        setFormComplete(true);
+        toast('Kindly check your email', { type: 'success' });
+      })
+      .catch((err) => {
+        setIsFormLoading(false);
+        toast(err.response.data.message || 'Something went wrong', {
+          type: 'error',
+        });
+      });
+  };
+
+  const handleResetPassword = (data: {
+    password: string;
+    confirmPassword: string;
+  }) => {
+    const { password, confirmPassword } = data;
+
+    if (password === '' || confirmPassword === '') {
+      toast('Please fill all the fields', { type: 'error' });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast('Passwords do not match', { type: 'error' });
+      return;
+    }
+
+    setIsFormLoading(true);
+    api
+      .auth()
+      .resetPassword({ password })
+      .then((res) => {
+        setIsFormLoading(false);
+        toast('Password reset successfully', { type: 'success' });
+        setForm('signin');
+      })
+      .catch((err) => {
+        setIsFormLoading(false);
+        toast(err.response.data.message || 'Something went wrong', {
+          type: 'error',
+        });
+      });
+  };
+
+  const handleVerifyEmail = () => {
+    setIsFormLoading(true);
+    api
+      .auth()
+      .verifyEmail()
+      .then((res) => {
+        setIsFormLoading(false);
+        setFormComplete(true);
+        toast('Email verified successfully', { type: 'success' });
+      })
+      .catch((err) => {
+        setIsFormLoading(false);
+        toast(err.response.data.message || 'Something went wrong', {
+          type: 'error',
+        });
+      });
+  };
+
+  const handleSubmit = async (data: any) => {
+    if (form === 'signin') {
+      const { email, password } = data;
+      if (email === '' || password === '') {
+        toast('Please enter email and password', { type: 'error' });
+        return;
+      }
+
+      setIsFormLoading(true);
+      await mutate({ email, password });
+      setIsFormLoading(false);
+    } else {
+      const { email, name, password, confirmPassword, userImage } = data;
+      if (
+        email === '' ||
+        name === '' ||
+        password === '' ||
+        confirmPassword === '' ||
+        userImage.name === ''
+      ) {
+        toast('Please fill all fields', { type: 'error' });
+        return;
+      }
+
+      if (data.password !== data.confirmPassword) {
+        toast('Passwords do not match', { type: 'error' });
+        return;
+      }
+
+      setIsFormLoading(true);
+      api
+        .auth()
+        .registerUser({ ...data, avatar: data.userImage.url })
+        .then((res) => {
+          setIsFormLoading(false);
+          toast('Account created successfully', { type: 'success' });
+          api.storeTokens(res.data);
+          setForm('signin');
+        })
+        .catch((err) => {
+          setIsFormLoading(false);
+          toast(err.response.data.message || 'Something went wrong', {
+            type: 'error',
+          });
+        });
+    }
+  };
 
   const GoogleButton = (): JSX.Element => {
     const divRef = useRef<HTMLDivElement>(null);
@@ -98,14 +240,13 @@ export const Login: React.FC = () => {
     return <div ref={divRef} />;
   };
 
-  useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), []);
+  useEffect(() => window.scrollTo({ top: 0, behavior: 'smooth' }), [form]);
 
   return (
     <Box
       component='div'
       sx={{
         background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
-        backgroundSize: 'cover',
       }}
     >
       <Box
@@ -114,6 +255,7 @@ export const Login: React.FC = () => {
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
           padding: { sm: '0px !important' },
+          height: { sm: '1100px' },
         }}
       >
         <Box
@@ -126,21 +268,45 @@ export const Login: React.FC = () => {
             padding: '0 20px',
           }}
         >
-          {form === 'signin' ? (
+          {form === 'signin' && (
             <LoginComponent
               GoogleButton={GoogleButton}
-              register={register}
               handleSubmit={handleSubmit}
-              formLoading={formLoading}
+              formLoading={isFormLoading}
               setForm={setForm}
             />
-          ) : (
+          )}
+
+          {form === 'signup' && (
             <SignupComponent
               GoogleButton={GoogleButton}
-              register={register}
               handleSubmit={handleSubmit}
-              formLoading={formLoading}
+              formLoading={isFormLoading}
               setForm={setForm}
+            />
+          )}
+
+          {form === 'forgot' && (
+            <ForgotPasswordComponent
+              handleSubmit={handleForgotPassword}
+              formLoading={isFormLoading}
+              formComplete={formComplete}
+              setFormComplete={setFormComplete}
+            />
+          )}
+
+          {form === 'reset' && (
+            <ResetPasswordComponent
+              handleSubmit={handleResetPassword}
+              formLoading={isFormLoading}
+            />
+          )}
+
+          {form === 'verify' && (
+            <VerifyEmailComponent
+              handleSubmit={handleVerifyEmail}
+              formComplete={formComplete}
+              formLoading={isFormLoading}
             />
           )}
         </Box>
@@ -153,6 +319,7 @@ export const Login: React.FC = () => {
           <img
             src={LoginSignup}
             style={{
+              display: 'block',
               width: '100%',
               height: '100%',
             }}

@@ -3,7 +3,7 @@ const Property = require('../mongodb/models/property');
 import mongoose from 'mongoose';
 const cloudinary = require('cloudinary').v2;
 
-const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     const query = {};
     const { _end, _start, name_like = '' } = req.query;
@@ -154,7 +154,6 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-  getAllUsers,
   createUser,
   updateUser,
   getUserInfoByID,

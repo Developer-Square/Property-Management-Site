@@ -36,6 +36,7 @@ const TextImage = ({
           src={img}
           alt='Property'
           style={{
+            display: 'block',
             borderRadius: '10px',
             maxHeight: '125px',
             maxWidth: '201px',
@@ -60,7 +61,7 @@ const MessageContent = ({
 }) => {
   const navigate = useNavigate();
   return (
-    <>
+    <Box>
       <Box
         sx={{
           borderRadius: '6px',
@@ -80,6 +81,7 @@ const MessageContent = ({
             src={users[0].avatar}
             alt='profile'
             style={{
+              display: 'block',
               width: '46px',
               height: '46px',
               borderRadius: '50%',
@@ -230,7 +232,7 @@ const MessageContent = ({
           <Send />
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 
