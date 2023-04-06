@@ -11,7 +11,7 @@ router
 router
   .route('/:userId')
   .get(getUserController)
-  .patch(updateUserController)
-  .delete(deleteUserController);
+  .patch(authMiddleware(), updateUserController)
+  .delete(authMiddleware(), deleteUserController);
 
 export default router;

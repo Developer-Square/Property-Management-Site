@@ -1,7 +1,7 @@
 import mongoose, { Document, FilterQuery, Model } from 'mongoose';
 import { z } from "zod";
 import { createSchema } from '../../utils/createSchema';
-import paginate, { IPaginationOptions, QueryResult } from "../plugins/paginate";
+import { toJSON, paginate, IPaginationOptions, QueryResult } from '../plugins';
 import { IUserDoc } from './user';
 
 const propertySchema = new mongoose.Schema<IPropertyDoc, IPropertyModel>({
@@ -19,6 +19,7 @@ const propertySchema = new mongoose.Schema<IPropertyDoc, IPropertyModel>({
 });
 
 propertySchema.plugin(paginate);
+propertySchema.plugin(toJSON);
 
 const Property = mongoose.model<IPropertyDoc, IPropertyModel>('Property', propertySchema);
 
@@ -32,7 +33,7 @@ export interface IProperty {
   location: string;
   price: number;
   photos: string[];
-  creator: mongoose.Schema.Types.ObjectId;
+  creator: mongoose.Types.ObjectId;
 }
 
 export const PropertyObject = createSchema<IProperty>().with({
@@ -43,7 +44,7 @@ export const PropertyObject = createSchema<IProperty>().with({
   location: z.string().min(1),
   price: z.number(),
   photos: z.array(z.string()),
-  creator: z.instanceof(mongoose.Schema.Types.ObjectId),
+  creator: z.instanceof(mongoose.Types.ObjectId),
 });
 
 export interface IPropertyDoc extends IProperty, Document {}

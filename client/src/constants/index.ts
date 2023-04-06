@@ -1,3 +1,12 @@
+export const validateEnv = (description: string, envVariable?: string) => {
+  if (!envVariable) {
+    console.error(`Please add the environment variable: ${description}`);
+    process.exit(1);
+  } else {
+    return envVariable;
+  }
+};
+
 export const propertyReferralsInfo = [
   {
     title: 'Social Media',
@@ -25,3 +34,5 @@ export const propertyReferralsInfo = [
     color: '#F45252',
   },
 ];
+
+export const serverUrl = validateEnv('Server URL', process.env.REACT_APP_BACKEND_URL);

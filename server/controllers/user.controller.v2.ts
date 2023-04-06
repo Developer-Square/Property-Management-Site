@@ -15,7 +15,7 @@ export const createUserController = catchAsync(async (req: Request, res: Respons
 
 export const getUsersController = catchAsync(async (req: Request, res: Response) => {
   const filter: FilterQuery<IUserDoc> = pick(req.query, ['name', 'role']);
-  const options: IPaginationOptions = pick(req.query, ['_start', '_end', '_sort', '_order']);
+  const options: IPaginationOptions = pick(req.query, ['_start', '_end', '_sort', '_order', 'projectBy', 'populate']);
   const { docs, count } = await queryUsers(filter, options);
   res.header('x-total-count', String(count));
   res.header('Access-Control-Expose-Headers', 'x-total-count');

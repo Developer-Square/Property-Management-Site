@@ -12,7 +12,7 @@ router
 router
     .route('/:propertyId')
     .get(getPropertyController)
-    .patch(updatePropertyController)
-    .delete(deletePropertyController);
+    .patch(authMiddleware(), updatePropertyController)
+    .delete(authMiddleware(), deletePropertyController);
 
 export default router;

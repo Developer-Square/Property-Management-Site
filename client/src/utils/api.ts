@@ -53,8 +53,9 @@ class Api {
                                 }),
                             }).then(res => res.json())
                             .then(res => {
-                                localStorage.setItem('jwtToken', res.access.token)
-                                localStorage.setItem('refreshToken', res.refresh.token)
+                                localStorage.setItem('accessToken', res.access.token);
+                                localStorage.setItem('refreshToken', res.refresh.token);
+                                localStorage.setItem('refreshTokenExpires', res.refresh.expires)
 
                                 originalReq.headers['Authorization'] = `Bearer ${res.access.token}`
 
@@ -76,7 +77,7 @@ class Api {
     }
 
     getToken() {
-        return localStorage.getItem('jwtToken')
+        return localStorage.getItem('accessToken')
     }
 
     getRefreshToken() {
@@ -142,6 +143,21 @@ class Api {
                 createUser: (data: any) => this.instance.post(`users/`, data),
                 updateUser: (id: string, data: any) => this.instance.patch(`users/${id}`, data),
                 deleteUser: (id: string) => this.instance.delete(`users/${id}`),
+            }
+        }
+    }
+
+    Message() {
+        if (this.getToken()) {
+            return {
+                getMessage: (id: string) => this.instance.get(`messages/${id}`),
+                getAllMessages: () => this.instance({
+                    method: 'GET',
+                    url: 'messages/',
+                }),
+                createMessage: (data: any) => this.instance.post(`messages/`, data),
+                updateMessage: (id: string, data: any) => this.instance.patch(`messages/${id}`, data),
+                deleteMessage: (id: string) => this.instance.delete(`messages/${id}`),
             }
         }
     }

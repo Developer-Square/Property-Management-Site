@@ -20,7 +20,7 @@ export const getPropertiesController = catchAsync(async (req: Request, res: Resp
     filter.title = { $regex: filter.title_like, $options: 'i' };
     delete filter.title_like;
   }
-  const options: IPaginationOptions = pick(req.query, ['_start', '_end', '_sort', '_order']);
+  const options: IPaginationOptions = pick(req.query, ['_start', '_end', '_sort', '_order', 'projectBy', 'populate']);
   const { docs, count } = await queryProperties(filter, options);
   res.header('x-total-count', String(count));
   res.header('Access-Control-Expose-Headers', 'x-total-count');

@@ -4,7 +4,7 @@ import { Roles } from '../config/roles';
 import { ApiError } from '../errors';
 import Token, { TokenTypes } from '../mongodb/models/token';
 import User, { IUser, IUserDoc, IUserWithTokens } from '../mongodb/models/user';
-import cloudinary from './cloudinary.service';
+import cloudinary, { uploadOnePhoto } from './cloudinary.service';
 import { verifyToken, generateAuthTokens } from './token.service';
 import { getUserByEmail, getUserById, updateUserById } from './user.service';
 
@@ -31,13 +31,9 @@ export const loginUserWithEmailAndPassword = async (email: string, password: str
  * @returns {Promise<IUserDoc>}
  */
 export const loginUserWithGoogle = async (userBody: IUser): Promise<IUserDoc> => {
-    const user = getUserByEmail(userBody.email);
+    const user = await getUserByEmail(userBody.email);
     if (user) {
-        return user as Promise<IUserDoc>;
-    }
-    if (userBody.avatar){
-        const photoUrl = await cloudinary.uploader.upload(userBody.avatar);
-        Object.assign(userBody, { avatar: photoUrl });
+        return user;
     }
     return User.create(userBody);
 };
@@ -83,7 +79,8 @@ export const resetPassword = async (resetPasswordToken: any, newPassword: string
     if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
-    await updateUserById(user.id, { password: newPassword });
+    Object.assign(user, { password: newPassword });
+    await user.save();
     await Token.deleteMany({ user: user.id, type: TokenTypes.RESET_PASSWORD });
 };
   
@@ -99,8 +96,9 @@ export const verifyEmail = async (verifyEmailToken: any): Promise<IUserDoc | nul
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
     await Token.deleteMany({ user: user.id, type: TokenTypes.VERIFY_EMAIL });
-    const updatedUser = await updateUserById(user.id, { isEmailVerified: true });
-    return updatedUser;
+    Object.assign(user, { email_verified: true });
+    await user.save();
+    return user;
 };
 
 /**
@@ -126,4 +124,18 @@ export const confirmUserPermissions = async (creator: IUserDoc, user?: Express.U
         return Promise.reject(new ApiError(httpStatus.FORBIDDEN, 'Forbidden'));
     }
     return Promise.resolve();
+}
+
+/**
+ * Verifies access token and returns user
+ * @param token access token
+ * @returns logged in user
+ */
+export const verifyAccessToken = async (token: string): Promise<IUserDoc> => {
+    const tokenDoc = await verifyToken(token, TokenTypes.ACCESS);
+    const user = await getUserById(new mongoose.Types.ObjectId(tokenDoc.user));
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    return user;
 }

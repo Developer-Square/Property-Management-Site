@@ -2,6 +2,7 @@ import mongoose, { Document, FilterQuery, Model } from 'mongoose';
 import paginate, { IPaginationOptions, QueryResult } from '../plugins/paginate';
 import { z } from "zod";
 import { createSchema } from '../../utils/createSchema';
+import { toJSON } from '../plugins';
 
 const reviewSchema = new mongoose.Schema<IReviewDoc, IReviewModel>({
   name: { type: String, required: true },
@@ -14,6 +15,7 @@ const reviewSchema = new mongoose.Schema<IReviewDoc, IReviewModel>({
 });
 
 reviewSchema.plugin(paginate);
+reviewSchema.plugin(toJSON);
 
 const Review = mongoose.model<IReviewDoc, IReviewModel>('Review', reviewSchema);
 

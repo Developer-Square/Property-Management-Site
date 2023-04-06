@@ -17,7 +17,7 @@ export const createProperty = async (propertyBody: IProperty, user: IUserDoc): P
     const session = await mongoose.startSession();
     session.startTransaction();
     const photos = await uploadManyPhotos(propertyBody.photos);
-    const property = await Property.create({ ...propertyBody, photos });
+    const property = await Property.create({ ...propertyBody, creator: user._id, photos });
     user.allProperties.push(property._id);
     await user.save({ session });
     await session.commitTransaction();

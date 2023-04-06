@@ -6,6 +6,7 @@ import { roles } from '../../config';
 import paginate, { IPaginationOptions, QueryResult } from '../plugins/paginate';
 import { Roles } from '../../config/roles';
 import { IPropertyDoc } from './property';
+import toJSON from '../plugins/toJSON';
 
 const userSchema = new mongoose.Schema<IUserDoc, IUserModel>({
   name: {
@@ -19,6 +20,7 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>({
     unique: true,
     trim: true,
     lowercase: true,
+    index: true,
     validate(value: string) {
       if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value)) {
         throw new Error('Invalid email');
@@ -41,7 +43,7 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>({
     enum: roles,
     default: Roles.AGENT,
   },
-  isEmailVerified: {
+  email_verified: {
     type: Boolean,
     default: false,
   },
@@ -51,11 +53,16 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>({
   gender: { type: String },
   country: { type: String },
   allProperties: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }],
+  online: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
 });
 
 userSchema.plugin(paginate);
+userSchema.plugin(toJSON);
 
 /**
  * Check if email is taken
@@ -63,7 +70,7 @@ userSchema.plugin(paginate);
  * @param {ObjectId} [excludeUserId] - The id of the user to be excluded
  * @returns {Promise<boolean>}
  */
- userSchema.static('isEmailTaken', async function (email: string, excludeUserId: mongoose.ObjectId): Promise<boolean> {
+userSchema.static('isEmailTaken', async function (email: string, excludeUserId: mongoose.Types.ObjectId): Promise<boolean> {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
   return !!user;
 });
@@ -96,12 +103,15 @@ export interface IUser {
   avatar: string;
   password?: string;
   role: string;
-  isEmailVerified: boolean;
+  email_verified: boolean;
   properties?: string;
   phoneNumber?: string;
   gender?: string;
   country?: string;
-  allProperties: Types.DocumentArray<mongoose.Schema.Types.ObjectId>;
+  allProperties: Types.DocumentArray<mongoose.Types.ObjectId>;
+  createdAt: Date;
+  updatedAt: Date;
+  online: boolean;
 }
 
 export const UserObject = z.object({
@@ -115,7 +125,8 @@ export const UserObject = z.object({
   phoneNumber: z.string().min(1).optional(),
   gender: z.string().min(1).optional(),
   country: z.string().min(1).optional(),
-  allProperties: z.array(z.instanceof(mongoose.Schema.Types.ObjectId)),
+  allProperties: z.array(z.instanceof(mongoose.Types.ObjectId)),
+  online: z.boolean(),
 });
 
 export interface IUserDoc extends IUser, Document {
