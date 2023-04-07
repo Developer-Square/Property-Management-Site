@@ -5,8 +5,6 @@ import { AttachFile, EmojiEmotions, Send, Videocam } from '@mui/icons-material';
 import { Text } from 'components';
 import { Property1, Property2 } from 'assets';
 import { useNavigate } from '@pankod/refine-react-router-v6';
-import { useAppDispatch } from 'app/hooks';
-import messageApi from 'features/messages/messages.api';
 
 const messages: string[] = [
   'Hola, soy Ryan. Mucho gusto',
@@ -62,7 +60,6 @@ const MessageContent = ({
   mode?: string;
 }) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   return (
     <Box>
