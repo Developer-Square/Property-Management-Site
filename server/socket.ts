@@ -4,16 +4,18 @@ import { Server } from "socket.io";
 import app from './app';
 import { config, logger } from './config';
 import { CreateMessageParams, IMessage, IMessageDoc } from './mongodb/models/message';
+import { IRoomPopulated } from './mongodb/models/room';
 import { TokenTypes } from './mongodb/models/token';
 import { IUserDoc } from "./mongodb/models/user";
 import { createMessage } from './services/message.service';
-import { getAllRooms } from './services/room.service';
+import { getAllRooms, queryRooms } from './services/room.service';
 import { verifyToken } from './services/token.service';
 import { getUserById, updateUserById } from './services/user.service';
 
 interface ServerToClientEvents {
   message: (message: IMessageDoc) => void;
   error: (err: string) => void;
+  rooms: (rooms: IRoomPopulated[]) => void;
 }
 
 interface ClientToServerEvents {
@@ -84,6 +86,12 @@ io.on('connection', async (socket) => {
       rooms.forEach((room) => {
         socket.join(room.id);
       });
+    }
+
+    // get chatrooms with messages
+    if (socket.data.user) {
+      const rooms = await queryRooms(socket.data.user);
+      socket.emit('rooms', rooms);
     }
 
     // Catch all listener for debugging

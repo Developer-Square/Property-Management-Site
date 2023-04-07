@@ -101,7 +101,7 @@ const Message = mongoose.model<IMessageDoc, IMessageModel>('Message', MessageSch
 export default Message;
 
 export type CreateMessageParams = IMessage & {
-    members: Types.DocumentArray<mongoose.Types.ObjectId>;
+    recipient: Types.Subdocument<Types.ObjectId> & Types.ObjectId;
 }
 
 export type DeleteMessageParams = {

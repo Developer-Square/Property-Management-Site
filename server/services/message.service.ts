@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import mongoose, { FilterQuery, Types } from 'mongoose';
-import Message, { CreateMessageParams, DeleteMessageParams, IMessage, IMessageDoc, IMessageWithPopulated, IMessageWithUserDetails, IMessageWithUsernames } from '../mongodb/models/message';
+import Message, { CreateMessageParams, IMessage, IMessageDoc, IMessageWithPopulated, IMessageWithUserDetails } from '../mongodb/models/message';
 import { ApiError } from '../errors';
 import { IPaginationOptions, QueryResult } from '../mongodb/plugins/paginate';
 import { confirmUserPermissions } from './auth.service';
@@ -14,15 +14,18 @@ import { createRoom, getRoomById } from './room.service';
  * @param {IUserDoc} user logged in user
  * @returns {Promise<IMessageDoc>}
  */
-export const createMessage = async ({ members, room, ...params }: CreateMessageParams, user: IUserDoc): Promise<IMessageDoc> => {
+export const createMessage = async ({ recipient, room, ...params }: CreateMessageParams, user: IUserDoc): Promise<IMessageDoc> => {
     let chatroom: IRoomDoc | null;
     if (!room) {
-        chatroom = await createRoom({ members });
+        chatroom = await createRoom({ members: [user._id, recipient] as Types.DocumentArray<mongoose.Types.ObjectId> });
+        if (!chatroom) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Something went wrong. We couldn"t create a chatroom');
+        }
     } else {
         chatroom = await getRoomById(room);
-    }
-    if (!chatroom) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Something went wrong. We couldn"t create a chatroom');
+        if (!chatroom) {
+            throw new ApiError(httpStatus.NOT_FOUND, 'Chatroom not found');
+        }
     }
     const message = await Message.create({ ...params, room: chatroom.id, sender: user._id });
     chatroom.messages?.push(message.id);
