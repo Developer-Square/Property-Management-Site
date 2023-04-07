@@ -12,6 +12,8 @@ interface IPropertyDetailsAgent {
   handleDeleteProperty: () => void;
   propertyDetails: any;
   isCurrentUser: boolean | undefined;
+  agentDetails: any;
+  mode: string;
 }
 
 const PropertyDetailsAgent = ({
@@ -19,6 +21,8 @@ const PropertyDetailsAgent = ({
   handleDeleteProperty,
   propertyDetails,
   isCurrentUser,
+  agentDetails,
+  mode,
 }: IPropertyDetailsAgent) => {
   const navigate = useNavigate();
   return (
@@ -49,22 +53,27 @@ const PropertyDetailsAgent = ({
         >
           <img
             src={
-              checkImage(propertyDetails.creator.avatar)
-                ? propertyDetails.creator.avatar
+              checkImage(agentDetails.avatar)
+                ? agentDetails.avatar
                 : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'
             }
             alt='avatar'
             width={90}
             height={90}
             style={{
+              display: 'block',
               borderRadius: '100%',
               objectFit: 'cover',
             }}
           />
 
           <Box mt='15px'>
-            <Typography fontSize={18} fontWeight={600} color='#11142D'>
-              {propertyDetails.creator.name}
+            <Typography
+              fontSize={18}
+              fontWeight={600}
+              color={mode === 'light' ? '#11142d' : '#EFEFEF'}
+            >
+              {agentDetails.name}
             </Typography>
             <Typography mt='5px' fontSize={14} fontWeight={400} color='#808191'>
               Agent
@@ -79,7 +88,7 @@ const PropertyDetailsAgent = ({
           </Stack>
 
           <Typography mt={1} fontSize={16} fontWeight={600} color='#11142D'>
-            {propertyDetails.creator.allProperties.length} Properties
+            {agentDetails.allProperties.length} Properties
           </Typography>
         </Stack>
 
@@ -89,7 +98,7 @@ const PropertyDetailsAgent = ({
             backgroundColor='#475BE8'
             color='#FCFCFC'
             fullWidth
-            icon={!isCurrentUser ? <ChatBubble /> : <Edit />}
+            icon={isCurrentUser ? <Edit /> : <ChatBubble />}
             handleClick={() => {
               if (isCurrentUser) {
                 navigate(`/properties/edit/${propertyDetails._id}`);
@@ -101,7 +110,7 @@ const PropertyDetailsAgent = ({
             backgroundColor={!isCurrentUser ? '#2ED480' : '#d42e2e'}
             color='#FCFCFC'
             fullWidth
-            icon={!isCurrentUser ? <Phone /> : <Delete />}
+            icon={isCurrentUser ? <Delete /> : <Phone />}
             handleClick={() => {
               if (isCurrentUser) handleDeleteProperty();
             }}

@@ -19,6 +19,7 @@ export interface ProfileProps {
   properties: Array | undefined;
   country?: string;
   phone?: string;
+  emailVerified?: boolean;
 }
 
 export interface PropertyProps {
@@ -44,4 +45,5 @@ export interface FormProps {
   propertyImage?: { name: string; url: string }[];
   backendImages?: string[];
   setBackendImages?: Dispatch<SetStateAction<string[]>>;
+  mode: string;
 }

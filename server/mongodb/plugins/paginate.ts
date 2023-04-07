@@ -29,8 +29,12 @@ const paginate = (schema: Schema) => {
    * @param {string} [options.projectBy] - Fields to hide or include (default = '')
    * @returns {Promise<QueryResult>}
    */
-  schema.static('paginate', async function (filter: Record<string, any>, options: IPaginationOptions): Promise<QueryResult> {
-
+  schema.static(
+    'paginate',
+    async function (
+      filter: Record<string, any>,
+      options: IPaginationOptions
+    ): Promise<QueryResult> {
     let sortingCriteria: any = { _id: 1 };
     if (options._sort && options._order) {
       sortingCriteria = { [options._sort]: options._order };
@@ -64,15 +68,16 @@ const paginate = (schema: Schema) => {
 
     docsPromise = docsPromise.exec();
 
-    return Promise.all([countPromise, docsPromise]).then((values) => {
-      const [count, docs] = values;
-      const result = {
-        docs,
-        count,
-      };
-      return Promise.resolve(result);
-    });
-  });
+      return Promise.all([countPromise, docsPromise]).then((values) => {
+        const [count, docs] = values;
+        const result = {
+          docs,
+          count,
+        };
+        return Promise.resolve(result);
+      });
+    }
+  );
 };
 
 export default paginate;

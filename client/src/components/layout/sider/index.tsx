@@ -11,6 +11,7 @@ import {
   Button,
   IconButton,
   MuiList,
+  FormControlLabel,
 } from '@pankod/refine-mui';
 import {
   ListOutlined,
@@ -36,6 +37,7 @@ import {
 
 import { Title as DefaultTitle } from '../title';
 import { ColorModeContext } from 'contexts';
+import { MaterialUISwitch } from '../header/ProfilePopover';
 
 export const Sider: typeof DefaultSider = ({ render }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -57,7 +59,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
   const Title = useTitle();
 
   const [open, setOpen] = useState<{ [k: string]: any }>({});
-  const { mode } = useContext(ColorModeContext);
+  const { mode, setMode } = useContext(ColorModeContext);
 
   React.useEffect(() => {
     setOpen((previousOpen) => {
@@ -338,11 +340,11 @@ export const Sider: typeof DefaultSider = ({ render }) => {
       });
     }
     return (
-      <>
+      <Box>
         {dashboard}
         {items}
         {logout}
-      </>
+      </Box>
     );
   };
 
@@ -353,7 +355,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
   );
 
   return (
-    <>
+    <Box>
       <Box
         sx={{
           width: { xs: drawerWidth() },
@@ -424,6 +426,7 @@ export const Sider: typeof DefaultSider = ({ render }) => {
           >
             <RenderToTitle collapsed={collapsed} />
           </Box>
+
           <Box
             sx={{
               flexGrow: 1,
@@ -432,6 +435,25 @@ export const Sider: typeof DefaultSider = ({ render }) => {
             }}
           >
             {drawer}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              margin: collapsed ? '15px 0 15px 20px' : '15px auto',
+            }}
+          >
+            <FormControlLabel
+              sx={{
+                fontSize: '16px !important',
+                color: '#808191 !important',
+              }}
+              onClick={() => setMode()}
+              control={<MaterialUISwitch checked={mode === 'dark'} />}
+              label={
+                !collapsed ? `${mode === 'dark' ? 'Dark' : 'Light'} Mode` : ''
+              }
+            />
           </Box>
           <Button
             sx={{
@@ -471,6 +493,6 @@ export const Sider: typeof DefaultSider = ({ render }) => {
           </IconButton>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };

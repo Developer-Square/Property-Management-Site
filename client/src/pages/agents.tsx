@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useTable } from '@pankod/refine-core';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { useNavigate } from '@pankod/refine-react-router-v6';
@@ -20,6 +20,7 @@ const Agents = () => {
   } = useTable();
   const navigate = useNavigate();
   const { mode } = useContext(ColorModeContext);
+  const [loggedInUser, setLoggedInUser] = useState<any>(null);
 
   const allAgents: any[] = data?.data ?? [];
 
@@ -32,6 +33,12 @@ const Agents = () => {
       name: logicalFilters.find((item) => item.field === 'name')?.value || '',
     };
   }, [filters]);
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    const userObj = JSON.parse(user as string);
+    setLoggedInUser(userObj);
+  }, []);
 
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error!</Typography>;
@@ -46,13 +53,15 @@ const Agents = () => {
         >
           Agents List
         </Typography>
-        <CustomButton
-          title='Add Agent'
-          handleClick={() => navigate('/agents/create')}
-          backgroundColor='#475be8'
-          color='#fcfcfc'
-          icon={<Add />}
-        />
+        {loggedInUser?.role === 'admin' && (
+          <CustomButton
+            title='Add Agent'
+            handleClick={() => navigate('/agents/create')}
+            backgroundColor='#475be8'
+            color='#fcfcfc'
+            icon={<Add />}
+          />
+        )}
       </Stack>
 
       <Box

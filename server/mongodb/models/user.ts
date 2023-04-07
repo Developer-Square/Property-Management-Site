@@ -1,6 +1,6 @@
 import mongoose, { Model, Document, Types, FilterQuery } from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { z } from "zod";
+import { z } from 'zod';
 import { AccessAndRefreshTokens } from './token';
 import { roles } from '../../config';
 import paginate, { IPaginationOptions, QueryResult } from '../plugins/paginate';
@@ -8,58 +8,66 @@ import { Roles } from '../../config/roles';
 import { IPropertyDoc } from './property';
 import toJSON from '../plugins/toJSON';
 
-const userSchema = new mongoose.Schema<IUserDoc, IUserModel>({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    index: true,
-    validate(value: string) {
-      if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(value)) {
-        throw new Error('Invalid email');
-      }
+const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
     },
-  },
-  password: {
-    type: String,
-    trim: true,
-    minlength: 8,
-    validate(value: string) {
-      if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
-        throw new Error('Password must contain at least one letter and one number');
-      }
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+      validate(value: string) {
+        if (
+          !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+            value
+          )
+        ) {
+          throw new Error('Invalid email');
+        }
+      },
     },
-    private: true, // used by the toJSON plugin
+    password: {
+      type: String,
+      trim: true,
+      minlength: 8,
+      validate(value: string) {
+        if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
+          throw new Error(
+            'Password must contain at least one letter and one number'
+          );
+        }
+      },
+      private: true, // used by the toJSON plugin
+    },
+    role: {
+      type: String,
+      enum: roles,
+      default: Roles.AGENT,
+    },
+    email_verified: {
+      type: Boolean,
+      default: false,
+    },
+    avatar: { type: String, required: true },
+    properties: { type: String },
+    phoneNumber: { type: String },
+    gender: { type: String },
+    country: { type: String },
+    allProperties: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }],
+    online: {
+      type: Boolean,
+      default: false,
+    }
   },
-  role: {
-    type: String,
-    enum: roles,
-    default: Roles.AGENT,
-  },
-  email_verified: {
-    type: Boolean,
-    default: false,
-  },
-  avatar: { type: String, required: true },
-  properties: { type: String },
-  phoneNumber: { type: String },
-  gender: { type: String },
-  country: { type: String },
-  allProperties: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }],
-  online: {
-    type: Boolean,
-    default: false,
-  },
-}, {
-  timestamps: true,
-});
+  {
+    timestamps: true,
+  }
+);
 
 userSchema.plugin(paginate);
 userSchema.plugin(toJSON);
@@ -80,15 +88,18 @@ userSchema.static('isEmailTaken', async function (email: string, excludeUserId: 
  * @param {string} password
  * @returns {Promise<boolean>}
  */
-userSchema.method('isPasswordMatch', async function (password: string): Promise<boolean> {
-  const user = this;
-  return bcrypt.compare(password, user.password);
-});
+userSchema.method(
+  'isPasswordMatch',
+  async function (password: string): Promise<boolean> {
+    const user = this;
+    return bcrypt.compare(password, user.password);
+  }
+);
 
 userSchema.pre('save', async function (next) {
   const user = this;
   if (user.isModified('password')) {
-    user.password = await bcrypt.hash((user.password as string), 8);
+    user.password = await bcrypt.hash(user.password as string, 8);
   }
   next();
 });
@@ -120,8 +131,7 @@ export const UserObject = z.object({
   password: z.string().min(8).optional(),
   avatar: z.string().min(1),
   role: z.nativeEnum(Roles),
-  isEmailVerified: z.boolean(),
-  properties: z.string().min(1).optional(),
+  email_verified: z.boolean(),
   phoneNumber: z.string().min(1).optional(),
   gender: z.string().min(1).optional(),
   country: z.string().min(1).optional(),
@@ -134,13 +144,19 @@ export interface IUserDoc extends IUser, Document {
 }
 
 export interface IUserModel extends Model<IUserDoc> {
-  isEmailTaken(email: string, excludeUserId?: mongoose.Types.ObjectId): Promise<boolean>;
-  paginate(filter: FilterQuery<IUserDoc>, options: IPaginationOptions): Promise<QueryResult<IUserDoc>>;
+  isEmailTaken(
+    email: string,
+    excludeUserId?: mongoose.Types.ObjectId
+  ): Promise<boolean>;
+  paginate(
+    filter: FilterQuery<IUserDoc>,
+    options: IPaginationOptions
+  ): Promise<QueryResult<IUserDoc>>;
 }
 
 export type IUserDocWithProperties = IUserDoc & {
   allProperties: IPropertyDoc[];
-}
+};
 
 export type UpdateUserBody = Partial<IUser>;
 
@@ -152,4 +168,3 @@ export interface IUserWithTokens {
   user: IUserDoc;
   tokens: AccessAndRefreshTokens;
 }
-

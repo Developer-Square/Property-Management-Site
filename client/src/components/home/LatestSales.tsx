@@ -21,6 +21,7 @@ const LatestSale = ({
       src={avatar}
       alt='Profile'
       style={{
+        display: 'block',
         borderRadius: '6px',
         marginRight: '12px',
         width: '49px',
@@ -107,7 +108,7 @@ const LatestSales = () => {
               />
             ))
           ) : (
-            <></>
+            <Typography>No Sales yet</Typography>
           )}
         </Box>
       </Stack>

@@ -17,7 +17,7 @@ import { authLimiter } from './utils';
 
 const app = express();
 
-if (config.env !== 'test'){
+if (config.env !== 'test') {
   app.use(errorLogger);
   app.use(successHandler);
 }
@@ -46,14 +46,10 @@ if (config.env === 'production') {
   app.use('api/v1/auth', authLimiter);
 }
 
-// app.get('/', (req, res) => {
-//   res.send('Hola de Kenya!');
-// });
-
-// app.use('/api/v1/users', userRouter);
-// app.use('/api/v1/agents', userRouter);
-// app.use('/api/v1/properties', propertyRouter);
-// app.use('/api/v1/reviews', reviewRouter);
+// Had to uncomment this to create properties and agents without authentication
+app.get('/', (req, res) => {
+  res.send('Hola de Kenya!');
+});
 
 app.use('/api/v1', routes);
 

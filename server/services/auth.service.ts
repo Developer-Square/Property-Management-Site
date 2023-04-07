@@ -14,15 +14,18 @@ import { getUserByEmail, getUserById, updateUserById } from './user.service';
  * @param {string} password
  * @returns {Promise<IUserDoc>}
  */
-export const loginUserWithEmailAndPassword = async (email: string, password: string): Promise<IUserDoc> => {
-    const user = await getUserByEmail(email);
-    if (!user || (user && !user.password)) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Please login with Google');
-    }
-    if (!(await user.isPasswordMatch(password))) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
-    }
-    return user;
+export const loginUserWithEmailAndPassword = async (
+  email: string,
+  password: string
+): Promise<IUserDoc> => {
+  const user = await getUserByEmail(email);
+  if (!user || (user && !user.password)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Please login with Google');
+  }
+  if (!(await user.isPasswordMatch(password))) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+  }
+  return user;
 };
 
 /**
@@ -44,11 +47,15 @@ export const loginUserWithGoogle = async (userBody: IUser): Promise<IUserDoc> =>
  * @returns {Promise<void>}
  */
 export const logout = async (refreshToken: string): Promise<void> => {
-    const refreshTokenDoc = await Token.findOne({ token: refreshToken, type: TokenTypes.REFRESH, blacklisted: false });
-    if (!refreshTokenDoc) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
-    }
-    await refreshTokenDoc.remove();
+  const refreshTokenDoc = await Token.findOne({
+    token: refreshToken,
+    type: TokenTypes.REFRESH,
+    blacklisted: false,
+  });
+  if (!refreshTokenDoc) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
+  }
+  await refreshTokenDoc.remove();
 };
 
 /**
@@ -56,17 +63,21 @@ export const logout = async (refreshToken: string): Promise<void> => {
  * @param {string} refreshToken
  * @returns {Promise<IUserWithTokens>}
  */
-export const refreshAuth = async (refreshToken: string): Promise<IUserWithTokens> => {
-    const refreshTokenDoc = await verifyToken(refreshToken, TokenTypes.REFRESH);
-    const user = await getUserById(new mongoose.Types.ObjectId(refreshTokenDoc.user));
-    if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-    }
-    await refreshTokenDoc.remove();
-    const tokens = await generateAuthTokens(user);
-    return { user, tokens };
+export const refreshAuth = async (
+  refreshToken: string
+): Promise<IUserWithTokens> => {
+  const refreshTokenDoc = await verifyToken(refreshToken, TokenTypes.REFRESH);
+  const user = await getUserById(
+    new mongoose.Types.ObjectId(refreshTokenDoc.user)
+  );
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  await refreshTokenDoc.remove();
+  const tokens = await generateAuthTokens(user);
+  return { user, tokens };
 };
-  
+
 /**
  * Reset password
  * @param {string} resetPasswordToken
@@ -83,7 +94,7 @@ export const resetPassword = async (resetPasswordToken: any, newPassword: string
     await user.save();
     await Token.deleteMany({ user: user.id, type: TokenTypes.RESET_PASSWORD });
 };
-  
+
 /**
  * Verify email
  * @param {string} verifyEmailToken
@@ -107,11 +118,11 @@ export const verifyEmail = async (verifyEmailToken: any): Promise<IUserDoc | nul
  * @returns logged in user
  */
 export const checkUser = async (user?: Express.User): Promise<IUserDoc> => {
-    if (!user) {
-        throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized');
-    }
-    return Promise.resolve(user as IUserDoc);
-}
+  if (!user) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized');
+  }
+  return Promise.resolve(user as IUserDoc);
+};
 
 /**
  * Confirms that the user is the one who created the record

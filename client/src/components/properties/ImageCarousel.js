@@ -8,7 +8,10 @@ const ImageCarousel = ({ propertyDetails }) => (
         <img
           src={image}
           alt={propertyDetails.title}
-          style={{ borderRadius: '10px' }}
+          style={{
+            display: 'block',
+            borderRadius: '10px',
+          }}
         />
       </div>
     ))}

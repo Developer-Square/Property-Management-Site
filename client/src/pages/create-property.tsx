@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useGetIdentity } from '@pankod/refine-core';
 import { FieldValues, useForm } from '@pankod/refine-react-hook-form';
 
 import { Form } from 'components';
 import { Box } from '@pankod/refine-mui';
+import { ColorModeContext } from 'contexts';
 
 const CreateProperty = () => {
   const { data: user } = useGetIdentity();
@@ -15,6 +16,7 @@ const CreateProperty = () => {
     register,
     handleSubmit,
   } = useForm();
+  const { mode } = useContext(ColorModeContext);
 
   const handleImageChange = (file: File) => {
     const reader = (readFile: File) =>
@@ -31,8 +33,9 @@ const CreateProperty = () => {
 
   const onFinishHandler = async (data: FieldValues) => {
     if (!propertyImage.length) return alert('Please upload a property image');
+    const imageUrls = propertyImage.map((image) => image.url);
 
-    await onFinish({ ...data, photos: propertyImage, email: user.email });
+    await onFinish({ ...data, photos: imageUrls, email: user.email });
   };
 
   return (
@@ -46,6 +49,7 @@ const CreateProperty = () => {
         propertyImage={propertyImage}
         handleImageChange={handleImageChange}
         onFinishHandler={onFinishHandler}
+        mode={mode}
       />
     </Box>
   );

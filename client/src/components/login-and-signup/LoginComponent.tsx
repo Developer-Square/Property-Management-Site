@@ -1,6 +1,5 @@
-import React, { SetStateAction, useContext } from 'react';
+import React, { SetStateAction, useContext, useState } from 'react';
 import { Typography, Box } from '@pankod/refine-mui';
-import { FieldValues, UseFormRegister } from '@pankod/refine-react-hook-form';
 import CustomButton from 'components/common/CustomButton';
 import { DarkLogo, LightLogo } from 'assets';
 import { TextInput } from 'pages/login';
@@ -8,18 +7,24 @@ import { ColorModeContext } from 'contexts';
 
 const LoginComponent = ({
   GoogleButton,
-  register,
   handleSubmit,
   formLoading,
   setForm,
 }: {
   GoogleButton: any;
-  register: UseFormRegister<FieldValues>;
-  handleSubmit: any;
+  handleSubmit: (data: any) => void;
   formLoading: boolean;
   setForm: React.Dispatch<SetStateAction<string>>;
 }) => {
   const { mode } = useContext(ColorModeContext);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleFormChange = () => {
+    setEmail('');
+    setPassword('');
+    setForm('signup');
+  };
 
   return (
     <Box
@@ -45,6 +50,7 @@ const LoginComponent = ({
       <img
         src={mode === 'light' ? DarkLogo : LightLogo}
         style={{
+          display: 'block',
           height: '70px',
           margin: '40px 0',
           width: '70px',
@@ -52,22 +58,26 @@ const LoginComponent = ({
         }}
         alt='Techive Logo'
       />
-      <TextInput
-        title={'Email'}
-        fieldValue={'email'}
-        register={register}
-        placeholder='Enter your email'
-        type='text'
-        mode={mode}
-      />
-      <TextInput
-        title={'Password'}
-        fieldValue={'password'}
-        placeholder='********'
-        register={register}
-        type='password'
-        mode={mode}
-      />
+      <form>
+        <TextInput
+          title={'Email'}
+          fieldValue={email}
+          setFieldValue={setEmail}
+          placeholder='Enter your email'
+          type='text'
+          mode={mode}
+          active={formLoading}
+        />
+        <TextInput
+          title={'Password'}
+          fieldValue={password}
+          setFieldValue={setPassword}
+          placeholder='********'
+          type='password'
+          mode={mode}
+          active={formLoading}
+        />
+      </form>
       <Typography
         sx={{
           fontSize: '14px',
@@ -76,17 +86,20 @@ const LoginComponent = ({
           color: '#475BE8',
           marginTop: '10px',
           marginBottom: '20px',
+          cursor: 'pointer',
         }}
+        onClick={() => setForm('forgot')}
       >
         Forgot Password
       </Typography>
       <CustomButton
+        type='submit'
         fullWidth
         title={formLoading ? 'Loading...' : 'Signin'}
         backgroundColor='#475BE8'
         color='#fcfcfc'
-        // @ts-ignore
-        handleClick={handleSubmit}
+        active={formLoading}
+        handleClick={() => handleSubmit({ email, password })}
       />
       <Typography
         fontSize={16}
@@ -110,7 +123,7 @@ const LoginComponent = ({
         Don't have an account?{' '}
         <span
           style={{ color: '#475BE8', cursor: 'pointer' }}
-          onClick={() => setForm('signup')}
+          onClick={() => handleFormChange()}
         >
           Sign up
         </span>

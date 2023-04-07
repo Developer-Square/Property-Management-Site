@@ -1,6 +1,10 @@
 import httpStatus from 'http-status';
 import mongoose, { FilterQuery } from 'mongoose';
-import User, { IUser, IUserDoc, IUserDocWithProperties } from '../mongodb/models/user';
+import User, {
+  IUser,
+  IUserDoc,
+  IUserDocWithProperties,
+} from '../mongodb/models/user';
 import { ApiError } from '../errors';
 import { IPaginationOptions, QueryResult } from '../mongodb/plugins/paginate';
 import { uploadOnePhoto } from './cloudinary.service';
@@ -13,14 +17,14 @@ import { confirmUserPermissions } from './auth.service';
  * @returns {Promise<IUserDoc>}
  */
 export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
-    if (await User.isEmailTaken(userBody.email)) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-    }
-    if (userBody.avatar){
-        const avatar = await uploadOnePhoto(userBody.avatar);
-        Object.assign(userBody, { avatar });
-    }
-    return User.create(userBody);
+  if (await User.isEmailTaken(userBody.email)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  }
+  if (userBody.avatar) {
+    const avatar = await uploadOnePhoto(userBody.avatar);
+    Object.assign(userBody, { avatar });
+  }
+  return User.create(userBody);
 };
 
 /**
@@ -29,9 +33,12 @@ export const createUser = async (userBody: IUser): Promise<IUserDoc> => {
  * @param {Object} options - Query options
  * @returns {Promise<QueryResult>}
  */
-export const queryUsers = async (filter: FilterQuery<IUserDoc>, options: IPaginationOptions): Promise<QueryResult<IUserDoc>> => {
-    const { docs, count} = await User.paginate(filter, options);
-    return { docs, count };
+export const queryUsers = async (
+  filter: FilterQuery<IUserDoc>,
+  options: IPaginationOptions
+): Promise<QueryResult<IUserDoc>> => {
+  const { docs, count } = await User.paginate(filter, options);
+  return { docs, count };
 };
 
 /**
@@ -39,7 +46,9 @@ export const queryUsers = async (filter: FilterQuery<IUserDoc>, options: IPagina
  * @param {mongoose.Types.ObjectId} id
  * @returns {Promise<IUserDoc | null>}
  */
-export const getUserById = async (id: mongoose.Types.ObjectId): Promise<IUserDoc | null> => User.findById(id);
+export const getUserById = async (
+  id: mongoose.Types.ObjectId
+): Promise<IUserDoc | null> => User.findById(id);
 
 /**
  * Get user by id
@@ -53,14 +62,18 @@ export const getUserById = async (id: mongoose.Types.ObjectId): Promise<IUserDoc
  * @param {mongoose.Types.ObjectId} id
  * @returns {Promise<IUserDocWithProperties | null>}
  */
-export const getUserInfoById = async (id: mongoose.Types.ObjectId): Promise<IUserDocWithProperties | null> => User.findById(id).populate('allProperties');
+export const getUserInfoById = async (
+  id: mongoose.Types.ObjectId
+): Promise<IUserDocWithProperties | null> =>
+  User.findById(id).populate('allProperties');
 
 /**
  * Get user by email
  * @param {string} email
  * @returns {Promise<IUserDoc | null>}
  */
-export const getUserByEmail = async (email: string): Promise<IUserDoc | null> => User.findOne({ email });
+export const getUserByEmail = async (email: string): Promise<IUserDoc | null> =>
+  User.findOne({ email });
 
 /**
  * Get user by name
@@ -77,27 +90,27 @@ export const getUserByEmail = async (email: string): Promise<IUserDoc | null> =>
  * @returns {Promise<IUserDoc | null>}
  */
 export const updateUserById = async (
-    userId: mongoose.Types.ObjectId,
-    updateBody: Partial<IUser>,
-    loggedInUser?: Express.User
-  ): Promise<IUserDoc | null> => {
-    const user = await getUserById(userId);
-    if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-    }
-    await confirmUserPermissions(user, loggedInUser);
-    if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-    }
+  userId: mongoose.Types.ObjectId,
+  updateBody: Partial<IUser>,
+  loggedInUser?: Express.User
+): Promise<IUserDoc | null> => {
+  const user = await getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  await confirmUserPermissions(user, loggedInUser);
+  if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  }
 
-    if (updateBody.avatar){
-        const newAvatar = await uploadOnePhoto(updateBody.avatar);
-        Object.assign(updateBody, { avatar: newAvatar });
-    }
-    
-    Object.assign(user, updateBody);
-    await user.save();
-    return user;
+  if (updateBody.avatar) {
+    const newAvatar = await uploadOnePhoto(updateBody.avatar);
+    Object.assign(updateBody, { avatar: newAvatar });
+  }
+
+  Object.assign(user, updateBody);
+  await user.save();
+  return user;
 };
 
 /**
@@ -106,32 +119,26 @@ export const updateUserById = async (
  * @returns {Promise<void>}
  */
 export const deleteUserById = async (
-    userId: mongoose.Types.ObjectId, 
-    loggedInUser?: Express.User
-    ): Promise<void> => {
-    const user = await getUserInfoById(userId);
-    if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-    }
-    await confirmUserPermissions(user, loggedInUser);
-    const session = await mongoose.startSession();
-    session.startTransaction();
+  userId: mongoose.Types.ObjectId,
+  loggedInUser?: Express.User
+): Promise<void> => {
+  const user = await getUserInfoById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  await confirmUserPermissions(user, loggedInUser);
+  if (user.allProperties.length) {
+    user.allProperties.map(async (id) => {
+      const property = await Property.findOne({ _id: id });
 
-    if (user.allProperties.length) {
-        user.allProperties.map(async (id) => {
-            const session = await mongoose.startSession();
-            session.startTransaction();
-            const property = await Property.findOne({ _id: id });
-    
-            if (!property) throw new ApiError(httpStatus.NOT_FOUND, 'Property not found!');
-    
-            property.remove({ session });
-            await session.commitTransaction();
-        });
-    }
+      if (!property)
+        throw new ApiError(httpStatus.NOT_FOUND, 'Property not found!');
 
-    user.remove({ session });
-    await session.commitTransaction();
+      await property.remove();
+    });
+  }
+
+  await user.remove();
 };
 
 /**
