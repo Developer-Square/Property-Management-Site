@@ -4,7 +4,7 @@ import { Roles } from '../config/roles';
 import { ApiError } from '../errors';
 import Token, { TokenTypes } from '../mongodb/models/token';
 import User, { IUser, IUserDoc, IUserWithTokens } from '../mongodb/models/user';
-import cloudinary from './cloudinary.service';
+import cloudinary, { uploadOnePhoto } from './cloudinary.service';
 import { verifyToken, generateAuthTokens } from './token.service';
 import { getUserByEmail, getUserById, updateUserById } from './user.service';
 
@@ -33,14 +33,12 @@ export const loginUserWithEmailAndPassword = async (
  * @param {IUser} userBody
  * @returns {Promise<IUserDoc>}
  */
-export const loginUserWithGoogle = async (
-  userBody: IUser
-): Promise<IUserDoc> => {
-  const user = await getUserByEmail(userBody.email);
-  if (user) {
-    return user;
-  }
-  return User.create(userBody);
+export const loginUserWithGoogle = async (userBody: IUser): Promise<IUserDoc> => {
+    const user = await getUserByEmail(userBody.email);
+    if (user) {
+        return user;
+    }
+    return User.create(userBody);
 };
 
 /**
@@ -86,23 +84,15 @@ export const refreshAuth = async (
  * @param {string} newPassword
  * @returns {Promise<void>}
  */
-export const resetPassword = async (
-  resetPasswordToken: any,
-  newPassword: string
-): Promise<void> => {
-  const resetPasswordTokenDoc = await verifyToken(
-    resetPasswordToken,
-    TokenTypes.RESET_PASSWORD
-  );
-  const user = await getUserById(
-    new mongoose.Types.ObjectId(resetPasswordTokenDoc.user)
-  );
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-  Object.assign(user, { password: newPassword });
-  await user.save();
-  await Token.deleteMany({ user: user.id, type: TokenTypes.RESET_PASSWORD });
+export const resetPassword = async (resetPasswordToken: any, newPassword: string): Promise<void> => {
+    const resetPasswordTokenDoc = await verifyToken(resetPasswordToken, TokenTypes.RESET_PASSWORD);
+    const user = await getUserById(new mongoose.Types.ObjectId(resetPasswordTokenDoc.user));
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    Object.assign(user, { password: newPassword });
+    await user.save();
+    await Token.deleteMany({ user: user.id, type: TokenTypes.RESET_PASSWORD });
 };
 
 /**
@@ -110,23 +100,16 @@ export const resetPassword = async (
  * @param {string} verifyEmailToken
  * @returns {Promise<IUserDoc | null>}
  */
-export const verifyEmail = async (
-  verifyEmailToken: any
-): Promise<IUserDoc | null> => {
-  const verifyEmailTokenDoc = await verifyToken(
-    verifyEmailToken,
-    TokenTypes.VERIFY_EMAIL
-  );
-  const user = await getUserById(
-    new mongoose.Types.ObjectId(verifyEmailTokenDoc.user)
-  );
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-  await Token.deleteMany({ user: user.id, type: TokenTypes.VERIFY_EMAIL });
-  Object.assign(user, { email_verified: true });
-  await user.save();
-  return user;
+export const verifyEmail = async (verifyEmailToken: any): Promise<IUserDoc | null> => {
+    const verifyEmailTokenDoc = await verifyToken(verifyEmailToken, TokenTypes.VERIFY_EMAIL);
+    const user = await getUserById(new mongoose.Types.ObjectId(verifyEmailTokenDoc.user));
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    await Token.deleteMany({ user: user.id, type: TokenTypes.VERIFY_EMAIL });
+    Object.assign(user, { email_verified: true });
+    await user.save();
+    return user;
 };
 
 /**
@@ -146,16 +129,24 @@ export const checkUser = async (user?: Express.User): Promise<IUserDoc> => {
  * @param creator User who created the record
  * @param user logged in user
  */
-export const confirmUserPermissions = async (
-  creator: IUserDoc,
-  user?: Express.User
-) => {
-  const authUser = await checkUser(user);
-  if (
-    authUser.role !== Roles.ADMIN &&
-    authUser._id.toString() !== creator._id.toString()
-  ) {
-    return Promise.reject(new ApiError(httpStatus.FORBIDDEN, 'Forbidden'));
-  }
-  return Promise.resolve();
-};
+export const confirmUserPermissions = async (creator: IUserDoc, user?: Express.User) => {
+    const authUser = await checkUser(user);
+    if ((authUser.role !== Roles.ADMIN) && (authUser._id.toString() !== creator._id.toString())) {
+        return Promise.reject(new ApiError(httpStatus.FORBIDDEN, 'Forbidden'));
+    }
+    return Promise.resolve();
+}
+
+/**
+ * Verifies access token and returns user
+ * @param token access token
+ * @returns logged in user
+ */
+export const verifyAccessToken = async (token: string): Promise<IUserDoc> => {
+    const tokenDoc = await verifyToken(token, TokenTypes.ACCESS);
+    const user = await getUserById(new mongoose.Types.ObjectId(tokenDoc.user));
+    if (!user) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    return user;
+}

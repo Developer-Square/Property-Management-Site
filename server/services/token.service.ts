@@ -12,7 +12,6 @@ import User from '../mongodb/models/user';
  * @param {mongoose.Types.ObjectId} userId
  * @param {Moment} expires
  * @param {string} type
- * @param {string} [secret]
  * @returns {string}
  */
  export const generateToken = (
@@ -73,7 +72,7 @@ import User from '../mongodb/models/user';
       blacklisted: false,
     });
     if (!tokenDoc) {
-      throw new Error('Token not found');
+      throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid token");
     }
     return tokenDoc;
   };
@@ -85,11 +84,11 @@ import User from '../mongodb/models/user';
    */
   export const generateAuthTokens = async (user: any): Promise<AccessAndRefreshTokens> => {
     const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
-    const accessToken = generateToken(user.id, accessTokenExpires, TokenTypes.ACCESS);
+    const accessToken = generateToken(user._id, accessTokenExpires, TokenTypes.ACCESS);
   
     const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
-    const refreshToken = generateToken(user.id, refreshTokenExpires, TokenTypes.REFRESH);
-    await saveToken(refreshToken, user.id, refreshTokenExpires, TokenTypes.REFRESH);
+    const refreshToken = generateToken(user._id, refreshTokenExpires, TokenTypes.REFRESH);
+    await saveToken(refreshToken, user._id, refreshTokenExpires, TokenTypes.REFRESH);
   
     return {
       access: {
@@ -114,8 +113,8 @@ import User from '../mongodb/models/user';
       throw new ApiError(httpStatus.NO_CONTENT, '');
     }
     const expires = moment().add(config.jwt.resetPasswordExpirationMinutes, 'minutes');
-    const resetPasswordToken = generateToken(user.id, expires, TokenTypes.RESET_PASSWORD);
-    await saveToken(resetPasswordToken, user.id, expires, TokenTypes.RESET_PASSWORD);
+    const resetPasswordToken = generateToken(user._id, expires, TokenTypes.RESET_PASSWORD);
+    await saveToken(resetPasswordToken, user._id, expires, TokenTypes.RESET_PASSWORD);
     return resetPasswordToken;
   };
   
@@ -126,7 +125,7 @@ import User from '../mongodb/models/user';
    */
   export const generateVerifyEmailToken = async (user: any): Promise<string> => {
     const expires = moment().add(config.jwt.verifyEmailExpirationMinutes, 'minutes');
-    const verifyEmailToken = generateToken(user.id, expires, TokenTypes.VERIFY_EMAIL);
-    await saveToken(verifyEmailToken, user.id, expires, TokenTypes.VERIFY_EMAIL);
+    const verifyEmailToken = generateToken(user._id, expires, TokenTypes.VERIFY_EMAIL);
+    await saveToken(verifyEmailToken, user._id, expires, TokenTypes.VERIFY_EMAIL);
     return verifyEmailToken;
   };

@@ -60,6 +60,7 @@ const MessageContent = ({
   mode?: string;
 }) => {
   const navigate = useNavigate();
+
   return (
     <Box>
       <Box

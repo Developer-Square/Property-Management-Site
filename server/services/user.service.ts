@@ -53,6 +53,13 @@ export const getUserById = async (
 /**
  * Get user by id
  * @param {mongoose.Types.ObjectId} id
+ * @returns {Promise<IUserDoc | null>}
+ */
+ export const getUserByIdAlt = async (id: mongoose.Types.ObjectId): Promise<IUserDoc | null> => User.findById(id).select('-allProperties');
+
+/**
+ * Get user by id
+ * @param {mongoose.Types.ObjectId} id
  * @returns {Promise<IUserDocWithProperties | null>}
  */
 export const getUserInfoById = async (
@@ -67,6 +74,14 @@ export const getUserInfoById = async (
  */
 export const getUserByEmail = async (email: string): Promise<IUserDoc | null> =>
   User.findOne({ email });
+
+/**
+ * Get user by name
+ * @param {string} name
+ * @returns {Promise<IUserDoc | null>}
+ */
+ export const getUserByName = async (name: string): Promise<IUserDoc | null> => User.findOne({ name });
+
 
 /**
  * Update user by id
@@ -119,9 +134,23 @@ export const deleteUserById = async (
       if (!property)
         throw new ApiError(httpStatus.NOT_FOUND, 'Property not found!');
 
-      property.remove();
+      await property.remove();
     });
   }
 
-  user.remove();
+  await user.remove();
 };
+
+/**
+ * Checks if a user exists. Useful for updates or inserts which have a user field
+ * @param userId id of the user. Is optional because the user could be absent in update body
+ * @param description optional description e.g. sender, recipient
+ */
+export const confirmUserExists = async (userId?: mongoose.Types.ObjectId, description?: string) => {
+    if (userId) {
+        const user = await getUserById(userId);
+        if (!user) {
+            throw new ApiError(httpStatus.NOT_FOUND, `${description ?? 'User'} not found`);
+        }
+    }
+}
