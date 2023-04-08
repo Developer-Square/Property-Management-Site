@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Stack, TextField, Box, Typography } from '@pankod/refine-mui';
 import { Search } from '@mui/icons-material';
 import { timeString12hr } from 'utils/randomDateAndTime';
+import socket from 'utils/socket';
+import { IRoomPopulated } from 'interfaces/room';
 
 const messages: string[] = [
   'Hola, soy Ryan. Mucho gusto',
@@ -97,6 +99,21 @@ const MessagesList = ({
   mode: string;
 }) => {
   const [searchText, setSearchText] = useState('');
+  const [rooms, setRooms] = useState<IRoomPopulated[]>([]);
+  
+
+  socket.on('connected', (connection) => {
+    console.log(`${connection.id} is online: ${connection.status}`)
+  });
+
+  socket.on('rooms', (chatrooms) => {
+    setRooms(chatrooms);
+  });
+
+  if (rooms.length > 0) {
+    console.log(rooms);
+  };
+
   return (
     <Box>
       <Stack

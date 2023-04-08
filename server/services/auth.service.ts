@@ -4,7 +4,6 @@ import { Roles } from '../config/roles';
 import { ApiError } from '../errors';
 import Token, { TokenTypes } from '../mongodb/models/token';
 import User, { IUser, IUserDoc, IUserWithTokens } from '../mongodb/models/user';
-import cloudinary, { uploadOnePhoto } from './cloudinary.service';
 import { verifyToken, generateAuthTokens } from './token.service';
 import { getUserByEmail, getUserById, updateUserById } from './user.service';
 
@@ -135,18 +134,4 @@ export const confirmUserPermissions = async (creator: IUserDoc, user?: Express.U
         return Promise.reject(new ApiError(httpStatus.FORBIDDEN, 'Forbidden'));
     }
     return Promise.resolve();
-}
-
-/**
- * Verifies access token and returns user
- * @param token access token
- * @returns logged in user
- */
-export const verifyAccessToken = async (token: string): Promise<IUserDoc> => {
-    const tokenDoc = await verifyToken(token, TokenTypes.ACCESS);
-    const user = await getUserById(new mongoose.Types.ObjectId(tokenDoc.user));
-    if (!user) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-    }
-    return user;
 }
