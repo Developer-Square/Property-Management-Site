@@ -3,27 +3,23 @@ import mongoose from 'mongoose';
 import { Server } from "socket.io";
 import app from './app';
 import { config, logger } from './config';
-import { CreateMessageParams, IMessage, IMessageDoc } from './mongodb/models/message';
-import { IRoomDoc, IRoomPopulated } from './mongodb/models/room';
+import { CreateMessageParams, IMessageDoc } from './mongodb/models/message';
+import { IRoomPopulated } from './mongodb/models/room';
 import { IUserDoc } from "./mongodb/models/user";
 import { createMessage } from './services/message.service';
-import { getAllRooms, queryRooms } from './services/room.service';
+import { queryRooms } from './services/room.service';
 import { getUserById, updateUserById } from './services/user.service';
-
-interface ConnectionStatus {
-  status: boolean;
-  id: string;
-}
 
 interface ServerToClientEvents {
   message: (message: IMessageDoc) => void;
   error: (err: string) => void;
   rooms: (rooms: IRoomPopulated[]) => void;
-  connected: (connection: ConnectionStatus) => void;
+  connected: (userId: string) => void;
+  disconnected: (userId: string) => void;
 }
 
 interface ClientToServerEvents {
-  message: (message: CreateMessageParams, to: string) => Promise<void>;
+  message: (message: CreateMessageParams) => Promise<void>;
 }
 
 interface InterServerEvents {}
@@ -80,7 +76,7 @@ export const socketErrorHandler = (handler: Function) => {
 io.on('connection', async (socket) => {
     logger.info(`⚡: ${socket.data.user?.name} just connected!`);
 
-    socket.broadcast.emit('connected', { status: true, id: socket.data.user?.id });
+    socket.broadcast.emit('connected', socket.data.user?.id);
 
     // Update user online status
     await updateUserById(socket.data.user?.id, { online: true }, socket.data.user);
@@ -97,11 +93,11 @@ io.on('connection', async (socket) => {
     });
   
     // Message action
-    socket.on('message', async (message, to) => {
+    socket.on('message', async (message) => {
       console.log(message);
       if (socket.data.user){
         const newMessage = await createMessage(message, socket.data.user);
-        socket.to(to).emit('message', newMessage);
+        socket.to(message.room as unknown as string).emit('message', newMessage);
       } else {
         socket.emit("error", 'UNAUTHORIZED: Please login first');
       }
@@ -111,7 +107,7 @@ io.on('connection', async (socket) => {
       logger.info('🔥: A user disconnected');
 
       // announce user is disconnected
-      socket.broadcast.emit('connected', { status: false, id: socket.data.user?.id });
+      socket.broadcast.emit('disconnected', socket.data.user?.id);
 
       // change user online status
       await updateUserById(socket.data.user?.id, { online: false }, socket.data.user);

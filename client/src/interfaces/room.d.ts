@@ -8,17 +8,12 @@ export enum RoomTypes {
 
 export interface IRoom {
     id: string;
-    members: string[];
-    admin?: string | null;
-    avatar?: string | null;
-    description?: string | null;
-    name?: string | null;
-    type?: RoomTypes;
-    messages?: string[];
-    archived?: boolean;
-}
-
-export type IRoomPopulated = IRoom & {
     members: IUser[];
+    admin: string | null;
+    avatar: string | null;
+    description: string | null;
+    name: string | null;
+    type: RoomTypes;
     messages: IMessage[];
+    archived: boolean;
 }

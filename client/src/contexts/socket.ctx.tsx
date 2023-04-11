@@ -1,12 +1,15 @@
-import { io, Socket } from "socket.io-client";
+import { useEffect, useState } from "react";
+
+import socket from "utils/socket";
+import { IRoom } from "interfaces/room";
 import { createCtx } from "utils";
-
-import { serverUrl } from '../constants';
-
-const socket = io(serverUrl);
+import { IMessage } from "interfaces/message";
 
 interface SocketContext {
-    socket: Socket;
+    rooms: IRoom[];
+    isConnected: boolean;
+    onlineUsers: string[];
+    updateMessages: (message: IMessage) => void;
 }
 
 export const [useSocketContext, SocketProvider] = createCtx<SocketContext>();
@@ -16,8 +19,52 @@ type Props = {
 }
 
 const SocketContextProvider = ({ children }: Props) => {
+    const [isConnected, setIsConnected] = useState(socket.connected);
+    const [rooms, setRooms] = useState<IRoom[]>([]);
+    const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+
+    // Callbacks
+    const onRooms = (rooms: IRoom[]) => setRooms(rooms);
+    const onConnect = () => setIsConnected(true);
+    const onDisconnect = () => setIsConnected(false);
+    const onConnected = (userId: string) => setOnlineUsers((prevUsers) => [...prevUsers, userId]);
+    const onDisconnected = (userId: string) => setOnlineUsers((prevUsers) => prevUsers.filter((id) => id !== userId));
+    const onMessage = (message: IMessage) => setRooms((prevRooms) => prevRooms.map((room) => {
+        if (room.id === message.room) {
+            const index = room.messages.findIndex((currMessage) => currMessage.id === message.id);
+            if (index !== -1) {
+                room.messages[index] = message;
+            } else {
+                room.messages.push(message);
+            }
+        }
+        return room;
+    }));
+
+    useEffect(() => {
+        socket.on('rooms', onRooms);
+        socket.on('connect', onConnect);
+        socket.on('disconnect', onDisconnect);
+        socket.on('message', onMessage);
+        socket.on('connected', onConnected);
+        socket.on('disconnected', onDisconnected);
+
+        return () => {
+            socket.off('rooms', onRooms);
+            socket.off('connect', onConnect);
+            socket.off('disconnect', onDisconnect);
+            socket.off('message', onMessage);
+            socket.off('connected', onConnected);
+            socket.off('disconnected', onDisconnected);
+        }
+    }, []);
+
     return (
-        <SocketProvider value={{ socket }}>{children}</SocketProvider>
+        <SocketProvider 
+            value={{ rooms, isConnected, onlineUsers, updateMessages: onMessage }}
+        >
+            {children}
+        </SocketProvider>
     );
 }
 

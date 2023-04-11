@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Stack, TextField, Typography } from '@pankod/refine-mui';
 import { AttachFile, EmojiEmotions, Send, Videocam } from '@mui/icons-material';
 
@@ -7,6 +7,10 @@ import { Property1, Property2 } from 'assets';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import { useGetIdentity } from '@pankod/refine-core';
 import { IUser } from 'interfaces/user';
+import { useSocketContext } from 'contexts/socket.ctx';
+import { CreateMessageParams } from 'interfaces/message';
+import socket from 'utils/socket';
+import { IRoom } from 'interfaces/room';
 
 const messages: string[] = [
   'Hola, soy Ryan. Mucho gusto',
@@ -53,16 +57,49 @@ const TextImage = ({
 };
 
 const MessageContent = ({
+  room,
   users,
   location,
   mode,
 }: {
+  room: IRoom;
   users: any;
   location?: string;
   mode?: string;
 }) => {
   const navigate = useNavigate();
+  const { updateMessages } = useSocketContext();
   const { data: user } = useGetIdentity<IUser>();
+  const [draftMessage, setDraftMessage] = useState('');
+
+  if (!user) return null;
+
+  const sendMessage = () => {
+    const now = new Date();
+      const id = `${user._id}->${room.id}@${now.toISOString()}`;
+      const message: CreateMessageParams = {
+        _id: id,
+        text: draftMessage,
+        sender: user._id,
+        room: room.id,
+        sent: false,
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
+      };
+      updateMessages({
+        ...message,
+        id,
+      });
+      socket.emit('message', message);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setDraftMessage(e.target.value);
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      sendMessage();
+    }
+  };
 
   return (
     <Box>
@@ -82,7 +119,7 @@ const MessageContent = ({
           direction='row'
         >
           <img
-            src={users[0].avatar}
+            src={room.members[0].avatar}
             alt='profile'
             style={{
               display: 'block',
@@ -113,7 +150,7 @@ const MessageContent = ({
             fontWeight={600}
             color={mode === 'light' ? '#11142d' : '#EFEFEF'}
           >
-            {users[0].name}
+            {room.members[0].name}
           </Typography>
           <Typography fontSize={14}>Active Now</Typography>
         </Stack>
@@ -167,7 +204,16 @@ const MessageContent = ({
         </Typography>
       </Box>
       <Box sx={{ maxHeight: '600px', height: '100%', overflow: 'auto' }}>
-        <Text position='left' users={users} message={messages[0]} mode={mode} />
+        {room.messages.map((message) => (
+          <Text
+            position={message.sender === user._id ? 'right': 'left'}
+            avatar={message.sender === user._id ? user.avatar : room.members[0].avatar}
+            message={message.text} 
+            mode={mode} 
+            createdAt={message.createdAt}
+          />
+        ))}
+        {/* <Text position='left' users={users} message={messages[0]} mode={mode} />
         <Text
           position='right'
           users={users}
@@ -182,7 +228,7 @@ const MessageContent = ({
           mode={mode}
         />
         <TextImage position='right' images={[Property1, Property2]} />
-        <Text position='left' users={users} message={messages[4]} mode={mode} />
+        <Text position='left' users={users} message={messages[4]} mode={mode} /> */}
       </Box>
       <Box
         sx={{
@@ -195,6 +241,8 @@ const MessageContent = ({
         <TextField
           fullWidth
           placeholder='Write a message here...'
+          onChange={handleChange}
+          onKeyPress={handleKeyPress}
           sx={{
             background: mode === 'light' ? '#F2F2F2' : '#272B30',
           }}
@@ -232,6 +280,7 @@ const MessageContent = ({
             background: mode === 'light' ? '#F2F2F2' : '#272B30',
             cursor: 'pointer',
           }}
+          onClick={sendMessage}
         >
           <Send />
         </Box>

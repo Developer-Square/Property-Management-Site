@@ -1,6 +1,5 @@
 import React from 'react';
 import { Stack, Box, Typography } from '@pankod/refine-mui';
-import { timeString12hr } from 'utils/randomDateAndTime';
 
 const MoreOptions = () => (
   <Box
@@ -22,14 +21,16 @@ const MoreOptions = () => (
 );
 
 const Text = ({
-  users,
+  avatar,
   message,
+  createdAt,
   position,
   mode,
 }: {
-  users: any;
+  avatar: string;
   message: string;
-  position: string;
+  createdAt: string;
+  position: 'left' | 'right';
   mode: string | undefined;
 }) => {
   return (
@@ -43,7 +44,7 @@ const Text = ({
     >
       {position === 'left' && (
         <img
-          src={users[0].avatar}
+          src={avatar}
           alt='profile'
           style={{
             display: 'block',
@@ -88,7 +89,12 @@ const Text = ({
           textAlign={position === 'right' ? 'right' : 'left'}
           color='#808191'
         >
-          {timeString12hr()}
+          {new Date(createdAt).toLocaleTimeString('en-US', {
+            timeZone: 'UTC',
+            hour12: true,
+            hour: 'numeric',
+            minute: 'numeric',
+          })}
         </Typography>
       </Stack>
     </Stack>

@@ -7,6 +7,11 @@ import { IUserDoc } from './user';
 
 export const MessageSchema = new mongoose.Schema<IMessageDoc, IMessageModel>(
     {
+        _id: {
+            type: String,
+            required: true,
+            trim: true,
+        },
         text: {
             type: String,
             required: true,
@@ -101,7 +106,7 @@ const Message = mongoose.model<IMessageDoc, IMessageModel>('Message', MessageSch
 export default Message;
 
 export type CreateMessageParams = IMessage & {
-    recipient: Types.Subdocument<Types.ObjectId> & Types.ObjectId;
+    _id: string;
 }
 
 export type DeleteMessageParams = {

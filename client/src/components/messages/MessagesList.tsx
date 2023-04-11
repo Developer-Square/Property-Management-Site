@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Stack, TextField, Box, Typography } from '@pankod/refine-mui';
 import { Search } from '@mui/icons-material';
 import { timeString12hr } from 'utils/randomDateAndTime';
-import socket from 'utils/socket';
-import { IRoomPopulated } from 'interfaces/room';
+import { useSocketContext } from 'contexts/socket.ctx';
 
 const messages: string[] = [
   'Hola, soy Ryan. Mucho gusto',
@@ -99,20 +98,12 @@ const MessagesList = ({
   mode: string;
 }) => {
   const [searchText, setSearchText] = useState('');
-  const [rooms, setRooms] = useState<IRoomPopulated[]>([]);
-  
-
-  socket.on('connected', (connection) => {
-    console.log(`${connection.id} is online: ${connection.status}`)
-  });
-
-  socket.on('rooms', (chatrooms) => {
-    setRooms(chatrooms);
-  });
+  const { rooms } = useSocketContext();
 
   if (rooms.length > 0) {
-    console.log(rooms);
-  };
+    console.log("Yay we've got some rooms");
+    console.log({ contextRooms: rooms });
+  }
 
   return (
     <Box>
@@ -148,7 +139,7 @@ const MessagesList = ({
         }}
         onClick={() => handleScreenSwitch()}
       >
-        {users?.length ? (
+        {/* {users?.length ? (
           users.map((user: any, index: number) => (
             <MessageProfile
               key={user._id}
@@ -162,7 +153,23 @@ const MessagesList = ({
           ))
         ) : (
           <></>
-        )}
+        )} */}
+        {rooms.map((room, index) => (
+          <MessageProfile
+            key={index}
+            active={room.members[0].online}
+            avatar={room.members[0].avatar}
+            name={room.members[0].name}
+            message={room.messages[room.messages.length - 1].text}
+            time={new Date(room.messages[room.messages.length - 1].createdAt).toLocaleTimeString('en-US', {
+              timeZone: 'UTC',
+              hour12: true,
+              hour: 'numeric',
+              minute: 'numeric',
+            })}
+            mode={mode}
+          />
+        ))}
       </Box>
     </Box>
   );

@@ -40,7 +40,6 @@ export const loginController = catchAsync(
 );
 
 export const loginWithGoogleController = catchAsync(async (req: Request, res: Response) => {
-  console.log(req.body);
   const user = await loginUserWithGoogle(req.body);
   const tokens = await generateAuthTokens(user);
   res.send({ user, tokens });

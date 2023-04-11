@@ -4,12 +4,12 @@ export interface IMessage {
     sender: string;
     room: string;
     sent: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type IMessageFilterFields = Pick<IMessage, 'sender' | 'sent'>;
 
 export type CreateMessageParams = Omit<IMessage, 'id'> & {
-    recipient: string;
-}
+    _id: string;
+};

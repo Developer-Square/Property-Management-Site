@@ -1,23 +1,19 @@
 import { CreateMessageParams, IMessage } from "interfaces/message";
-import { IRoomPopulated } from "interfaces/room";
+import { IRoom } from "interfaces/room";
 import { io, Socket } from "socket.io-client";
 
 import { serverUrl } from '../constants';
 
-interface ConnectionStatus {
-    status: boolean;
-    id: string;
-}
-
-interface ServerToClientEvents {
+export interface ServerToClientEvents {
     message: (message: IMessage) => void;
     error: (err: string) => void;
-    rooms: (rooms: IRoomPopulated[]) => void;
-    connected: (connection: ConnectionStatus) => void;
+    rooms: (rooms: IRoom[]) => void;
+    connected: (userId: string) => void;
+    disconnected: (userId: string) => void;
 }
   
-interface ClientToServerEvents {
-    message: (message: CreateMessageParams, to: string) => Promise<void>;
+export interface ClientToServerEvents {
+    message: (message: CreateMessageParams) => Promise<void>;
 }
 
 const loggedInUser = JSON.parse(localStorage.getItem('user') as string);
