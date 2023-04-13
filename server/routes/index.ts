@@ -3,6 +3,8 @@ import authRoute from './auth.routes';
 import userRoute from './user.routes';
 import reviewRoute from './review.routes';
 import propertyRoute from './property.routes';
+import messageRoute from './message.routes';
+import roomRoute from './room.routes';
 import { config } from '../config';
 
 const router = express.Router();
@@ -32,6 +34,14 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/properties',
     route: propertyRoute,
+  },
+  {
+    path: '/messages',
+    route: messageRoute,
+  },
+  {
+    path: '/rooms',
+    route: roomRoute,
   },
 ];
 
