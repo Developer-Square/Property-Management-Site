@@ -82,11 +82,12 @@ const MessageContent = ({
       recipient: room.members[0]._id,
     };
     updateMessages({
-      ...message,
+      text: draftMessage,
       sent: false,
       id: '',
       sender: user._id,
       room: room.id,
+      createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
     });
     socket.emit('message', message);
