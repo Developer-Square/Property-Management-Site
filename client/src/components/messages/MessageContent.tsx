@@ -76,21 +76,20 @@ const MessageContent = ({
 
   const sendMessage = () => {
     const now = new Date();
-      const id = `${user._id}->${room.id}@${now.toISOString()}`;
-      const message: CreateMessageParams = {
-        _id: id,
-        text: draftMessage,
-        sender: user._id,
-        room: room.id,
-        sent: false,
-        createdAt: now.toISOString(),
-        updatedAt: now.toISOString(),
-      };
-      updateMessages({
-        ...message,
-        id,
-      });
-      socket.emit('message', message);
+    const message: CreateMessageParams = {
+      text: draftMessage,
+      createdAt: now.toISOString(),
+      recipient: room.members[0]._id,
+    };
+    updateMessages({
+      ...message,
+      sent: false,
+      id: '',
+      sender: user._id,
+      room: room.id,
+      updatedAt: now.toISOString(),
+    });
+    socket.emit('message', message);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setDraftMessage(e.target.value);

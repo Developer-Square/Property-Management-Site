@@ -31,11 +31,15 @@ const SocketContextProvider = ({ children }: Props) => {
     const onDisconnected = (userId: string) => setOnlineUsers((prevUsers) => prevUsers.filter((id) => id !== userId));
     const onMessage = (message: IMessage) => setRooms((prevRooms) => prevRooms.map((room) => {
         if (room.id === message.room) {
-            const index = room.messages.findIndex((currMessage) => currMessage.id === message.id);
-            if (index !== -1) {
-                room.messages[index] = message;
-            } else {
+            if (message.id === ''){
                 room.messages.push(message);
+            } else {
+                const unsentMessageIndex = room.messages.findIndex((currMessage) => currMessage.text === message.text && new Date(currMessage.createdAt) === new Date(message.createdAt) && !currMessage.sent);
+                if (unsentMessageIndex !== -1) {
+                    room.messages[unsentMessageIndex] = message;
+                } else {
+                    room.messages.push(message);
+                }
             }
         }
         return room;

@@ -35,6 +35,14 @@ export const queryRoomsWithArchived = async (user: IUserDoc): Promise<IRoomPopul
 export const getAllRooms = async (user: IUserDoc): Promise<IRoomDoc[]> => Room.find({ members: { $in: [new mongoose.Types.ObjectId(user.id)] } });
 
 /**
+ * Gets a room that both users belong to
+ * @param userA id of the first user
+ * @param userB id of the second user
+ * @returns room that they both belong to
+ */
+export const getPeerToPeerRoom = async (userA: mongoose.Types.ObjectId, userB: mongoose.Types.ObjectId): Promise<IRoomDoc | null> => Room.findOne({ members: { $all: [new mongoose.Types.ObjectId(userA),new mongoose.Types.ObjectId(userB)]}});
+
+/**
  * Get room by id
  * @param {mongoose.Types.ObjectId} id
  * @returns {Promise<IRoomDoc | null>}

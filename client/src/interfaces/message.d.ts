@@ -10,6 +10,6 @@ export interface IMessage {
 
 export type IMessageFilterFields = Pick<IMessage, 'sender' | 'sent'>;
 
-export type CreateMessageParams = Omit<IMessage, 'id'> & {
-    _id: string;
+export type CreateMessageParams = Pick<IMessage, 'text' | 'createdAt'> & {
+    recipient: string;
 };

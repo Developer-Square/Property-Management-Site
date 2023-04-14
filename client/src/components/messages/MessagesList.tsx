@@ -100,11 +100,6 @@ const MessagesList = ({
   const [searchText, setSearchText] = useState('');
   const { rooms } = useSocketContext();
 
-  if (rooms.length > 0) {
-    console.log("Yay we've got some rooms");
-    console.log({ contextRooms: rooms });
-  }
-
   return (
     <Box>
       <Stack

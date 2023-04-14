@@ -97,7 +97,7 @@ io.on('connection', async (socket) => {
       console.log(message);
       if (socket.data.user){
         const newMessage = await createMessage(message, socket.data.user);
-        socket.to(message.room as unknown as string).emit('message', newMessage);
+        socket.to(newMessage.room.toHexString()).emit('message', newMessage);
       } else {
         socket.emit("error", 'UNAUTHORIZED: Please login first');
       }
