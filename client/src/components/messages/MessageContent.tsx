@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { Box, Stack, TextField, Typography } from '@pankod/refine-mui';
 import { AttachFile, EmojiEmotions, Send, Videocam } from '@mui/icons-material';
@@ -11,14 +12,6 @@ import { useSocketContext } from 'contexts/socket.ctx';
 import { CreateMessageParams } from 'interfaces/message';
 import socket from 'utils/socket';
 import { IRoom } from 'interfaces/room';
-
-const messages: string[] = [
-  'Hola, soy Ryan. Mucho gusto',
-  'Tengo tres hermosos perros',
-  'Quiero vivir con mis perros y gatos en mi casa grande',
-  'Amo el anime',
-  'Me encanta ir la gimnasio',
-];
 
 const TextImage = ({
   images,
@@ -93,7 +86,8 @@ const MessageContent = ({
     socket.emit('message', message);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setDraftMessage(e.target.value);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setDraftMessage(e.target.value);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -133,7 +127,7 @@ const MessageContent = ({
               width: '10px',
               height: '10px',
               borderRadius: '50%',
-              background: '#2ED480',
+              background: room.members[0].online ? '#2ED480' : '#808191',
               position: 'relative',
               left: '-10px',
               top: '35px',
@@ -206,10 +200,12 @@ const MessageContent = ({
       <Box sx={{ maxHeight: '600px', height: '100%', overflow: 'auto' }}>
         {room.messages.map((message) => (
           <Text
-            position={message.sender === user._id ? 'right': 'left'}
-            avatar={message.sender === user._id ? user.avatar : room.members[0].avatar}
-            message={message.text} 
-            mode={mode} 
+            position={message.sender === user._id ? 'right' : 'left'}
+            avatar={
+              message.sender === user._id ? user.avatar : room.members[0].avatar
+            }
+            message={message.text}
+            mode={mode}
             createdAt={message.createdAt}
           />
         ))}

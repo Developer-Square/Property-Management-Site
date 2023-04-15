@@ -1,17 +1,8 @@
 import { useState } from 'react';
 import { Stack, TextField, Box, Typography } from '@pankod/refine-mui';
 import { Search } from '@mui/icons-material';
-import { timeString12hr } from 'utils/randomDateAndTime';
 import { useSocketContext } from 'contexts/socket.ctx';
-
-const messages: string[] = [
-  'Hola, soy Ryan. Mucho gusto',
-  'Tengo tres hermosos perros',
-  'Quiero vivir con mis perros y gatos en mi casa grande',
-  'Amo el anime',
-  'Me encanta ir la gimnasio',
-  'Hola mi nombre es Ryan Njoroge',
-];
+import { IRoom } from 'interfaces/room';
 
 const MessageProfile = ({
   active,
@@ -20,6 +11,9 @@ const MessageProfile = ({
   message,
   time,
   mode,
+  room,
+  online,
+  handleCurrentRoom,
 }: {
   active: boolean;
   avatar: string;
@@ -27,6 +21,9 @@ const MessageProfile = ({
   message: string;
   time: string;
   mode: string;
+  online: boolean;
+  room: IRoom;
+  handleCurrentRoom: (room: IRoom) => void;
 }) => (
   <Box
     sx={{
@@ -37,7 +34,9 @@ const MessageProfile = ({
       flexDirection: 'row',
       color: active ? '#fcfcfc' : '#808191',
       background: active ? '#475BE8' : mode === 'light' ? '#fcfcfc' : '#1A1D1F',
+      cursor: 'pointer',
     }}
+    onClick={() => handleCurrentRoom(room)}
   >
     <Stack width={{ xs: '21%', sm: '32%', lg: '18%' }} direction='row'>
       <img
@@ -55,7 +54,7 @@ const MessageProfile = ({
           width: '10px',
           height: '10px',
           borderRadius: '50%',
-          background: '#2ED480',
+          background: online ? '#2ED480' : '#808191',
           position: 'relative',
           left: '-10px',
           top: '35px',
@@ -89,16 +88,14 @@ const MessageProfile = ({
 );
 
 const MessagesList = ({
-  users,
   handleScreenSwitch,
   mode,
 }: {
-  users: any;
   handleScreenSwitch: () => void;
   mode: string;
 }) => {
   const [searchText, setSearchText] = useState('');
-  const { rooms } = useSocketContext();
+  const { rooms, handleCurrentRoom } = useSocketContext();
 
   return (
     <Box>
@@ -134,21 +131,6 @@ const MessagesList = ({
         }}
         onClick={() => handleScreenSwitch()}
       >
-        {/* {users?.length ? (
-          users.map((user: any, index: number) => (
-            <MessageProfile
-              key={user._id}
-              active={index === 0}
-              avatar={user.avatar}
-              name={user.name}
-              message={messages[index] ?? messages[0]}
-              time={timeString12hr()}
-              mode={mode}
-            />
-          ))
-        ) : (
-          <></>
-        )} */}
         {rooms.map((room, index) => (
           <MessageProfile
             key={index}
@@ -156,13 +138,18 @@ const MessagesList = ({
             avatar={room.members[0].avatar}
             name={room.members[0].name}
             message={room.messages[room.messages.length - 1].text}
-            time={new Date(room.messages[room.messages.length - 1].createdAt).toLocaleTimeString('en-US', {
+            online={room.members[0].online}
+            time={new Date(
+              room.messages[room.messages.length - 1].createdAt
+            ).toLocaleTimeString('en-US', {
               timeZone: 'UTC',
               hour12: true,
               hour: 'numeric',
               minute: 'numeric',
             })}
             mode={mode}
+            room={room}
+            handleCurrentRoom={handleCurrentRoom}
           />
         ))}
       </Box>

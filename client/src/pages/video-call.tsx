@@ -17,6 +17,7 @@ import {
 import { useList } from '@pankod/refine-core';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import { ColorModeContext } from 'contexts';
+import { IRoom } from 'interfaces/room';
 
 const VideoCall = () => {
   const { data, isLoading, isError } = useList({
@@ -32,6 +33,41 @@ const VideoCall = () => {
 
   const open = Boolean(anchorEl);
   const popoverId = open ? 'simple-popover' : undefined;
+
+  const room: IRoom = {
+    id: '1',
+    name: 'Room 1',
+    members: [
+      {
+        _id: '1',
+        name: 'User 1',
+        email: '',
+        avatar: '',
+        role: 'user',
+        email_verified: false,
+        allProperties: [''],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        online: false,
+      },
+    ],
+    admin: '1',
+    avatar: '',
+    description: '',
+    type: '',
+    messages: [
+      {
+        id: '',
+        text: '',
+        sender: '',
+        room: '',
+        sent: false,
+        createdAt: '',
+        updatedAt: '',
+      },
+    ],
+    archived: false,
+  };
 
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error!</Typography>;
@@ -194,7 +230,12 @@ const VideoCall = () => {
         </Box>
       </Box>
       <Box width='30%'>
-        <MessageContent mode={mode} users={users} location='video-call' />
+        <MessageContent
+          room={room}
+          mode={mode}
+          users={users}
+          location='video-call'
+        />
       </Box>
     </Box>
   );

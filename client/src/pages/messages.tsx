@@ -3,6 +3,7 @@ import { Box, Typography } from '@pankod/refine-mui';
 import { useList } from '@pankod/refine-core';
 import { MessageContent, MessagesList } from 'components';
 import { ColorModeContext } from 'contexts';
+import { useSocketContext } from 'contexts/socket.ctx';
 
 const Messages = () => {
   const { data, isLoading, isError } = useList({
@@ -12,7 +13,8 @@ const Messages = () => {
   const [showMessageList, setShowMessageList] = useState(true);
   const screenSize: number = window.innerWidth;
   const { mode } = useContext(ColorModeContext);
-
+  const { currentRoom } = useSocketContext();
+  console.log('currentRoom', currentRoom);
   useEffect(() => {
     if (screenSize <= 576) {
       setShowMessageContent(false);
@@ -52,11 +54,7 @@ const Messages = () => {
       >
         {showMessageList ? (
           <Box sx={{ width: { xs: '100%', sm: '30%' } }}>
-            <MessagesList
-              users={users}
-              handleScreenSwitch={handleScreenSwitch}
-              mode={mode}
-            />
+            <MessagesList handleScreenSwitch={handleScreenSwitch} mode={mode} />
           </Box>
         ) : (
           <></>
@@ -71,7 +69,7 @@ const Messages = () => {
               },
             }}
           >
-            <MessageContent users={users} mode={mode} />
+            <MessageContent room={currentRoom} users={users} mode={mode} />
           </Box>
         ) : (
           <></>
