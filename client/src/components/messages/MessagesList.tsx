@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack, TextField, Box, Typography } from '@pankod/refine-mui';
 import { Search } from '@mui/icons-material';
 import { useSocketContext } from 'contexts/socket.ctx';
 import { IRoom } from 'interfaces/room';
+import { BaseRecord, useList } from '@pankod/refine-core';
 
 const MessageProfile = ({
   active,
@@ -12,7 +13,6 @@ const MessageProfile = ({
   time,
   mode,
   room,
-  online,
   handleCurrentRoom,
 }: {
   active: boolean;
@@ -21,7 +21,6 @@ const MessageProfile = ({
   message: string;
   time: string;
   mode: string;
-  online: boolean;
   room: IRoom;
   handleCurrentRoom: (room: IRoom) => void;
 }) => (
@@ -54,7 +53,7 @@ const MessageProfile = ({
           width: '10px',
           height: '10px',
           borderRadius: '50%',
-          background: online ? '#2ED480' : '#808191',
+          background: active ? '#2ED480' : '#808191',
           position: 'relative',
           left: '-10px',
           top: '35px',
@@ -94,8 +93,53 @@ const MessagesList = ({
   handleScreenSwitch: () => void;
   mode: string;
 }) => {
+  const [showUserList, setShowUserList] = useState(false);
+  const [userList, setUserList] = useState<BaseRecord[]>([]);
   const [searchText, setSearchText] = useState('');
   const { rooms, handleCurrentRoom } = useSocketContext();
+  const { data, isLoading, isError } = useList({
+    resource: 'users',
+  });
+
+  const users = data?.data || [];
+
+  useEffect(() => {
+    if (users.length) {
+      setUserList(users);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  const filterUsers = (searchText: string) => {
+    const filteredUsers = users.filter((user) => {
+      return user.name.toLowerCase().includes(searchText.toLowerCase());
+    });
+    setUserList(filteredUsers);
+  };
+
+  const hanldeSearch = (text: string) => {
+    if (text.length > 0) {
+      setShowUserList(true);
+      setSearchText(text);
+      filterUsers(text);
+      return;
+    }
+    setShowUserList(false);
+    setSearchText('');
+  };
+
+  // When a user clicks on a user profile in the search results, clear the search text and hide the search results.
+  const handleUserClick = () => {
+    setSearchText('');
+    setShowUserList(false);
+    handleCurrentRoom(rooms[0]);
+    // Todo: Create a new room and show the chat screen.
+  };
+
+  console.log(rooms[0], 'rooms[0]');
+
+  if (isLoading) return <Typography>Loading...</Typography>;
+  if (isError) return <Typography>Error!</Typography>;
 
   return (
     <Box>
@@ -115,7 +159,7 @@ const MessagesList = ({
           color='info'
           variant='outlined'
           value={searchText}
-          onChange={(e: any) => setSearchText(e.target.value)}
+          onChange={(e: any) => hanldeSearch(e.target.value)}
           className='search-input'
           placeholder='Search...'
           sx={{
@@ -131,27 +175,41 @@ const MessagesList = ({
         }}
         onClick={() => handleScreenSwitch()}
       >
-        {rooms.map((room, index) => (
-          <MessageProfile
-            key={index}
-            active={room.members[0].online}
-            avatar={room.members[0].avatar}
-            name={room.members[0].name}
-            message={room.messages[room.messages.length - 1].text}
-            online={room.members[0].online}
-            time={new Date(
-              room.messages[room.messages.length - 1].createdAt
-            ).toLocaleTimeString('en-US', {
-              timeZone: 'UTC',
-              hour12: true,
-              hour: 'numeric',
-              minute: 'numeric',
-            })}
-            mode={mode}
-            room={room}
-            handleCurrentRoom={handleCurrentRoom}
-          />
-        ))}
+        {showUserList &&
+          userList.map((user, index) => (
+            <MessageProfile
+              key={index}
+              active={user.online}
+              avatar={user.avatar}
+              name={user.name}
+              message={''}
+              time={''}
+              mode={mode}
+              room={rooms[0]}
+              handleCurrentRoom={handleCurrentRoom}
+            />
+          ))}
+        {!showUserList &&
+          rooms.map((room, index) => (
+            <MessageProfile
+              key={index}
+              active={room.members[0].online}
+              avatar={room.members[0].avatar}
+              name={room.members[0].name}
+              message={room.messages[room.messages.length - 1].text}
+              time={new Date(
+                room.messages[room.messages.length - 1].createdAt
+              ).toLocaleTimeString('en-US', {
+                timeZone: 'UTC',
+                hour12: true,
+                hour: 'numeric',
+                minute: 'numeric',
+              })}
+              mode={mode}
+              room={room}
+              handleCurrentRoom={handleCurrentRoom}
+            />
+          ))}
       </Box>
     </Box>
   );

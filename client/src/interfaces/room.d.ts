@@ -13,8 +13,7 @@ export interface IRoom {
   avatar: string | null;
   description: string | null;
   name: string | null;
-  // Todo: Change this back to RoomTypes
-  type: any;
+  type: RoomTypes;
   messages: IMessage[];
   archived: boolean;
 }

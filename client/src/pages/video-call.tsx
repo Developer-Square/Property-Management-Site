@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import React, { useContext } from 'react';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { ArrowBackIos } from '@mui/icons-material';
@@ -17,7 +18,7 @@ import {
 import { useList } from '@pankod/refine-core';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import { ColorModeContext } from 'contexts';
-import { IRoom } from 'interfaces/room';
+import { useSocketContext } from 'contexts/socket.ctx';
 
 const VideoCall = () => {
   const { data, isLoading, isError } = useList({
@@ -28,46 +29,12 @@ const VideoCall = () => {
   );
   const navigate = useNavigate();
   const { mode } = useContext(ColorModeContext);
+  const { rooms } = useSocketContext();
 
   const users = data?.data || [];
 
   const open = Boolean(anchorEl);
   const popoverId = open ? 'simple-popover' : undefined;
-
-  const room: IRoom = {
-    id: '1',
-    name: 'Room 1',
-    members: [
-      {
-        _id: '1',
-        name: 'User 1',
-        email: '',
-        avatar: '',
-        role: 'user',
-        email_verified: false,
-        allProperties: [''],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        online: false,
-      },
-    ],
-    admin: '1',
-    avatar: '',
-    description: '',
-    type: '',
-    messages: [
-      {
-        id: '',
-        text: '',
-        sender: '',
-        room: '',
-        sent: false,
-        createdAt: '',
-        updatedAt: '',
-      },
-    ],
-    archived: false,
-  };
 
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error!</Typography>;
@@ -230,8 +197,9 @@ const VideoCall = () => {
         </Box>
       </Box>
       <Box width='30%'>
+        // Todo: Create an empty message content for this page.
         <MessageContent
-          room={room}
+          room={rooms[0]}
           mode={mode}
           users={users}
           location='video-call'

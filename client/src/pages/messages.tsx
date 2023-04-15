@@ -14,7 +14,7 @@ const Messages = () => {
   const screenSize: number = window.innerWidth;
   const { mode } = useContext(ColorModeContext);
   const { currentRoom } = useSocketContext();
-  console.log('currentRoom', currentRoom);
+
   useEffect(() => {
     if (screenSize <= 576) {
       setShowMessageContent(false);
