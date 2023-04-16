@@ -15,15 +15,11 @@ import {
   VideoCallImg,
   Volume,
 } from 'assets';
-import { useList } from '@pankod/refine-core';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import { ColorModeContext } from 'contexts';
 import { useSocketContext } from 'contexts/socket.ctx';
 
 const VideoCall = () => {
-  const { data, isLoading, isError } = useList({
-    resource: 'users',
-  });
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
@@ -31,13 +27,9 @@ const VideoCall = () => {
   const { mode } = useContext(ColorModeContext);
   const { rooms } = useSocketContext();
 
-  const users = data?.data || [];
-
   const open = Boolean(anchorEl);
   const popoverId = open ? 'simple-popover' : undefined;
 
-  if (isLoading) return <Typography>Loading...</Typography>;
-  if (isError) return <Typography>Error!</Typography>;
   return (
     <Box
       sx={{
@@ -198,12 +190,7 @@ const VideoCall = () => {
       </Box>
       <Box width='30%'>
         // Todo: Create an empty message content for this page.
-        <MessageContent
-          room={rooms[0]}
-          mode={mode}
-          users={users}
-          location='video-call'
-        />
+        <MessageContent room={rooms[0]} mode={mode} location='video-call' />
       </Box>
     </Box>
   );

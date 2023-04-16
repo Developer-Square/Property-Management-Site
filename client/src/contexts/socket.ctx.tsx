@@ -4,7 +4,6 @@ import socket from 'utils/socket';
 import { IRoom } from 'interfaces/room';
 import { createCtx } from 'utils';
 import { IMessage } from 'interfaces/message';
-
 interface SocketContext {
   rooms: IRoom[];
   isConnected: boolean;
@@ -20,18 +19,31 @@ type Props = {
   children: React.ReactNode;
 };
 
+enum RoomTypes {
+  PEERTOPEER = 'PeerToPeer',
+  GROUP = 'group',
+}
+
 const SocketContextProvider = ({ children }: Props) => {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
-  const [currentRoom, setCurrentRoom] = useState<IRoom>(rooms[0]);
+  const [currentRoom, setCurrentRoom] = useState<IRoom>({
+    id: '',
+    members: [],
+    messages: [],
+    name: '',
+    admin: null,
+    avatar: null,
+    description: '',
+    archived: false,
+    type: RoomTypes.PEERTOPEER,
+  });
 
   // Callbacks
-  const onRooms = (rooms: IRoom[]) => {
-    setRooms(rooms);
-    setCurrentRoom(rooms[0]);
-  };
+  const onRooms = (rooms: IRoom[]) => setRooms(rooms);
   const handleCurrentRoom = (room: IRoom) => setCurrentRoom(room);
+
   const onConnect = () => setIsConnected(true);
   const onDisconnect = () => setIsConnected(false);
   const onConnected = (userId: string) =>

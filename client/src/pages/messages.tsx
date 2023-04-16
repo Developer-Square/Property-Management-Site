@@ -1,14 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Typography } from '@pankod/refine-mui';
-import { useList } from '@pankod/refine-core';
 import { MessageContent, MessagesList } from 'components';
 import { ColorModeContext } from 'contexts';
 import { useSocketContext } from 'contexts/socket.ctx';
 
 const Messages = () => {
-  const { data, isLoading, isError } = useList({
-    resource: 'users',
-  });
   const [showMessageContent, setShowMessageContent] = useState(true);
   const [showMessageList, setShowMessageList] = useState(true);
   const screenSize: number = window.innerWidth;
@@ -24,14 +20,11 @@ const Messages = () => {
   }, [screenSize]);
 
   const handleScreenSwitch = () => {
-    setShowMessageContent((prevState) => !prevState);
-    setShowMessageList((prevState) => !prevState);
+    if (screenSize <= 576) {
+      setShowMessageContent((prevState) => !prevState);
+      setShowMessageList((prevState) => !prevState);
+    }
   };
-
-  const users = data?.data || [];
-
-  if (isLoading) return <Typography>Loading...</Typography>;
-  if (isError) return <Typography>Error!</Typography>;
   return (
     <Box mt={{ xs: '45px', lg: '0px' }}>
       <Typography
@@ -69,7 +62,7 @@ const Messages = () => {
               },
             }}
           >
-            <MessageContent room={currentRoom} users={users} mode={mode} />
+            <MessageContent room={currentRoom} mode={mode} />
           </Box>
         ) : (
           <></>

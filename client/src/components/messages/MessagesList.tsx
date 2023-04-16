@@ -4,6 +4,7 @@ import { Search } from '@mui/icons-material';
 import { useSocketContext } from 'contexts/socket.ctx';
 import { IRoom } from 'interfaces/room';
 import { BaseRecord, useList } from '@pankod/refine-core';
+import EmptyMessage from 'components/common/EmptyMessage';
 
 const MessageProfile = ({
   active,
@@ -136,13 +137,15 @@ const MessagesList = ({
     // Todo: Create a new room and show the chat screen.
   };
 
-  console.log(rooms[0], 'rooms[0]');
-
   if (isLoading) return <Typography>Loading...</Typography>;
   if (isError) return <Typography>Error!</Typography>;
 
   return (
-    <Box>
+    <Box
+      sx={{
+        minHeight: { xs: '600px', sm: '634px' },
+      }}
+    >
       <Stack
         direction='row'
         alignItems='center'
@@ -161,56 +164,60 @@ const MessagesList = ({
           value={searchText}
           onChange={(e: any) => hanldeSearch(e.target.value)}
           className='search-input'
-          placeholder='Search...'
+          placeholder='Search or start a new chat'
           sx={{
             width: '100%',
           }}
         />
       </Stack>
-      <Box
-        sx={{
-          maxHeight: '620px',
-          height: '100%',
-          overflow: 'scroll',
-        }}
-        onClick={() => handleScreenSwitch()}
-      >
-        {showUserList &&
-          userList.map((user, index) => (
-            <MessageProfile
-              key={index}
-              active={user.online}
-              avatar={user.avatar}
-              name={user.name}
-              message={''}
-              time={''}
-              mode={mode}
-              room={rooms[0]}
-              handleCurrentRoom={handleCurrentRoom}
-            />
-          ))}
-        {!showUserList &&
-          rooms.map((room, index) => (
-            <MessageProfile
-              key={index}
-              active={room.members[0].online}
-              avatar={room.members[0].avatar}
-              name={room.members[0].name}
-              message={room.messages[room.messages.length - 1].text}
-              time={new Date(
-                room.messages[room.messages.length - 1].createdAt
-              ).toLocaleTimeString('en-US', {
-                timeZone: 'UTC',
-                hour12: true,
-                hour: 'numeric',
-                minute: 'numeric',
-              })}
-              mode={mode}
-              room={room}
-              handleCurrentRoom={handleCurrentRoom}
-            />
-          ))}
-      </Box>
+      {rooms.length === 0 && searchText.length === 0 ? (
+        <EmptyMessage />
+      ) : (
+        <Box
+          sx={{
+            maxHeight: '620px',
+            height: '100%',
+            overflow: 'scroll',
+          }}
+          onClick={() => handleScreenSwitch()}
+        >
+          {showUserList &&
+            userList.map((user, index) => (
+              <MessageProfile
+                key={index}
+                active={user.online}
+                avatar={user.avatar}
+                name={user.name}
+                message={''}
+                time={''}
+                mode={mode}
+                room={rooms[0]}
+                handleCurrentRoom={handleUserClick}
+              />
+            ))}
+          {!showUserList &&
+            rooms.map((room, index) => (
+              <MessageProfile
+                key={index}
+                active={room.members[0].online}
+                avatar={room.members[0].avatar}
+                name={room.members[0].name}
+                message={room.messages[room.messages.length - 1].text}
+                time={new Date(
+                  room.messages[room.messages.length - 1].createdAt
+                ).toLocaleTimeString('en-US', {
+                  timeZone: 'UTC',
+                  hour12: true,
+                  hour: 'numeric',
+                  minute: 'numeric',
+                })}
+                mode={mode}
+                room={room}
+                handleCurrentRoom={handleCurrentRoom}
+              />
+            ))}
+        </Box>
+      )}
     </Box>
   );
 };

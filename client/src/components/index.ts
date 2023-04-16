@@ -8,6 +8,7 @@ import PropertyList from './common/PropertyList';
 import ImageView from './common/ImageView';
 import EditPopover from './common/EditPopover';
 import SearchField from './common/SearchField';
+import EmptyMessage from './common/EmptyMessage';
 
 // charts
 import PieChart from './charts/PieChart';
@@ -73,4 +74,5 @@ export {
   ForgotPasswordComponent,
   ResetPasswordComponent,
   VerifyEmailComponent,
+  EmptyMessage,
 };

@@ -26,6 +26,7 @@ import Calendar from './calendar.png';
 import NotificationSettings from './notification-settings.png';
 import Payment from './payment.png';
 import LoginSignup from './login-signup.png';
+import ChatMessage from './chat-message.svg';
 
 export {
   logo,
@@ -56,4 +57,5 @@ export {
   NotificationSettings,
   Payment,
   LoginSignup,
+  ChatMessage,
 };
