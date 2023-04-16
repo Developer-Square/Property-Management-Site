@@ -73,6 +73,10 @@ const MessageContent = ({
       createdAt: now.toISOString(),
       recipient: room.members[0]._id,
     };
+
+    const messageContent = document.getElementById('message-content');
+    if (messageContent) window.scrollTo(0, document.body.scrollHeight);
+    setDraftMessage('');
     updateMessages({
       text: draftMessage,
       sent: false,
@@ -218,6 +222,7 @@ const MessageContent = ({
               height: '100%',
               overflow: 'auto',
             }}
+            id='message-content'
           >
             {room.messages.map((message) => (
               <Text
@@ -260,6 +265,7 @@ const MessageContent = ({
             <TextField
               fullWidth
               placeholder='Write a message here...'
+              value={draftMessage}
               onChange={handleChange}
               onKeyPress={handleKeyPress}
               sx={{
