@@ -25,10 +25,11 @@ const VideoCall = () => {
   );
   const navigate = useNavigate();
   const { mode } = useContext(ColorModeContext);
-  const { rooms } = useSocketContext();
+  const { currentRoom } = useSocketContext();
 
   const open = Boolean(anchorEl);
   const popoverId = open ? 'simple-popover' : undefined;
+  console.log(currentRoom, 'rooms');
 
   return (
     <Box
@@ -143,6 +144,10 @@ const VideoCall = () => {
                 bottom: '40px',
                 left: '50%',
                 transform: 'translateX(-50%)',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                height: '50px',
               }}
             >
               <img
@@ -189,8 +194,8 @@ const VideoCall = () => {
         </Box>
       </Box>
       <Box width='30%'>
-        // Todo: Create an empty message content for this page.
-        <MessageContent room={rooms[0]} mode={mode} location='video-call' />
+        {/* Todo: Create an empty message content for this page. */}
+        <MessageContent room={currentRoom} mode={mode} location='video-call' />
       </Box>
     </Box>
   );

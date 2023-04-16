@@ -3,7 +3,7 @@ import { Box, Stack, Typography } from '@pankod/refine-mui';
 
 import { ChatMessage } from 'assets';
 
-const EmptyMessage = () => {
+const EmptyMessage = ({ component }: { component?: string }) => {
   return (
     <Box
       sx={{
@@ -20,8 +20,8 @@ const EmptyMessage = () => {
         alt='empty message'
         style={{
           display: 'block',
-          width: '306px',
-          height: '306px',
+          width: component === 'video-call' ? '206px' : '306px',
+          height: component === 'video-call' ? '206px' : '306px',
           marginRight: '40px',
         }}
       />
@@ -33,10 +33,14 @@ const EmptyMessage = () => {
           fontSize={16}
           textAlign='center'
           sx={{
-            fontSize: '16px',
+            fontSize: component === 'video-call' ? '15px' : '16px',
             textAlign: 'center',
             padding: '0px',
-            width: { xs: '300px', sm: '400px', md: '500px' },
+            width: {
+              xs: '300px',
+              sm: '400px',
+              md: component === 'video-call' ? '300px' : '500px',
+            },
             margin: '0px auto',
           }}
         >

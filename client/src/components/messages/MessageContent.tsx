@@ -101,7 +101,7 @@ const MessageContent = ({
       }}
     >
       {room.members.length === 0 ? (
-        <EmptyMessage />
+        <EmptyMessage component={location} />
       ) : (
         <>
           <Box
