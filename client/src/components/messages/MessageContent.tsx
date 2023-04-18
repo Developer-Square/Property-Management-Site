@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { Box, Stack, TextField, Typography } from '@pankod/refine-mui';
-import { AttachFile, EmojiEmotions, Send, Videocam } from '@mui/icons-material';
+import {
+  ArrowBackIos,
+  AttachFile,
+  EmojiEmotions,
+  Send,
+  Videocam,
+} from '@mui/icons-material';
 
 import { Text } from 'components';
 import { Property1, Property2 } from 'assets';
@@ -54,10 +60,12 @@ const MessageContent = ({
   room,
   location,
   mode,
+  isTabletSize,
 }: {
   room: IRoom;
   location?: string;
   mode?: string;
+  isTabletSize?: boolean;
 }) => {
   const navigate = useNavigate();
   const { updateMessages } = useSocketContext();
@@ -67,6 +75,10 @@ const MessageContent = ({
   if (!user) return null;
 
   const sendMessage = () => {
+    if (draftMessage === '') {
+      // TODO: show error message
+      return;
+    }
     const now = new Date();
     const message: CreateMessageParams = {
       text: draftMessage,
@@ -123,11 +135,22 @@ const MessageContent = ({
           >
             <Stack
               width={{
-                xs: '20%',
+                xs: '27%',
                 lg: location === 'video-call' ? '20%' : '8%',
+                alignItems: 'center',
               }}
               direction='row'
             >
+              {isTabletSize && (
+                <ArrowBackIos
+                  onClick={() => navigate(-1)}
+                  sx={{
+                    fontSize: '18px',
+                    color: mode === 'light' ? '#11142d' : '#EFEFEF',
+                    cursor: 'pointer',
+                  }}
+                />
+              )}
               <img
                 src={room.members[0].avatar}
                 alt='profile'
@@ -146,13 +169,13 @@ const MessageContent = ({
                   background: room.members[0].online ? '#2ED480' : '#808191',
                   position: 'relative',
                   left: '-10px',
-                  top: '35px',
+                  top: '17px',
                 }}
               ></Box>
             </Stack>
             <Stack
               width={{
-                xs: '60%',
+                xs: '58%',
                 lg: location === 'video-call' ? '60%' : '72%',
               }}
               direction='column'
@@ -218,7 +241,10 @@ const MessageContent = ({
           </Box>
           <Box
             sx={{
-              maxHeight: '400px',
+              maxHeight: {
+                xs: '400px',
+                sm: location === 'video-call' ? '600px' : '400px',
+              },
               height: '100%',
               overflow: 'auto',
             }}
@@ -237,22 +263,6 @@ const MessageContent = ({
                 createdAt={message.createdAt}
               />
             ))}
-            {/* <Text position='left' users={users} message={messages[0]} mode={mode} />
-        <Text
-          position='right'
-          users={users}
-          message={messages[1]}
-          mode={mode}
-        />
-        <Text position='left' users={users} message={messages[2]} mode={mode} />
-        <Text
-          position='right'
-          users={users}
-          message={messages[3]}
-          mode={mode}
-        />
-        <TextImage position='right' images={[Property1, Property2]} />
-        <Text position='left' users={users} message={messages[4]} mode={mode} /> */}
           </Box>
           <Box
             sx={{

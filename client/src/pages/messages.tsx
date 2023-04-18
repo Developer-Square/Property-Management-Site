@@ -7,14 +7,17 @@ import { useSocketContext } from 'contexts/socket.ctx';
 const Messages = () => {
   const [showMessageContent, setShowMessageContent] = useState(true);
   const [showMessageList, setShowMessageList] = useState(true);
+  const [isTabletSize, setIsTabletSize] = useState(false);
   const screenSize: number = window.innerWidth;
   const { mode } = useContext(ColorModeContext);
   const { currentRoom } = useSocketContext();
 
   useEffect(() => {
     if (screenSize <= 576) {
+      setIsTabletSize(true);
       setShowMessageContent(false);
     } else {
+      setIsTabletSize(false);
       setShowMessageContent(true);
     }
   }, [screenSize]);
@@ -62,7 +65,11 @@ const Messages = () => {
               },
             }}
           >
-            <MessageContent room={currentRoom} mode={mode} />
+            <MessageContent
+              room={currentRoom}
+              isTabletSize={isTabletSize}
+              mode={mode}
+            />
           </Box>
         ) : (
           <></>
