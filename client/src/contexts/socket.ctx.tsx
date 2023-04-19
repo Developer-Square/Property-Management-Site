@@ -11,6 +11,8 @@ interface SocketContext {
   updateMessages: (message: IMessage) => void;
   currentRoom: IRoom;
   handleCurrentRoom: (room: IRoom) => void;
+  createRoom: CreateRoom;
+  handleCreateRoom: (value: CreateRoom) => void;
 }
 
 export const [useSocketContext, SocketProvider] = createCtx<SocketContext>();
@@ -24,10 +26,25 @@ enum RoomTypes {
   GROUP = 'group',
 }
 
+export interface CreateRoom {
+  _id: string;
+  name: string;
+  avatar: string;
+  online: boolean;
+  roomMessages: any[];
+}
+
 const SocketContextProvider = ({ children }: Props) => {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const [createRoom, setCreateRoom] = useState<CreateRoom>({
+    _id: '',
+    name: '',
+    avatar: '',
+    online: false,
+    roomMessages: [],
+  });
   const [currentRoom, setCurrentRoom] = useState<IRoom>({
     id: '',
     members: [],
@@ -43,6 +60,7 @@ const SocketContextProvider = ({ children }: Props) => {
   // Callbacks
   const onRooms = (rooms: IRoom[]) => setRooms(rooms);
   const handleCurrentRoom = (room: IRoom) => setCurrentRoom(room);
+  const handleCreateRoom = (value: CreateRoom) => setCreateRoom(value);
 
   const onConnect = () => setIsConnected(true);
   const onDisconnect = () => setIsConnected(false);
@@ -102,6 +120,8 @@ const SocketContextProvider = ({ children }: Props) => {
         updateMessages: onMessage,
         currentRoom,
         handleCurrentRoom,
+        createRoom,
+        handleCreateRoom,
       }}
     >
       {children}

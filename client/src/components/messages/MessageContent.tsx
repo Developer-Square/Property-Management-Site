@@ -68,7 +68,7 @@ const MessageContent = ({
   isTabletSize?: boolean;
 }) => {
   const navigate = useNavigate();
-  const { updateMessages } = useSocketContext();
+  const { updateMessages, createRoom, handleCreateRoom } = useSocketContext();
   const { data: user } = useGetIdentity<IUser>();
   const [draftMessage, setDraftMessage] = useState('');
 
@@ -83,18 +83,25 @@ const MessageContent = ({
     const message: CreateMessageParams = {
       text: draftMessage,
       createdAt: now.toISOString(),
-      recipient: room.members[0]._id,
+      recipient: createRoom._id !== '' ? createRoom._id : room.members[0]._id,
     };
 
     const messageContent = document.getElementById('message-content');
     if (messageContent) window.scrollTo(0, document.body.scrollHeight);
     setDraftMessage('');
+    handleCreateRoom({
+      _id: '',
+      name: '',
+      avatar: '',
+      online: false,
+      roomMessages: [],
+    });
     updateMessages({
       text: draftMessage,
       sent: false,
       id: '',
       sender: user._id,
-      room: room.id,
+      room: '',
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
     });
@@ -116,7 +123,8 @@ const MessageContent = ({
         minHeight: { xs: '600px', sm: '634px' },
       }}
     >
-      {room.members.length === 0 ? (
+      {/* If room.members is empty and createRoom is empty then display the EmptyMessage component. */}
+      {room.members.length === 0 && createRoom.name === '' ? (
         <EmptyMessage component={location} />
       ) : (
         <>
@@ -152,7 +160,7 @@ const MessageContent = ({
                 />
               )}
               <img
-                src={room.members[0].avatar}
+                src={createRoom.avatar ?? room.members[0].avatar}
                 alt='profile'
                 style={{
                   display: 'block',
@@ -166,7 +174,10 @@ const MessageContent = ({
                   width: '10px',
                   height: '10px',
                   borderRadius: '50%',
-                  background: room.members[0].online ? '#2ED480' : '#808191',
+                  background:
+                    createRoom.online ?? room.members[0].online
+                      ? '#2ED480'
+                      : '#808191',
                   position: 'relative',
                   left: '-10px',
                   top: '17px',
@@ -186,7 +197,7 @@ const MessageContent = ({
                 fontWeight={600}
                 color={mode === 'light' ? '#11142d' : '#EFEFEF'}
               >
-                {room.members[0].name}
+                {createRoom.name ?? room.members[0].name}
               </Typography>
               <Typography fontSize={14}>Active Now</Typography>
             </Stack>
@@ -241,28 +252,32 @@ const MessageContent = ({
           </Box>
           <Box
             sx={{
-              maxHeight: {
+              height: {
                 xs: '400px',
                 sm: location === 'video-call' ? '600px' : '400px',
               },
-              height: '100%',
               overflow: 'auto',
             }}
             id='message-content'
           >
-            {room.messages.map((message) => (
-              <Text
-                position={message.sender === user._id ? 'right' : 'left'}
-                avatar={
-                  message.sender === user._id
-                    ? user.avatar
-                    : room.members[0].avatar
-                }
-                message={message.text}
-                mode={mode}
-                createdAt={message.createdAt}
-              />
-            ))}
+            {room.messages.length ? (
+              room.messages.map((message) => (
+                <Text
+                  key={message.id}
+                  position={message.sender === user._id ? 'right' : 'left'}
+                  avatar={
+                    message.sender === user._id
+                      ? user.avatar
+                      : room.members[0].avatar
+                  }
+                  message={message.text}
+                  mode={mode}
+                  createdAt={message.createdAt}
+                />
+              ))
+            ) : (
+              <></>
+            )}
           </Box>
           <Box
             sx={{

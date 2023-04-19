@@ -32,7 +32,7 @@ const EmptyMessage = ({ component }: { component?: string }) => {
             component === 'video-call' || component === 'message-list'
               ? '206px'
               : '306px',
-          marginRight: '40px',
+          marginRight: component !== 'message-list' ? '0px' : '40px',
         }}
       />
       <Stack direction='column' gap={3}>
@@ -52,7 +52,7 @@ const EmptyMessage = ({ component }: { component?: string }) => {
               md:
                 component === 'video-call' || component === 'message-list'
                   ? '300px'
-                  : '500px',
+                  : '400px',
             },
             margin: '0px auto',
           }}

@@ -1,10 +1,11 @@
+/* eslint-disable array-callback-return */
 import { useEffect, useState } from 'react';
 import { Stack, TextField, Box, Typography } from '@pankod/refine-mui';
 import { Search } from '@mui/icons-material';
 import { useSocketContext } from 'contexts/socket.ctx';
-import { IRoom } from 'interfaces/room';
 import { BaseRecord, useList } from '@pankod/refine-core';
 import EmptyMessage from 'components/common/EmptyMessage';
+import { IRoom } from 'interfaces/room';
 
 const MessageProfile = ({
   active,
@@ -14,6 +15,7 @@ const MessageProfile = ({
   time,
   mode,
   room,
+  user,
   handleCurrentRoom,
 }: {
   active: boolean;
@@ -22,8 +24,9 @@ const MessageProfile = ({
   message: string;
   time: string;
   mode: string;
-  room: IRoom;
-  handleCurrentRoom: (room: IRoom) => void;
+  room?: IRoom;
+  user?: BaseRecord;
+  handleCurrentRoom: (value: any) => void;
 }) => (
   <Box
     sx={{
@@ -36,7 +39,8 @@ const MessageProfile = ({
       background: active ? '#475BE8' : mode === 'light' ? '#fcfcfc' : '#1A1D1F',
       cursor: 'pointer',
     }}
-    onClick={() => handleCurrentRoom(room)}
+    // If the user clicks on one of the items in the userlist then create a room else set the current room.
+    onClick={() => handleCurrentRoom(room || user)}
   >
     <Stack width={{ xs: '21%', sm: '32%', lg: '18%' }} direction='row'>
       <img
@@ -97,11 +101,10 @@ const MessagesList = ({
   const [showUserList, setShowUserList] = useState(false);
   const [userList, setUserList] = useState<BaseRecord[]>([]);
   const [searchText, setSearchText] = useState('');
-  const { rooms, handleCurrentRoom } = useSocketContext();
+  const { rooms, handleCurrentRoom, handleCreateRoom } = useSocketContext();
   const { data, isLoading, isError } = useList({
     resource: 'users',
   });
-
   const users = data?.data || [];
 
   useEffect(() => {
@@ -130,11 +133,40 @@ const MessagesList = ({
   };
 
   // When a user clicks on a user profile in the search results, clear the search text and hide the search results.
-  const handleUserClick = () => {
+  const handleUserClick = (user: BaseRecord) => {
+    const { _id, name, avatar, online } = user;
     setSearchText('');
     setShowUserList(false);
-    handleCurrentRoom(rooms[0]);
-    // Todo: Create a new room and show the chat screen.
+    // If the rooms array is empty, create a new room and show the chat screen.
+    if (rooms.length === 0) {
+      handleCreateRoom({
+        _id,
+        name,
+        avatar,
+        online,
+        roomMessages: [],
+      });
+      return;
+    }
+
+    // If the rooms array is not empty, check if the user is already in the rooms array.
+    if (rooms.length > 0) {
+      rooms.map((room) => {
+        // If the user is already in the rooms array, show the chat screen.
+        if (room.members[0]._id === _id) {
+          handleCurrentRoom(room);
+          return;
+        }
+      });
+    }
+    // If the user is not in the rooms array, create a new room and show the chat screen.
+    handleCreateRoom({
+      _id,
+      name,
+      avatar,
+      online,
+      roomMessages: [],
+    });
   };
 
   if (isLoading) return <Typography>Loading...</Typography>;
@@ -170,7 +202,7 @@ const MessagesList = ({
           }}
         />
       </Stack>
-      {rooms.length > 0 && searchText.length === 0 ? (
+      {rooms.length === 0 && searchText.length === 0 ? (
         <EmptyMessage component='message-list' />
       ) : (
         <Box
@@ -191,7 +223,7 @@ const MessagesList = ({
                 message={''}
                 time={''}
                 mode={mode}
-                room={rooms[0]}
+                user={user}
                 handleCurrentRoom={handleUserClick}
               />
             ))}
