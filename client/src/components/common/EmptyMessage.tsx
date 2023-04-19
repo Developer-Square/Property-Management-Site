@@ -1,7 +1,11 @@
 import React from 'react';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 
-import { ChatMessage } from 'assets';
+import { ChatMessage, SearchChat } from 'assets';
+
+const tecHiveChat =
+  'Revolutionize your real estate communication with our messaging platform. From connecting with clients to closing deals, our platform streamlines every step of the process.';
+const searchChat = 'Search for a chat to start messaging.';
 
 const EmptyMessage = ({ component }: { component?: string }) => {
   return (
@@ -16,18 +20,24 @@ const EmptyMessage = ({ component }: { component?: string }) => {
       }}
     >
       <img
-        src={ChatMessage}
+        src={component === 'message-list' ? SearchChat : ChatMessage}
         alt='empty message'
         style={{
           display: 'block',
-          width: component === 'video-call' ? '206px' : '306px',
-          height: component === 'video-call' ? '206px' : '306px',
+          width:
+            component === 'video-call' || component === 'message-list'
+              ? '206px'
+              : '306px',
+          height:
+            component === 'video-call' || component === 'message-list'
+              ? '206px'
+              : '306px',
           marginRight: '40px',
         }}
       />
       <Stack direction='column' gap={3}>
         <Typography fontSize={36} fontWeight={700} textAlign='center'>
-          Techive Chat
+          {component === 'message-list' ? 'No Chats' : 'No Messages'}
         </Typography>
         <Typography
           fontSize={16}
@@ -39,14 +49,15 @@ const EmptyMessage = ({ component }: { component?: string }) => {
             width: {
               xs: '300px',
               sm: '400px',
-              md: component === 'video-call' ? '300px' : '500px',
+              md:
+                component === 'video-call' || component === 'message-list'
+                  ? '300px'
+                  : '500px',
             },
             margin: '0px auto',
           }}
         >
-          Revolutionize your real estate communication with our messaging
-          platform. From connecting with clients to closing deals, our platform
-          streamlines every step of the process.
+          {component === 'message-list' ? searchChat : tecHiveChat}
         </Typography>
       </Stack>
     </Box>

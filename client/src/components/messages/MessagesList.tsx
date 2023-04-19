@@ -170,8 +170,8 @@ const MessagesList = ({
           }}
         />
       </Stack>
-      {rooms.length === 0 && searchText.length === 0 ? (
-        <EmptyMessage />
+      {rooms.length > 0 && searchText.length === 0 ? (
+        <EmptyMessage component='message-list' />
       ) : (
         <Box
           sx={{

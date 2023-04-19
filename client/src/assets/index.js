@@ -27,6 +27,7 @@ import NotificationSettings from './notification-settings.png';
 import Payment from './payment.png';
 import LoginSignup from './login-signup.png';
 import ChatMessage from './chat-message.svg';
+import SearchChat from './search-chat.svg';
 
 export {
   logo,
@@ -58,4 +59,5 @@ export {
   Payment,
   LoginSignup,
   ChatMessage,
+  SearchChat,
 };
