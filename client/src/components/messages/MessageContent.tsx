@@ -19,6 +19,7 @@ import { CreateMessageParams } from 'interfaces/message';
 import socket from 'utils/socket';
 import { IRoom } from 'interfaces/room';
 import { EmptyMessage } from 'components';
+import { toast } from 'react-toastify';
 
 const TextImage = ({
   images,
@@ -76,7 +77,9 @@ const MessageContent = ({
 
   const sendMessage = () => {
     if (draftMessage === '') {
-      // TODO: show error message
+      toast('Kindly type in your message', {
+        type: 'error',
+      });
       return;
     }
     const now = new Date();
@@ -115,6 +118,23 @@ const MessageContent = ({
     if (e.key === 'Enter') {
       sendMessage();
     }
+  };
+
+  let currentDate = '';
+  const today = new Date().toDateString();
+
+  // A function that formats the date to a readable format.
+  // This function also check every date passed in, if the date is the same as the previous date then it will not display the date.
+  const formatDate = (date: string) => {
+    const newDate = new Date(date);
+    const today = new Date();
+    if (currentDate !== newDate.toDateString()) {
+      currentDate = newDate.toDateString();
+
+      return currentDate;
+    }
+
+    return '';
   };
 
   return (
@@ -235,23 +255,6 @@ const MessageContent = ({
           </Box>
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography
-              fontSize={12}
-              sx={{
-                padding: '10px',
-                background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
-                marginTop: '-20px',
-              }}
-            >
-              Today
-            </Typography>
-          </Box>
-          <Box
-            sx={{
               height: {
                 xs: '400px',
                 sm: location === 'video-call' ? '600px' : '400px',
@@ -262,18 +265,28 @@ const MessageContent = ({
           >
             {room.messages.length ? (
               room.messages.map((message) => (
-                <Text
-                  key={message.id}
-                  position={message.sender === user._id ? 'right' : 'left'}
-                  avatar={
-                    message.sender === user._id
-                      ? user.avatar
-                      : room.members[0].avatar
-                  }
-                  message={message.text}
-                  mode={mode}
-                  createdAt={message.createdAt}
-                />
+                <div key={message.id}>
+                  <Box
+                    sx={{
+                      fontSize: '14px',
+                      textAlign: 'center',
+                      margin: '20px 0px',
+                    }}
+                  >
+                    {formatDate(message.createdAt)}
+                  </Box>
+                  <Text
+                    position={message.sender === user._id ? 'right' : 'left'}
+                    avatar={
+                      message.sender === user._id
+                        ? user.avatar
+                        : room.members[0].avatar
+                    }
+                    message={message.text}
+                    mode={mode}
+                    createdAt={message.createdAt}
+                  />
+                </div>
               ))
             ) : (
               <></>

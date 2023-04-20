@@ -16,6 +16,7 @@ const MessageProfile = ({
   mode,
   room,
   user,
+  currentRoom,
   handleCurrentRoom,
 }: {
   active: boolean;
@@ -25,71 +26,80 @@ const MessageProfile = ({
   time: string;
   mode: string;
   room?: IRoom;
+  currentRoom?: IRoom | any;
   user?: BaseRecord;
   handleCurrentRoom: (value: any) => void;
-}) => (
-  <Box
-    sx={{
-      borderRadius: '6px',
-      padding: { xs: '18px', sm: '10px', lg: '15px' },
-      marginBottom: { xs: '10px', lg: 'initial' },
-      display: 'flex',
-      flexDirection: 'row',
-      color: active ? '#fcfcfc' : '#808191',
-      background: active ? '#475BE8' : mode === 'light' ? '#fcfcfc' : '#1A1D1F',
-      cursor: 'pointer',
-    }}
-    // If the user clicks on one of the items in the userlist then create a room else set the current room.
-    onClick={() => handleCurrentRoom(room || user)}
-  >
-    <Stack width={{ xs: '21%', sm: '32%', lg: '18%' }} direction='row'>
-      <img
-        src={avatar}
-        alt='profile'
-        style={{
-          display: 'block',
-          width: '46px',
-          height: '46px',
-          borderRadius: '50%',
-        }}
-      />
-      <Box
-        sx={{
-          width: '10px',
-          height: '10px',
-          borderRadius: '50%',
-          background: active ? '#2ED480' : '#808191',
-          position: 'relative',
-          left: '-10px',
-          top: '35px',
-        }}
-      ></Box>
-    </Stack>
-    <Stack
-      width={{ xs: '61%', sm: '48%', lg: '62%' }}
-      direction='column'
-      gap='5px'
+}) => {
+  console.log(room?.id === currentRoom?.id);
+  return (
+    <Box
+      sx={{
+        borderRadius: '6px',
+        padding: { xs: '18px', sm: '10px', lg: '15px' },
+        marginBottom: { xs: '10px', lg: 'initial' },
+        display: 'flex',
+        flexDirection: 'row',
+        color: room?.id === currentRoom?.id ? '#fcfcfc' : '#808191',
+        background:
+          room?.id === currentRoom?.id
+            ? '#475BE8'
+            : mode === 'light'
+            ? '#fcfcfc'
+            : '#1A1D1F',
+        cursor: 'pointer',
+      }}
+      // If the user clicks on one of the items in the userlist then create a room else set the current room.
+      onClick={() => handleCurrentRoom(room || user)}
     >
+      <Stack width={{ xs: '21%', sm: '32%', lg: '18%' }} direction='row'>
+        <img
+          src={avatar}
+          alt='profile'
+          style={{
+            display: 'block',
+            width: '46px',
+            height: '46px',
+            borderRadius: '50%',
+          }}
+        />
+        <Box
+          sx={{
+            width: '10px',
+            height: '10px',
+            borderRadius: '50%',
+            background: active ? '#2ED480' : '#808191',
+            position: 'relative',
+            left: '-10px',
+            top: '35px',
+          }}
+        ></Box>
+      </Stack>
+      <Stack
+        width={{ xs: '61%', sm: '48%', lg: '62%' }}
+        direction='column'
+        gap='5px'
+      >
+        <Typography
+          fontSize={{ sm: 14, lg: 16 }}
+          fontWeight={600}
+          color={active ? '#fcfcfc' : mode === 'light' ? '#11142d' : '#EFEFEF'}
+        >
+          {name}
+        </Typography>
+        <Typography fontSize={14}>{message.slice(0, 18) + '...'}</Typography>
+      </Stack>
       <Typography
-        fontSize={{ sm: 14, lg: 16 }}
+        width={{ xs: '30%', sm: '20%', lg: '20%' }}
+        textAlign='right'
+        fontSize={{ sm: 13, lg: 16 }}
         fontWeight={600}
         color={active ? '#fcfcfc' : mode === 'light' ? '#11142d' : '#EFEFEF'}
       >
-        {name}
+        {time}
       </Typography>
-      <Typography fontSize={14}>{message.slice(0, 18) + '...'}</Typography>
-    </Stack>
-    <Typography
-      width={{ xs: '30%', sm: '20%', lg: '20%' }}
-      textAlign='right'
-      fontSize={{ sm: 13, lg: 16 }}
-      fontWeight={600}
-      color={active ? '#fcfcfc' : mode === 'light' ? '#11142d' : '#EFEFEF'}
-    >
-      {time}
-    </Typography>
-  </Box>
-);
+    </Box>
+  );
+};
 
 const MessagesList = ({
   handleScreenSwitch,
@@ -101,7 +111,8 @@ const MessagesList = ({
   const [showUserList, setShowUserList] = useState(false);
   const [userList, setUserList] = useState<BaseRecord[]>([]);
   const [searchText, setSearchText] = useState('');
-  const { rooms, handleCurrentRoom, handleCreateRoom } = useSocketContext();
+  const { rooms, currentRoom, handleCurrentRoom, handleCreateRoom } =
+    useSocketContext();
   const { data, isLoading, isError } = useList({
     resource: 'users',
   });
@@ -217,6 +228,7 @@ const MessagesList = ({
             userList.map((user, index) => (
               <MessageProfile
                 key={index}
+                currentRoom={{ id: '' }}
                 active={user.online}
                 avatar={user.avatar}
                 name={user.name}
@@ -231,6 +243,7 @@ const MessagesList = ({
             rooms.map((room, index) => (
               <MessageProfile
                 key={index}
+                currentRoom={currentRoom}
                 active={room.members[0].online}
                 avatar={room.members[0].avatar}
                 name={room.members[0].name}
