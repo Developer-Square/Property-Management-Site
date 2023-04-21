@@ -3,3 +3,6 @@ node_modules
 
 # compiled JS files
 dist
+
+# pm2 config
+ecosystem.config.json
