@@ -19,6 +19,7 @@ export interface ProfileProps {
   properties: Array | undefined;
   country?: string;
   phone?: string;
+  emailVerified?: boolean;
 }
 
 export interface PropertyProps {

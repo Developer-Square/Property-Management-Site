@@ -92,7 +92,14 @@ const VideoCall = () => {
             position: 'relative',
           }}
         >
-          <img src={VideoCallImg} width='100%' alt='video call' />
+          <img
+            src={VideoCallImg}
+            style={{
+              display: 'block',
+            }}
+            width='100%'
+            alt='video call'
+          />
           <Box
             width='100%'
             sx={{
@@ -102,36 +109,51 @@ const VideoCall = () => {
           >
             <img
               src={Time}
-              style={{ position: 'absolute', left: '25px' }}
+              style={{
+                display: 'block',
+                position: 'absolute',
+                left: '25px',
+              }}
               alt='video call'
             />
             <img
               src={OtherPerson}
-              style={{ position: 'absolute', right: '25px' }}
+              style={{
+                display: 'block',
+                position: 'absolute',
+                right: '25px',
+              }}
               alt='video call'
             />
           </Box>
           <Box
             sx={{
               position: 'absolute',
+              width: '100%',
             }}
           >
             <img
               src={Volume}
-              style={{ position: 'absolute', bottom: '40px', left: '25px' }}
+              style={{
+                display: 'block',
+                position: 'absolute',
+                bottom: '40px',
+                left: '25px',
+              }}
               alt='video call'
             />
             <Box
               sx={{
                 position: 'absolute',
+                bottom: '40px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                bottom: '40px',
               }}
             >
               <img
                 src={FullScreen}
                 style={{
+                  display: 'block',
                   marginRight: '20px',
                 }}
                 alt='video call'
@@ -139,6 +161,7 @@ const VideoCall = () => {
               <img
                 src={Mute}
                 style={{
+                  display: 'block',
                   marginRight: '20px',
                 }}
                 alt='video call'
@@ -146,6 +169,7 @@ const VideoCall = () => {
               <img
                 src={EndCall}
                 style={{
+                  display: 'block',
                   marginRight: '20px',
                 }}
                 alt='video call'
@@ -153,17 +177,24 @@ const VideoCall = () => {
               <img
                 src={Video}
                 style={{
+                  display: 'block',
                   marginRight: '20px',
                 }}
                 alt='video call'
               />
-              <img src={Settings} alt='video call' />
+              <img
+                src={Settings}
+                style={{
+                  display: 'block',
+                }}
+                alt='video call'
+              />
             </Box>
           </Box>
         </Box>
       </Box>
       <Box width='30%'>
-        <MessageContent users={users} location='video-call' />
+        <MessageContent mode={mode} users={users} location='video-call' />
       </Box>
     </Box>
   );

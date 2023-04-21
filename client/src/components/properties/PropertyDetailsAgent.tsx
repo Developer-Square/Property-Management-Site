@@ -61,6 +61,7 @@ const PropertyDetailsAgent = ({
             width={90}
             height={90}
             style={{
+              display: 'block',
               borderRadius: '100%',
               objectFit: 'cover',
             }}

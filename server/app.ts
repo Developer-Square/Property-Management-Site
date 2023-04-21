@@ -51,11 +51,6 @@ app.get('/', (req, res) => {
   res.send('Hola de Kenya!');
 });
 
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/agents', userRouter);
-app.use('/api/v1/properties', propertyRouter);
-app.use('/api/v1/reviews', reviewRouter);
-
 app.use('/api/v1', routes);
 
 app.use((_req, _res, next) => {

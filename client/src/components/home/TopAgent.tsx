@@ -20,6 +20,7 @@ const TopAgentItem = ({
       src={avatar}
       alt='Profile'
       style={{
+        display: 'block',
         borderRadius: '15px',
         marginRight: '12px',
         width: '40px',

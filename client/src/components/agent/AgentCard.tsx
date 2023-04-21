@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { EmailOutlined, LocationCity, Phone, Place } from '@mui/icons-material';
 import { useDelete, useGetIdentity } from '@pankod/refine-core';
 import { Box, Typography, Stack } from '@pankod/refine-mui';
@@ -36,9 +36,19 @@ const AgentCard = ({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [isMobile, setIsMobile] = React.useState(false);
   const navigate = useNavigate();
   const { mutate } = useDelete();
   const { mode } = useContext(ColorModeContext);
+  const screenSize: number = window.innerWidth;
+
+  useEffect(() => {
+    if (screenSize <= 576) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }, [screenSize]);
 
   const open = Boolean(anchorEl);
   const popoverId = open ? 'simple-popover' : undefined;
@@ -66,6 +76,8 @@ const AgentCard = ({
 
   return (
     <Box
+      component={!isMobile ? 'div' : Link}
+      to={!isMobile ? '/agents' : generateLink()}
       width='100%'
       sx={{
         display: 'flex',
@@ -88,6 +100,7 @@ const AgentCard = ({
           alt='user'
           width='100%'
           style={{
+            display: 'block',
             borderRadius: 8,
             objectFit: 'cover',
             height: '100%',
@@ -117,7 +130,20 @@ const AgentCard = ({
               Real-Estate Agent
             </Typography>
           </Stack>
-          {currentUser.email !== email && (
+          {/* Only show this popover if the current card has the same email as the current user */}
+          {currentUser.email === email && currentUser.role !== 'admin' && (
+            <EditPopover
+              popoverId={popoverId}
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
+              open={open}
+              handleUpdate={handleUpdate}
+              handleDelete={handleDelete}
+            />
+          )}
+
+          {/* Show all popovers if the current user is an admin */}
+          {currentUser.role === 'admin' && (
             <EditPopover
               popoverId={popoverId}
               anchorEl={anchorEl}

@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { Popover, Stack, Typography } from '@pankod/refine-mui';
+import { Box, Popover, Stack, Typography } from '@pankod/refine-mui';
 import { Delete, Edit } from '@mui/icons-material';
 
 interface IEditPopoverProps {
@@ -20,7 +20,7 @@ const EditPopover = ({
   handleDelete,
 }: IEditPopoverProps) => {
   return (
-    <>
+    <Box>
       <span
         id={popoverId}
         style={{
@@ -81,7 +81,7 @@ const EditPopover = ({
           </Typography>
         </Stack>
       </Popover>
-    </>
+    </Box>
   );
 };
 

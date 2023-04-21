@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "build": "rimraf ./build && tsc",
+    "start": "pm2 start ecosystem.config.json --no-daemon",
+    "build": "rimraf ./dist && tsc",
     "dev": "cross-env NODE_ENV=development nodemon index.ts"
   },
   "keywords": [],

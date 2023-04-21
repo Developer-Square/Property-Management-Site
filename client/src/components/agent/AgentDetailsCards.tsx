@@ -80,7 +80,13 @@ const ProfileCard = ({
       borderRadius: '15px',
     }}
   >
-    <img src={AgentProfileImg} alt='Agent Profile' />
+    <img
+      src={AgentProfileImg}
+      style={{
+        display: 'block',
+      }}
+      alt='Agent Profile'
+    />
     <Box sx={{ display: 'flex' }} gap='35px'>
       <img
         src={
@@ -89,6 +95,7 @@ const ProfileCard = ({
             : 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png'
         }
         style={{
+          display: 'block',
           position: 'relative',
           marginTop: '-20px',
           left: '7%',

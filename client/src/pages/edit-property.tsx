@@ -5,8 +5,10 @@ import Form from 'components/common/Form';
 import { useParams } from '@pankod/refine-react-router-v6';
 import { Box } from '@pankod/refine-mui';
 import { ColorModeContext } from 'contexts';
+import Api from 'utils/api';
 
 const EditProperty = () => {
+  const api = new Api();
   const { data: user } = useGetIdentity();
   const [backendImages, setBackendImages] = useState<string[]>(['']);
   const {
@@ -28,6 +30,7 @@ const EditProperty = () => {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
+              Authorization: `Bearer ${api.getToken()}`,
             },
           }
         );

@@ -8,6 +8,7 @@ const envVarsSchema = Joi.object()
       .required(),
     PORT: Joi.number().default(5000),
     MONGODB_URI: Joi.string().required().description('Mongo DB uri'),
+    LOCAL_MONGODB_URI: Joi.string().required().description('local Mongo DB uri'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     CLOUDINARY_CLOUD_NAME: Joi.string()
       .required()

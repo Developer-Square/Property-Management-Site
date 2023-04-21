@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Refine, AuthProvider } from '@pankod/refine-core';
 import {
@@ -8,6 +8,7 @@ import {
   GlobalStyles,
   ReadyPage,
   ErrorComponent,
+  Box,
 } from '@pankod/refine-mui';
 import {
   AccountCircleOutlined,
@@ -17,14 +18,14 @@ import {
   VillaOutlined,
 } from '@mui/icons-material';
 
-import dataProvider from '@pankod/refine-simple-rest';
 import routerProvider from '@pankod/refine-react-router-v6';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
-import { ColorModeContextProvider } from 'contexts';
+import { ColorModeContext } from 'contexts';
 import { Title, Sider, Layout, Header } from 'components/layout';
-import { CredentialResponse } from 'interfaces/google';
 import { parseJwt } from 'utils/parse-jwt';
+import { dataProvider } from './rest-data-provider';
+import { toast, ToastContainer } from 'react-toastify';
 
 import {
   Login,
@@ -45,81 +46,104 @@ import EditAgent from 'pages/edit-agent';
 import Reviews from 'pages/reviews';
 import Messages from 'pages/messages';
 import VideoCall from 'pages/video-call';
+import Api from 'utils/api';
+import 'react-toastify/dist/ReactToastify.css';
 
 const axiosInstance = axios.create();
-axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
-  const token = localStorage.getItem('accessToken');
-  if (request.headers) {
-    request.headers['Authorization'] = `Bearer ${token}`;
-  } else {
-    request.headers = {
-      Authorization: `Bearer ${token}`,
-    };
-  }
+const api = new Api();
+api.addAuthorizationHeader(axiosInstance);
+api.refreshTokens(axiosInstance);
 
-  return request;
-});
+export interface ILoginCredentials {
+  email?: string;
+  password?: string;
+  credential?: string;
+}
 
 function App() {
+  const authenticate = async (url: string, content: Record<string, any>) => {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(content),
+    });
+
+    const data = await response.json();
+
+    if (response.status === 200) {
+      api.storeTokens(data);
+    } else {
+      return Promise.reject();
+    }
+  };
+
   const authProvider: AuthProvider = {
-    login: async ({ credential }: CredentialResponse) => {
+    login: async ({ email, password, credential }: ILoginCredentials) => {
       const profileObj = credential ? parseJwt(credential) : null;
-
+      // If the user is logging in with google then send the profile object to the backend
       if (profileObj) {
-        const response = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/google`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              ...profileObj,
-              avatar: profileObj.picture,
-            }),
-          }
-        );
-
-        const data = await response.json();
-
-        if (response.status === 200) {
-          localStorage.setItem('accessToken', data.tokens.access.token);
-          localStorage.setItem('accessTokenExpires', data.tokens.access.expires);
-          localStorage.setItem('refreshToken', data.tokens.refresh.token);
-          localStorage.setItem('user', JSON.stringify({ ...data.user, userid: data.user._id }));
-        } else {
-          return Promise.reject();
-        }
+        const url = `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/google`;
+        const content = {
+          ...profileObj,
+          avatar: profileObj.picture,
+        };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const reponse = await authenticate(url, content);
+      } else {
+        // If the user is logging in with email and password then send the email and password to the backend
+        const url = `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/login`;
+        const content = {
+          email,
+          password,
+        };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const reponse = await authenticate(url, content);
       }
-
       return Promise.resolve();
     },
-    logout: () => {
-      const token = localStorage.getItem('accessToken');
+    logout: async () => {
+      const access = localStorage.getItem('accessToken');
+      const refresh = localStorage.getItem('refreshToken');
 
-      if (token && typeof window !== 'undefined') {
+      if (refresh && typeof window !== 'undefined') {
+        api
+          .auth()
+          .logout({ refreshToken: refresh })
+          .then(() => {
+            toast('Logout successful', { type: 'success' });
+          })
+          .catch((err) => {
+            toast(err.response.data.message || 'Something went wrong', {
+              type: 'error',
+            });
+          });
+      }
+
+      if (access && typeof window !== 'undefined') {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         axios.defaults.headers.common = {};
-        window.google?.accounts.id.revoke(token, () => {
+        window.google?.accounts.id.revoke(access, () => {
           return Promise.resolve();
         });
       }
 
       return Promise.resolve();
     },
-    checkError: () => Promise.resolve(),
+    checkError: async () => Promise.resolve(),
     checkAuth: async () => {
       const token = localStorage.getItem('accessToken');
 
-      if (token){
+      if (token) {
         return Promise.resolve();
       }
       return Promise.reject();
     },
 
-    getPermissions: () => Promise.resolve(),
+    getPermissions: async () => Promise.resolve(),
     getUserIdentity: async () => {
       const user = localStorage.getItem('user');
       if (user) {
@@ -127,15 +151,49 @@ function App() {
       }
     },
   };
+  const { mode } = useContext(ColorModeContext);
 
   return (
-    <ColorModeContextProvider>
+    <Box
+      sx={{
+        height: '100vh',
+        backgroundColor: mode === 'light' ? '#fcfcfc' : '#1a1a1a',
+      }}
+    >
       <CssBaseline />
       <GlobalStyles styles={{ html: { WebkitFontSmoothing: 'auto' } }} />
       <RefineSnackbarProvider>
+        <ToastContainer
+          position='top-right'
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable={false}
+          pauseOnHover={false}
+          theme={mode === 'light' ? 'light' : 'dark'}
+        />
         <Refine
+          routerProvider={{
+            ...routerProvider,
+            routes: [
+              {
+                // @ts-ignore
+                element: <Login page='reset' />,
+                path: '/reset-password',
+              },
+              {
+                // @ts-ignore
+                element: <Login page='verify' />,
+                path: '/verify-email',
+              },
+            ],
+          }}
           dataProvider={dataProvider(
-            `${process.env.REACT_APP_BACKEND_URL}/api/v1`
+            `${process.env.REACT_APP_BACKEND_URL}/api/v1`,
+            axiosInstance
           )}
           notificationProvider={notificationProvider}
           ReadyPage={ReadyPage}
@@ -180,13 +238,12 @@ function App() {
           Sider={Sider}
           Layout={Layout}
           Header={Header}
-          routerProvider={routerProvider}
-          authProvider={authProvider}
           LoginPage={Login}
+          authProvider={authProvider}
           DashboardPage={Home}
         />
       </RefineSnackbarProvider>
-    </ColorModeContextProvider>
+    </Box>
   );
 }
 
