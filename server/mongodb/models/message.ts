@@ -100,8 +100,9 @@ const Message = mongoose.model<IMessageDoc, IMessageModel>('Message', MessageSch
 
 export default Message;
 
-export type CreateMessageParams = IMessage & {
-    members: Types.DocumentArray<mongoose.Types.ObjectId>;
+export type CreateMessageParams = Omit<IMessage, 'sender' | 'room' | 'updatedAt' | 'sent'> & {
+    recipient: mongoose.Types.ObjectId;
+    sent?: boolean;
 }
 
 export type DeleteMessageParams = {

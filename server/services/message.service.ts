@@ -1,12 +1,11 @@
 import httpStatus from 'http-status';
 import mongoose, { FilterQuery, Types } from 'mongoose';
-import Message, { CreateMessageParams, DeleteMessageParams, IMessage, IMessageDoc, IMessageWithPopulated, IMessageWithUserDetails, IMessageWithUsernames } from '../mongodb/models/message';
+import Message, { CreateMessageParams, IMessage, IMessageDoc, IMessageWithPopulated, IMessageWithUserDetails } from '../mongodb/models/message';
 import { ApiError } from '../errors';
 import { IPaginationOptions, QueryResult } from '../mongodb/plugins/paginate';
 import { confirmUserPermissions } from './auth.service';
 import { IUserDoc } from '../mongodb/models/user';
-import { IRoomDoc } from '../mongodb/models/room';
-import { createRoom, getRoomById } from './room.service';
+import { createRoom, getPeerToPeerRoom } from './room.service';
 
 /**
  * Create a message
@@ -14,18 +13,16 @@ import { createRoom, getRoomById } from './room.service';
  * @param {IUserDoc} user logged in user
  * @returns {Promise<IMessageDoc>}
  */
-export const createMessage = async ({ members, room, ...params }: CreateMessageParams, user: IUserDoc): Promise<IMessageDoc> => {
-    let chatroom: IRoomDoc | null;
-    if (!room) {
-        chatroom = await createRoom({ members });
-    } else {
-        chatroom = await getRoomById(room);
-    }
+export const createMessage = async ({ recipient, ...params }: CreateMessageParams, user: IUserDoc): Promise<IMessageDoc> => {
+    let chatroom = await getPeerToPeerRoom(user._id, recipient);
     if (!chatroom) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Something went wrong. We couldn"t create a chatroom');
+        chatroom = await createRoom({ members: [user._id, recipient] as Types.DocumentArray<mongoose.Types.ObjectId> });
+        if (!chatroom) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Something went wrong. We couldn"t create a chatroom');
+        }
     }
     const message = await Message.create({ ...params, room: chatroom.id, sender: user._id });
-    chatroom.messages?.push(message.id);
+    chatroom.messages?.push(message._id);
     await chatroom.save();
     return message;
 };

@@ -118,14 +118,14 @@ import User from '../mongodb/models/user';
     return resetPasswordToken;
   };
   
-  /**
-   * Generate verify email token
-   * @param {any} user
-   * @returns {Promise<string>}
-   */
-  export const generateVerifyEmailToken = async (user: any): Promise<string> => {
-    const expires = moment().add(config.jwt.verifyEmailExpirationMinutes, 'minutes');
-    const verifyEmailToken = generateToken(user._id, expires, TokenTypes.VERIFY_EMAIL);
-    await saveToken(verifyEmailToken, user._id, expires, TokenTypes.VERIFY_EMAIL);
-    return verifyEmailToken;
-  };
+/**
+ * Generate verify email token
+ * @param {any} user
+ * @returns {Promise<string>}
+ */
+export const generateVerifyEmailToken = async (user: any): Promise<string> => {
+  const expires = moment().add(config.jwt.verifyEmailExpirationMinutes, 'minutes');
+  const verifyEmailToken = generateToken(user._id, expires, TokenTypes.VERIFY_EMAIL);
+  await saveToken(verifyEmailToken, user._id, expires, TokenTypes.VERIFY_EMAIL);
+  return verifyEmailToken;
+};

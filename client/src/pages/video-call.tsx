@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import React, { useContext } from 'react';
 import { Box, Stack, Typography } from '@pankod/refine-mui';
 import { ArrowBackIos } from '@mui/icons-material';
@@ -14,44 +15,43 @@ import {
   VideoCallImg,
   Volume,
 } from 'assets';
-import { useList } from '@pankod/refine-core';
 import { useNavigate } from '@pankod/refine-react-router-v6';
 import { ColorModeContext } from 'contexts';
+import { useSocketContext } from 'contexts/socket.ctx';
+
+const videoControls = [FullScreen, Mute, EndCall, Video, Settings];
 
 const VideoCall = () => {
-  const { data, isLoading, isError } = useList({
-    resource: 'users',
-  });
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
   const navigate = useNavigate();
   const { mode } = useContext(ColorModeContext);
-
-  const users = data?.data || [];
+  const { currentRoom } = useSocketContext();
 
   const open = Boolean(anchorEl);
   const popoverId = open ? 'simple-popover' : undefined;
 
-  if (isLoading) return <Typography>Loading...</Typography>;
-  if (isError) return <Typography>Error!</Typography>;
   return (
     <Box
       sx={{
         marginTop: { xs: '45px', sm: '30px' },
         padding: '20px',
         display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
+        flexDirection: { xs: 'column', lg: 'row' },
         background: mode === 'light' ? '#fcfcfc' : '#1A1D1F',
         borderRadius: '15px',
         gap: '40px',
       }}
     >
       <Box
-        width='70%'
         sx={{
-          paddingRight: '25px',
-          borderRight: `1px solid ${mode === 'light' ? '#E4E4E4' : '#272B30'}`,
+          width: { xs: '100%', lg: '60%', xl: '70%' },
+          paddingRight: { xs: '0px', lg: '25px' },
+          borderRight: {
+            xs: 'none',
+            lg: `1px solid ${mode === 'light' ? '#E4E4E4' : '#272B30'}`,
+          },
         }}
       >
         <Stack
@@ -59,6 +59,7 @@ const VideoCall = () => {
           justifyContent='space-between'
           alignItems='center'
           gap='10px'
+          marginBottom='15px'
           width='100%'
         >
           <Stack alignItems='center' direction='row' gap='10px'>
@@ -104,27 +105,41 @@ const VideoCall = () => {
             width='100%'
             sx={{
               position: 'absolute',
-              top: '40px',
+              top: { xs: '20px', sm: '40px' },
             }}
           >
-            <img
-              src={Time}
-              style={{
-                display: 'block',
+            <Box
+              sx={{
                 position: 'absolute',
-                left: '25px',
+                width: { xs: '60px', sm: '94px' },
+                left: { xs: '15px', sm: '25px' },
               }}
-              alt='video call'
-            />
-            <img
-              src={OtherPerson}
-              style={{
-                display: 'block',
+            >
+              <img
+                src={Time}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                }}
+                alt='video call'
+              />
+            </Box>
+            <Box
+              sx={{
                 position: 'absolute',
-                right: '25px',
+                width: { xs: '100px', sm: '170px' },
+                right: { xs: '15px', sm: '25px' },
               }}
-              alt='video call'
-            />
+            >
+              <img
+                src={OtherPerson}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                }}
+                alt='video call'
+              />
+            </Box>
           </Box>
           <Box
             sx={{
@@ -132,69 +147,64 @@ const VideoCall = () => {
               width: '100%',
             }}
           >
-            <img
-              src={Volume}
-              style={{
-                display: 'block',
-                position: 'absolute',
-                bottom: '40px',
-                left: '25px',
-              }}
-              alt='video call'
-            />
             <Box
               sx={{
                 position: 'absolute',
-                bottom: '40px',
-                left: '50%',
-                transform: 'translateX(-50%)',
+                width: { xs: '40px', sm: '50px' },
+                bottom: { xs: '20px', sm: '40px' },
+                left: { xs: '15px', sm: '25px' },
               }}
             >
               <img
-                src={FullScreen}
+                src={Volume}
                 style={{
                   display: 'block',
-                  marginRight: '20px',
-                }}
-                alt='video call'
-              />
-              <img
-                src={Mute}
-                style={{
-                  display: 'block',
-                  marginRight: '20px',
-                }}
-                alt='video call'
-              />
-              <img
-                src={EndCall}
-                style={{
-                  display: 'block',
-                  marginRight: '20px',
-                }}
-                alt='video call'
-              />
-              <img
-                src={Video}
-                style={{
-                  display: 'block',
-                  marginRight: '20px',
-                }}
-                alt='video call'
-              />
-              <img
-                src={Settings}
-                style={{
-                  display: 'block',
+                  width: '100%',
                 }}
                 alt='video call'
               />
             </Box>
+
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: { xs: '10px', sm: '40px' },
+                left: '54%',
+                transform: 'translateX(-46%)',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                height: '50px',
+              }}
+            >
+              {videoControls.map((control, index) => (
+                <Box
+                  sx={{
+                    marginRight: { xs: '10px', sm: '20px' },
+                    width: { xs: '36px', sm: '50px' },
+                  }}
+                  key={index}
+                >
+                  <img
+                    src={control}
+                    style={{
+                      display: 'block',
+                      width: '100%',
+                    }}
+                    alt='video-call'
+                  />
+                </Box>
+              ))}
+            </Box>
           </Box>
         </Box>
       </Box>
-      <Box width='30%'>
-        <MessageContent mode={mode} users={users} location='video-call' />
+      <Box
+        sx={{
+          width: { xs: '100%', lg: '40%', xl: '30%' },
+        }}
+      >
+        <MessageContent room={currentRoom} mode={mode} location='video-call' />
       </Box>
     </Box>
   );
