@@ -1,15 +1,15 @@
-import httpStatus from 'http-status';
-import mongoose, { FilterQuery } from 'mongoose';
+import httpStatus from "http-status";
+import mongoose, { FilterQuery } from "mongoose";
 import Property, {
   IProperty,
   IPropertyDoc,
   IPropertyWithUserDetails,
-} from '../mongodb/models/property';
-import { ApiError } from '../errors';
-import { IPaginationOptions, QueryResult } from '../mongodb/plugins/paginate';
-import { uploadManyPhotos } from './cloudinary.service';
-import { IUserDoc } from '../mongodb/models/user';
-import { confirmUserPermissions } from './auth.service';
+} from "../mongodb/models/property";
+import { ApiError } from "../errors";
+import { IPaginationOptions, QueryResult } from "../mongodb/plugins/paginate";
+import { uploadManyPhotos } from "./cloudinary.service";
+import { IUserDoc } from "../mongodb/models/user";
+import { confirmUserPermissions } from "./auth.service";
 
 /**
  * Create a property
@@ -47,6 +47,41 @@ export const queryProperties = async (
 };
 
 /**
+ * Find nearby properties
+ * @param {Number} longitude
+ * @param {Number} latitude
+ * @param {Number} maxDistance (default = 5)
+ * @returns {Promise<Array<IPropertyDoc>>} An array of documents nearest to the given location
+ */
+export const findNearestProperties = async (
+  longitude: string,
+  latitude: string,
+  maxDistance: string
+): Promise<Array<IPropertyDoc>> => {
+  const lnglat: [number, number] = [
+    parseFloat(longitude),
+    parseFloat(latitude),
+  ];
+  const pipeline = [
+    {
+      $geoNear: {
+        distanceField: "address.distance",
+        near: lnglat,
+        distanceMultiplier: 6371,
+        spherical: true,
+        key: "lnglat",
+        maxDistance:
+          parseInt(maxDistance, 10) > 0
+            ? parseInt(maxDistance, 10) / 6371
+            : 5 / 6371,
+      },
+    },
+  ];
+
+  return Property.aggregate(pipeline);
+};
+
+/**
  * Get property by id
  * @param {mongoose.Types.ObjectId} id
  * @returns {Promise<IPropertyDoc | null>}
@@ -63,7 +98,7 @@ export const getPropertyById = async (
 export const getPropertyInfoById = async (
   id: mongoose.Types.ObjectId
 ): Promise<IPropertyWithUserDetails | null> =>
-  Property.findById(id).populate('creator');
+  Property.findById(id).populate("creator");
 
 /**
  * Update property by id
@@ -78,7 +113,7 @@ export const updatePropertyById = async (
 ): Promise<IPropertyDoc | null> => {
   const property = await getPropertyInfoById(propertyId);
   if (!property) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Property not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Property not found");
   }
   await confirmUserPermissions(property.creator, loggedInUser);
 
@@ -103,7 +138,7 @@ export const deletePropertyById = async (
 ): Promise<void> => {
   const property = await getPropertyInfoById(propertyId);
   if (!property) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Property not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Property not found");
   }
   await confirmUserPermissions(property.creator, loggedInUser);
 
