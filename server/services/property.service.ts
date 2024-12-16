@@ -18,12 +18,19 @@ import { confirmUserPermissions } from "./auth.service";
  * @returns {Promise<IPropertyDoc>}
  */
 export const createProperty = async (
-  propertyBody: IProperty,
+  propertyBody: Omit<IProperty, "lnglat"> & {
+    longitude: number;
+    latitude: number;
+  },
   user: IUserDoc
 ): Promise<IPropertyDoc> => {
   const photos = await uploadManyPhotos(propertyBody.photos);
   const property = await Property.create({
     ...propertyBody,
+    lnglat: {
+      type: "Point",
+      coordinates: [propertyBody.longitude, propertyBody.latitude],
+    },
     creator: user._id,
     photos,
   });
