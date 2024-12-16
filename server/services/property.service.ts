@@ -122,7 +122,7 @@ export const getPropertyInfoById = async (
  */
 export const updatePropertyById = async (
   propertyId: mongoose.Types.ObjectId,
-  updateBody: Partial<IProperty>,
+  updateBody: Partial<IProperty & { coordinates: Coordinates }>,
   loggedInUser?: Express.User
 ): Promise<IPropertyDoc | null> => {
   const property = await getPropertyInfoById(propertyId);
@@ -134,6 +134,18 @@ export const updatePropertyById = async (
   if (updateBody.photos) {
     const uploadedPhotos = await uploadManyPhotos(updateBody.photos);
     Object.assign(updateBody, { photos: uploadedPhotos });
+  }
+
+  if (updateBody.coordinates) {
+    Object.assign(updateBody, {
+      lnglat: {
+        type: "Point",
+        coordinates: [
+          updateBody.coordinates.longitude,
+          updateBody.coordinates.latitude,
+        ],
+      },
+    });
   }
 
   Object.assign(property, updateBody);
