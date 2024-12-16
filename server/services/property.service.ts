@@ -65,7 +65,7 @@ export const findNearestProperties = async (
   const pipeline = [
     {
       $geoNear: {
-        distanceField: "address.distance",
+        distanceField: "distance",
         near: lnglat,
         distanceMultiplier: 6371,
         spherical: true,
