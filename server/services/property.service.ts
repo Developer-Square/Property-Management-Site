@@ -11,6 +11,11 @@ import { uploadManyPhotos } from "./cloudinary.service";
 import { IUserDoc } from "../mongodb/models/user";
 import { confirmUserPermissions } from "./auth.service";
 
+type Coordinates = {
+  longitude: number;
+  latitude: number;
+};
+
 /**
  * Create a property
  * @param {IProperty} propertyBody
@@ -19,8 +24,7 @@ import { confirmUserPermissions } from "./auth.service";
  */
 export const createProperty = async (
   propertyBody: Omit<IProperty, "lnglat"> & {
-    longitude: number;
-    latitude: number;
+    coordinates: Coordinates;
   },
   user: IUserDoc
 ): Promise<IPropertyDoc> => {
@@ -29,7 +33,10 @@ export const createProperty = async (
     ...propertyBody,
     lnglat: {
       type: "Point",
-      coordinates: [propertyBody.longitude, propertyBody.latitude],
+      coordinates: [
+        propertyBody.coordinates.longitude,
+        propertyBody.coordinates.latitude,
+      ],
     },
     creator: user._id,
     photos,
