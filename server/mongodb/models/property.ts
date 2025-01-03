@@ -78,6 +78,7 @@ const propertySchema = new mongoose.Schema<IPropertyDoc, IPropertyModel>(
     lnglat: {
       type: pointSchema,
       index: "2dsphere", // Create a special 2dsphere index on `property.lnglat`
+      required: true,
     },
     price: { type: Number, required: true },
     photos: [{ type: String, required: true }],
