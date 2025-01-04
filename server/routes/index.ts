@@ -1,11 +1,12 @@
-import express, { Router } from 'express';
-import authRoute from './auth.routes';
-import userRoute from './user.routes';
-import reviewRoute from './review.routes';
-import propertyRoute from './property.routes';
-import messageRoute from './message.routes';
-import roomRoute from './room.routes';
-import { config } from '../config';
+import express, { Router } from "express";
+import authRoute from "./auth.routes";
+import userRoute from "./user.routes";
+import reviewRoute from "./review.routes";
+import propertyRoute from "./property.routes";
+import nearbyPropertiesRoute from "./nearbyProperties.routes";
+import messageRoute from "./message.routes";
+import roomRoute from "./room.routes";
+import { config } from "../config";
 
 const router = express.Router();
 
@@ -16,31 +17,35 @@ interface IRoute {
 
 const defaultIRoute: IRoute[] = [
   {
-    path: '/auth',
+    path: "/auth",
     route: authRoute,
   },
   {
-    path: '/users',
+    path: "/users",
     route: userRoute,
   },
   {
-    path: '/agents',
+    path: "/agents",
     route: userRoute,
   },
   {
-    path: '/reviews',
+    path: "/reviews",
     route: reviewRoute,
   },
   {
-    path: '/properties',
+    path: "/properties",
     route: propertyRoute,
   },
   {
-    path: '/messages',
+    path: "/nearbyproperties",
+    route: nearbyPropertiesRoute,
+  },
+  {
+    path: "/messages",
     route: messageRoute,
   },
   {
-    path: '/rooms',
+    path: "/rooms",
     route: roomRoute,
   },
 ];
@@ -54,7 +59,7 @@ defaultIRoute.forEach((route) => {
 });
 
 /* istanbul ignore next */
-if (config.env === 'development') {
+if (config.env === "development") {
   devIRoute.forEach((route) => {
     router.use(route.path, route.route);
   });

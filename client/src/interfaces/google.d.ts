@@ -76,6 +76,16 @@ export interface Credential {
   password: string;
 }
 
+interface GoogleMapsGeocoder {
+  geocode(
+    request: { address: string } | { location: { lat: number; lng: number } },
+    callback: (
+      results: google.maps.GeocoderResult[],
+      status: google.maps.GeocoderStatus
+    ) => void
+  ): void;
+}
+
 export interface Google {
   accounts: {
     id: {
@@ -95,6 +105,17 @@ export interface Google {
         hint: string,
         callback: (done: RevocationResponse) => void
       ) => void;
+    };
+  };
+  maps: {
+    Geocoder: new () => GoogleMapsGeocoder;
+    GeocoderStatus: {
+      OK: "OK";
+      ZERO_RESULTS: "ZERO_RESULTS";
+      OVER_QUERY_LIMIT: "OVER_QUERY_LIMIT";
+      REQUEST_DENIED: "REQUEST_DENIED";
+      INVALID_REQUEST: "INVALID_REQUEST";
+      UNKNOWN_ERROR: "UNKNOWN_ERROR";
     };
   };
 }
