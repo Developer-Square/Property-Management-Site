@@ -1,15 +1,20 @@
-import httpStatus from 'http-status';
-import mongoose, { FilterQuery } from 'mongoose';
+import httpStatus from "http-status";
+import mongoose, { FilterQuery } from "mongoose";
 import Property, {
   IProperty,
   IPropertyDoc,
   IPropertyWithUserDetails,
-} from '../mongodb/models/property';
-import { ApiError } from '../errors';
-import { IPaginationOptions, QueryResult } from '../mongodb/plugins/paginate';
-import { uploadManyPhotos } from './cloudinary.service';
-import { IUserDoc } from '../mongodb/models/user';
-import { confirmUserPermissions } from './auth.service';
+} from "../mongodb/models/property";
+import { ApiError } from "../errors";
+import { IPaginationOptions, QueryResult } from "../mongodb/plugins/paginate";
+import { uploadManyPhotos } from "./cloudinary.service";
+import { IUserDoc } from "../mongodb/models/user";
+import { confirmUserPermissions } from "./auth.service";
+
+type Coordinates = {
+  longitude: number;
+  latitude: number;
+};
 
 /**
  * Create a property
@@ -18,12 +23,21 @@ import { confirmUserPermissions } from './auth.service';
  * @returns {Promise<IPropertyDoc>}
  */
 export const createProperty = async (
-  propertyBody: IProperty,
+  propertyBody: Omit<IProperty, "lnglat"> & {
+    coordinates: Coordinates;
+  },
   user: IUserDoc
 ): Promise<IPropertyDoc> => {
   const photos = await uploadManyPhotos(propertyBody.photos);
   const property = await Property.create({
     ...propertyBody,
+    lnglat: {
+      type: "Point",
+      coordinates: [
+        propertyBody.coordinates.longitude,
+        propertyBody.coordinates.latitude,
+      ],
+    },
     creator: user._id,
     photos,
   });
@@ -47,6 +61,41 @@ export const queryProperties = async (
 };
 
 /**
+ * Find nearby properties
+ * @param {Number} longitude
+ * @param {Number} latitude
+ * @param {Number} maxDistance (default = 5)
+ * @returns {Promise<Array<IPropertyDoc>>} An array of documents nearest to the given location
+ */
+export const findNearestProperties = async (
+  longitude: string,
+  latitude: string,
+  maxDistance: string
+): Promise<Array<IPropertyDoc>> => {
+  const lnglat: [number, number] = [
+    parseFloat(longitude),
+    parseFloat(latitude),
+  ];
+  const pipeline = [
+    {
+      $geoNear: {
+        distanceField: "distance",
+        near: lnglat,
+        distanceMultiplier: 6371,
+        spherical: true,
+        key: "lnglat",
+        maxDistance:
+          parseInt(maxDistance, 10) > 0
+            ? parseInt(maxDistance, 10) / 6371
+            : 5 / 6371,
+      },
+    },
+  ];
+
+  return Property.aggregate(pipeline);
+};
+
+/**
  * Get property by id
  * @param {mongoose.Types.ObjectId} id
  * @returns {Promise<IPropertyDoc | null>}
@@ -63,7 +112,7 @@ export const getPropertyById = async (
 export const getPropertyInfoById = async (
   id: mongoose.Types.ObjectId
 ): Promise<IPropertyWithUserDetails | null> =>
-  Property.findById(id).populate('creator');
+  Property.findById(id).populate("creator");
 
 /**
  * Update property by id
@@ -73,18 +122,30 @@ export const getPropertyInfoById = async (
  */
 export const updatePropertyById = async (
   propertyId: mongoose.Types.ObjectId,
-  updateBody: Partial<IProperty>,
+  updateBody: Partial<IProperty & { coordinates: Coordinates }>,
   loggedInUser?: Express.User
 ): Promise<IPropertyDoc | null> => {
   const property = await getPropertyInfoById(propertyId);
   if (!property) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Property not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Property not found");
   }
   await confirmUserPermissions(property.creator, loggedInUser);
 
   if (updateBody.photos) {
     const uploadedPhotos = await uploadManyPhotos(updateBody.photos);
     Object.assign(updateBody, { photos: uploadedPhotos });
+  }
+
+  if (updateBody.coordinates) {
+    Object.assign(updateBody, {
+      lnglat: {
+        type: "Point",
+        coordinates: [
+          updateBody.coordinates.longitude,
+          updateBody.coordinates.latitude,
+        ],
+      },
+    });
   }
 
   Object.assign(property, updateBody);
@@ -103,7 +164,7 @@ export const deletePropertyById = async (
 ): Promise<void> => {
   const property = await getPropertyInfoById(propertyId);
   if (!property) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Property not found');
+    throw new ApiError(httpStatus.NOT_FOUND, "Property not found");
   }
   await confirmUserPermissions(property.creator, loggedInUser);
 
