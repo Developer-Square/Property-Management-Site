@@ -1,23 +1,23 @@
-import express from 'express';
+import express from "express";
 import {
   createPropertyController,
   deletePropertyController,
   getPropertiesController,
   getPropertyController,
   updatePropertyController,
-} from '../controllers/property.controller.v2';
-import authMiddleware from '../middleware/auth.middleware';
+} from "../controllers/property.controller.v2";
+import authMiddleware from "../middleware/auth.middleware";
 
 const router = express.Router();
 
 router
-  .route('/')
-  .get(authMiddleware(), getPropertiesController)
+  .route("/")
+  .get(getPropertiesController)
   .post(authMiddleware(), createPropertyController);
 
 router
-  .route('/:propertyId')
-  .get(authMiddleware(), getPropertyController)
+  .route("/:propertyId")
+  .get(getPropertyController)
   .patch(authMiddleware(), updatePropertyController)
   .delete(authMiddleware(), deletePropertyController);
 
